@@ -5,7 +5,7 @@ class Centers(models.Model):
     center_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=50, help_text="Ingrese el nombre del género")
     address = models.CharField(max_length=100)
-    phone_number = models.BigIntegerField(max_length=9)
+    phone_number = models.BigIntegerField()
     CIF = models.CharField(max_length=9)
     email = models.EmailField(max_length=50)
     image = models.ImageField(blank =True)
