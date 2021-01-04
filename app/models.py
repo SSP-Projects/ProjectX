@@ -1,28 +1,50 @@
 from django.db import models
+
 import uuid
-class Centers(models.Model):
-    # Campos
-    center_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=50, help_text="Ingrese el nombre del género")
-    address = models.CharField(max_length=100)
-    phone_number = models.BigIntegerField(max_length=9)
-    CIF = models.CharField(max_length=9)
-    email = models.EmailField(max_length=50)
-    image = models.ImageField(blank =True)
 
-'''    # Metadata
-    class Meta:
-        ordering = ["center_id","CIF","name","address","phone_number","email"]
+class Center(models.Model):
     
-    # Métodos
-    def get_absolute_url(self):
-         """
-         Devuelve la url para acceder a una instancia particular de MyModelName.
-         """
-         return reverse('model-detail-view', args=[str(self.id)])
+    center_id        = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name             = models.CharField(max_length=50)
+    address          = models.CharField(max_length=100)
+    phone_number     = models.IntegerField()
+    CIF              = models.CharField(max_length=9)
+    email            = models.EmailField(max_length=50)
+    image            = models.ImageField(blank=True)
 
-    def __str__(self):
-        """
-        Cadena para representar el objeto MyModelName (en el sitio de Admin, etc.)
-        """
-        return self.field_name'''
+class User(models.Model):
+   
+    class Permissions(models.IntegerChoices):
+        EMPLOYEE     = 0
+        CENTER       = 1
+        ADMIN        = 2
+
+    user_id          = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user             = models.CharField(max_length=50)
+    password         = models.CharField(max_length=255)
+    permission       = models.IntegerField(choices=Permissions.choices)
+    center_id        = models.UUIDField(models.ForeignKey('Centers', on_delete=models.SET_NULL))
+    password_changed = models.BooleanField()
+    image            = models.ImageField(blank=True)
+
+
+class Employee(models.Model):
+    
+    employee_id      = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user_id          = models.UUIDField(models.ForeignKey('User', on_delete=models.SET_NULL))
+    dni              = models.CharField(max_length=50)
+    ss_number        = models.CharField(max_length=50)
+    name             = models.CharField(max_length=50)
+    surname          = models.CharField(max_length=50)
+    phone_number     = models.IntegerField()
+    email            = models.EmailField()
+
+class Signing(models.Model):
+    
+    signing_id       = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    employee_id      = models.UUIDField(models.ForeignKey('Employee', on_delete=models.SET_NULL))
+    date             = models.DateField(auto_now_add=True)
+    start_work       = models.TimeField(auto_now_add=True)
+    start_rest       = models.TimeField(blank=True)
+    end_rest         = models.TimeField(blank=True)
+    end_work         = models.TimeField(blank=True)
