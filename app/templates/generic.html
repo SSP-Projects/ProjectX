@@ -4,17 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
     <title>Document</title>
 </head>
 
 <body>
-    <header style="background-color: blue;">
+    <header style="background-color: aquamarine;">
         <img src="" alt="logo centro">
         <h2>Nombre centro</h2>
         <h1>Nombre APP</h1>
         <h3>Nombre usuario</h3>
         <img src="" alt="icono desplegable">
     </header>
+    <button type="submit" class="btn btn-primary">Submit</button>  
     {% block content %}{% endblock %}
     <footer style="background-color: red;">FOOTER</footer>
 </body>
