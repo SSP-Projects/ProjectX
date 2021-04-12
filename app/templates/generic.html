@@ -19,6 +19,13 @@
     </header>
     <button type="submit" class="btn btn-primary">Submit</button>  
     {% block content %}{% endblock %}
+      <ul class="sidebar-nav">
+
+    {% if user.is_authenticated %}
+     <li>User: {{ user.get_username }}</li>
+     <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+   {% endif %}
+  </ul>
     <footer style="background-color: red;">FOOTER</footer>
 </body>
 

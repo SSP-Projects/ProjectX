@@ -1,5 +1,5 @@
 # Migrations folder
-migrations/
+app/migrations/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
