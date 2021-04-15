@@ -1,1 +1,28 @@
-{% extends "generic.html" %}
+{% extends "generic.html" %} {% block title %}Login{% endblock %} {% block main %}
+<div class="container-fluid row align-items-center justify-content-center my-auto">
+    <div class="col-6 row align-items-center justify-content-center rounded-5 pb-5 my-5" style="background-color: grey;padding: 0;">
+        <div class="row align-items-center justify-content-cente py-3 mb-5 rounded-top rounded-5" style="background-color: black; width: 100%;">
+            <h1 class="text-center" style="color: white;">Iniciar Sesión</h1>
+        </div>
+        <div class="col-md-5 row">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario</label> {{ form.username }}
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>{{ form.password }}
+                </div>
+                <div class="mb-3">
+                    {{ form.sign_on_login }}
+                    <label class="form-check-label" for="sign_on_login">Fichar al entrar</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="col-md-5 row">
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo minus culpa impedit? Doloremque unde ipsam nobis praesentium illum rerum sed recusandae sunt nisi? Ut, nisi natus! Eum esse ipsam voluptate.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
