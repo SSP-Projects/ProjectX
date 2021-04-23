@@ -17,13 +17,42 @@
     </a>
 </div>
 <div class=" col-sm-12 col-md-5  my-auto relative text-start m-4">
-    <a href="#">
+    <a href="" id="save_button_link" data-toggle="modal" data-target="#modal_save_circuit">
         <img class="blur borderR-20px" src="{% static 'media/images/enter_work_background.png' %}" alt="enter_work_background">
         <div class="image_text ">
            <h5 class="pr-3 pl-3 mb-2 mx-5">SALIR TRABAJO</h5>
-
         </div>
     </a>
+</div>
+<!-- Modal -->
+<div class="modal fade " id="modal_save_circuit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Save circuit</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>  
+        <form  id="form_save_circuit" action="javascript:;" onSubmit="saveCircuitInDB()">  
+        <div class="modal-body center ">
+
+           
+                <div class="form-group ">
+                    <input id="circuit_title" type="text" class="form-control" name="title"  placeholder="Circuit title" required>
+                  </div>
+                
+            <input id="circuit_preview_input" name="circuit_preview" type="file" class="invisible">
+            <img id="circuit_preview" class="w-75 img-thumbnail ml-12">
+           
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-info" value="Save changes">
+	      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+        </form>
+      </div>
+    </div>
 </div>
 <div class=" col-sm-12 col-md-6 relative text-end m-4">
     <a href="#">
