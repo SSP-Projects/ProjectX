@@ -17,7 +17,7 @@ class User(models.Model):
         ADMIN        = 2
 
     user_id          = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user             = models.CharField(max_length=50)
+    username         = models.CharField(max_length=50)
     password         = models.CharField(max_length=255)
     permission       = models.IntegerField(choices=Permissions.choices)
     center_id        = models.UUIDField(models.ForeignKey('Centers', on_delete=models.SET_NULL))
@@ -42,3 +42,4 @@ class Signing(models.Model):
     start_rest       = models.TimeField(blank=True)
     end_rest         = models.TimeField(blank=True)
     end_work         = models.TimeField(blank=True)
+
