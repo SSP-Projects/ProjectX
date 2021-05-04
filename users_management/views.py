@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from . import forms
-from . models import Employee
+from .models import Employee
 
 
 def register(request):
@@ -13,4 +13,7 @@ def home(request):
 
 def admin(request):
     employees = Employee.objects.all()
+    # employees[0].name = 'adawda'
+    # employees[0].save()
+    # employees = Employee.objects.get(name='oeoe')
     return render(request, 'admin.html', context={'employees':employees})
