@@ -7,17 +7,19 @@
         <div class="col-md-5 row">
             <form action="" method="post">
                 {% csrf_token %}
-                <div class="mb-3">
-                    <label for="username" class="form-label">Usuario</label> {{ form.username }}
+                <div class="mb-3 form-group">
+                    <label for="username" class="form-label">Usuario</label> <br>
+                    {{ form.username }}
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Contraseña</label>{{ form.password }}
+                <div class="mb-3 form-group">
+                    <label for="password" class="form-label">Contraseña</label> <br>
+                    {{ form.password }}
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 form-check">
                     {{ form.sign_on_login }}
                     <label class="form-check-label" for="sign_on_login">Fichar al entrar</label>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-success">Iniciar Sesión</button>
             </form>
         </div>
         <div class="col-md-5 row">
