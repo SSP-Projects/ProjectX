@@ -9,7 +9,11 @@
     {% load static %}
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/global.css' %}" rel="stylesheet">
+   
+    {% block personal_styles %}{% endblock personal_styles%}
+    <link href="{% static 'css/home/home_styles.css' %}" rel="stylesheet">
     <script src="https://kit.fontawesome.com/2d3dba4dd0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
 
 </head>
 

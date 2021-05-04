@@ -1,7 +1,6 @@
 .header_background{
-    background: rgb(0,149,226);
-    background: linear-gradient(0deg, rgba(0,149,226,1) 5%, rgba(2,192,231,1) 50%, rgba(0,149,226,1) 95%);
-
+  background: rgb(0,149,226);
+  background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
 }
 img{
     max-width: 100%;
@@ -21,6 +20,10 @@ img{
     left: 0;
     width: 100%;
     color: black;
+}
+#home_button{
+
+  
 }
 .relative {
     position: relative;
@@ -54,3 +57,4 @@ img{
 .dropdown a:hover {background-color: #ddd;}
 
 .show {display: block;}
+
