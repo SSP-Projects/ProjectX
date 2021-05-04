@@ -3,10 +3,6 @@ from . import forms
 from . models import Employee
 
 
-def login(request):
-    form = forms.LoginForm()
-    return render(request, 'login.html', context={'form': form})
-
 def register(request):
     form = forms.RegisterForm()
     return render(request, 'register.html', context={'form': form})

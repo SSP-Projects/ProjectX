@@ -7,14 +7,16 @@
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-center">
         <h2>TITULOAPP</h2>
     </div>
+    {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
-        <h5 class="m-4">{{username}}</h5>
+        <h5 class="m-4">{{ user.username }}</h5>
         <div class="dropdown col-1">
             <img onclick="showMenu()" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
             <div id="myDropdown" class="dropdown-content ">
                 <a href="#">opcion1</a>
                 <a href="#">Ver mis registros</a>
-                <a href="#">Cerrar sesion</a>
+                <a href="{% url 'logout' %}">Cerrar sesion</a>
             </div>
         </div>
+    {% endif %}
 </nav>
