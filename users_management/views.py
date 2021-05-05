@@ -9,7 +9,8 @@ def register(request):
 
 def home(request):
     username = ""
-    return render(request, 'middle/home.html', context={"studycenter_name":"GMQ CENTER","username":username})
+    form = forms.TicketForm()
+    return render(request, 'middle/home.html', context={"studycenter_name":"GMQ CENTER","username":username,'form': form})
 
 def admin(request):
     employees = Employee.objects.all()
