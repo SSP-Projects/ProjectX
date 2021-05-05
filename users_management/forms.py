@@ -24,3 +24,25 @@ class LoginForm(forms.Form):
             'type': 'checkbox'
         }
     ))
+class TicketForm(forms.Form):
+    ticket_types =[("prueba1","prueba1_2"),("prueba2","prueba2_2")]
+    ticket_type = forms.CharField(label="Seleccione el tipo de incidencia", widget=forms.Select(choices=ticket_types, attrs= 
+        {
+            'class': 'form-control text-center',
+            'required': False,
+            'id': 'ticket_type',
+        }
+       
+    ))
+    description = forms.CharField(label="Descripción del problema", max_length=600, widget=forms.Textarea(attrs=
+        {
+            'class': 'form-control no-resize',
+            'required': False,
+            'rows':"5",
+            'id': 'description',
+            'type': 'text'
+        }
+        
+        
+    ))
+

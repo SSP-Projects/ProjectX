@@ -1,32 +1,40 @@
+body{
+  overflow: hidden;
+}
+
 .header_background{
   background: rgb(0,149,226);
   background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
 }
+.background-blue {
+  background-color:#4b566d;
+}
+.background-grey {
+  background-color:rgb(250, 244, 244) !important;
+}
+.font-white {
+  color: white;
+}
+.font-black {
+  color: black;
+}
+
+.test_color {
+  background-color: darkseagreen;
+}
+.test_color2 {
+  background-color: cornflowerblue;
+}
+.no-resize {
+  resize: none ;
+}
+
 img{
     max-width: 100%;
     
 }
-.blur:hover{
-    filter: blur(7px);
-   
-}
 .borderR-20px{
     border-radius: 20px;
-}
-
-.image_text{
-    position: absolute;
-    top: 45%;
-    left: 0;
-    width: 100%;
-    color: black;
-}
-#home_button{
-
-  
-}
-.relative {
-    position: relative;
 }
 
 

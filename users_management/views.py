@@ -11,7 +11,8 @@ def register(request):
 @login_required(login_url='/accounts/login/')
 def home(request):
     username = ""
-    return render(request, 'middle/home.html', context={"studycenter_name":"GMQ CENTER","username":username})
+    form = forms.TicketForm()
+    return render(request, 'middle/home.html', context={"studycenter_name":"GMQ CENTER","username":username,'form': form})
 
 @login_required(login_url='/accounts/login/')
 def admin(request):

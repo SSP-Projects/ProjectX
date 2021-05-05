@@ -1,4 +1,4 @@
-<nav class="container-fluid header_background border-gray d-flex py-2 px-4">
+<nav class="container-fluid header_background border-gray d-flex px-4">
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center ">
         {% load static %}
         <img src="{% static 'media/images/studycenter_logo.PNG' %}" alt="studycenter_icon">
@@ -13,9 +13,8 @@
         <div class="dropdown col-1">
             <img onclick="showMenu()" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
             <div id="myDropdown" class="dropdown-content ">
-                <a href="#">opcion1</a>
-                <a href="#">Ver mis registros</a>
-                <a href="{% url 'logout' %}">Cerrar sesion</a>
+                <a href="#">Ver mi perfil</a>
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
             </div>
         </div>
     {% endif %}
