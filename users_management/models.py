@@ -1,45 +1,64 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 import uuid
 
+# AUX TABLES
+
+class PermissionsAuxiliar(models.Model):
+    name = models.CharField(max_length=20)
+
+class WeekDaysAuxiliar(models.Model):
+    name = models.CharField(max_length=9)
+
+class ProfessionalCategoryAuxiliar(models.Model):
+    name = models.CharField(max_length=20)
+
+class InteractionsTypesAuxiliar(models.Model):
+    name = models.CharField(max_length=20)
+
+class NotificationTypesAuxiliar(models.Model):
+    name = models.CharField(max_length=50)
+
+# END AUX TABLES
+
 class Center(models.Model):
-    center_id        = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name             = models.CharField(max_length=50)
-    address          = models.CharField(max_length=100)
-    phone_number     = models.IntegerField()
-    CIF              = models.CharField(max_length=9)
-    email            = models.EmailField(max_length=50)
-    image            = models.ImageField(blank=True)
-
-class User(models.Model):
-    class Permissions(models.IntegerChoices):
-        EMPLOYEE     = 0
-        CENTER       = 1
-        ADMIN        = 2
-
-    user_id          = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username         = models.CharField(max_length=50)
-    password         = models.CharField(max_length=255)
-    permission       = models.IntegerField(choices=Permissions.choices)
-    center_id        = models.UUIDField(models.ForeignKey('Centers', on_delete=models.SET_NULL))
-    password_changed = models.BooleanField(editable=False, default=False)
-    image            = models.ImageField(blank=True)
+    center_id             = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name                  = models.CharField(max_length=50)
+    address               = models.CharField(max_length=100)
+    phone_number          = models.CharField(max_length=15, validators=[RegexValidator(r'^\d{1,10}$')])
+    CIF                   = models.CharField(max_length=9)
+    email                 = models.EmailField(max_length=50)
+    image                 = models.ImageField(blank=True)
 
 class Employee(models.Model):
-    employee_id      = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user_id          = models.UUIDField(models.ForeignKey('User', on_delete=models.SET_NULL))
-    dni              = models.CharField(max_length=50)
-    ss_number        = models.CharField(max_length=50)
-    name             = models.CharField(max_length=50)
-    surname          = models.CharField(max_length=50)
-    phone_number     = models.IntegerField()
-    email            = models.EmailField()
+    user                  = models.OneToOneField(User, on_delete=models.CASCADE)
+    center_id             = models.OneToOneField(Center, on_delete=models.CASCADE)
+    dni                   = models.CharField(max_length=9)
+    ss_number             = models.CharField(max_length=12, validators=[RegexValidator(r'^\d{1,10}$')])
+    professional_category = models.CharField(max_length=20) 
+    signature             = models.ImageField(blank=True)
+    phone_number          = models.CharField(max_length=15, validators=[RegexValidator(r'^\d{1,10}$')])
+    email                 = models.EmailField()
+    name                  = models.CharField(max_length=30)
+    surnames              = models.CharField(max_length=120)
 
-class Signing(models.Model):
-    signing_id       = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    employee_id      = models.UUIDField(models.ForeignKey('Employee', on_delete=models.SET_NULL))
-    date             = models.DateField(auto_now_add=True)
-    start_work       = models.TimeField(auto_now_add=True)
-    start_rest       = models.TimeField(blank=True)
-    end_rest         = models.TimeField(blank=True)
-    end_work         = models.TimeField(blank=True)
+class Notification(models.Model):
+    sender                = models.OneToOneField(User, related_name='sender', on_delete=models.CASCADE)
+    receiver              = models.OneToOneField(User, related_name='receiver', on_delete=models.CASCADE)
+    description           = models.CharField(max_length=500)
+    notification_type     = models.CharField(max_length=50)
 
+class Schedule(models.Model):
+    entry_time            = models.TimeField()
+    exit_time             = models.TimeField()
+    weekday               = models.CharField(max_length=9)
+    employee              = models.ForeignKey(Employee, on_delete=models.CASCADE)  
+
+class Interaction(models.Model):
+    class States(models.IntegerChoices):
+        ENTER = 0
+        EXIT  = 1
+    date_time             = models.DateTimeField(auto_now=True)
+    state                 = models.IntegerField(choices=States.choices)
+    interaction_type      = models.CharField(max_length=20)
