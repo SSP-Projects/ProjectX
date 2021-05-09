@@ -5,10 +5,16 @@
         <h2 class="m-4">{{studycenter_name}}</h2>
     </div>
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-center">
-        <h2>TITULOAPP</h2>
+        <h2>{{app_tittle}}</h2>
     </div>
     {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
+        <div>
+            <a>
+                <img src="{% static 'media/images/notifications_icon.png' %}" class="dropbtn img-fluid" alt="menu_icon">
+                <span class="badge">3</span>
+            </a>
+        </div>
         <h5 class="m-4">{{ user.username }}</h5>
         <div class="dropdown col-1">
             <img onclick="showMenu()" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
