@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <link href="{% static 'css/home/home_styles.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 {% block body %}   
@@ -13,12 +14,12 @@
   <section class="col-5 container-fluid  d-flex flex-wrap mx-5">
     <div class="col-6">
       <a href="#">
-      <button class="big-button">trabajo</button>
+      <button id="work-button" class="big-button">trabajo</button>
       </a>
     </div>
     <div class="col-6">
       <a href="#">
-        <button class="big-button">descanso</button>
+        <button id="break-button" class="big-button">descanso</button>
       </a>
     </div>
   </section>
@@ -126,7 +127,74 @@
     </div>
 </div>
 
-
 </section>
 
 {% endblock body%}
+{% block extra_scripts %}
+<script>
+  var workingStatus = '{{workingStatus}}';
+  var data = {}
+$("#work-button").click(function() {
+    if(workingStatus == "isntWorking"){
+        alert("Entras del trabajo")
+        data = {
+          'state' : 0,
+          'interaction_type' : "work"                
+        }
+        workingStatus = "working"
+    }else if(workingStatus == "working"){
+        alert("Has salido del trabajo")
+        data = {
+          'state' : 1,
+          'interaction_type' : "work"                
+        }
+        workingStatus = "isntWorking"
+    }else if(workingStatus == "breaking"){
+        alert("No puedes salir del trabajo sin haber salido del descanso")
+    }
+
+    sendDataToAjax();
+
+});
+
+$("#break-button").click(function() {
+
+    if(workingStatus == "isntWorking"){
+        alert("No puedes entrar al descanso si no estas trabajando")
+    }else if(workingStatus == "working"){
+        alert("Entras al descanso")
+        data = {
+          'state' : 0,
+          'interaction_type' : "break"                
+        }
+        workingStatus = "breaking"
+    }else if(workingStatus == "breaking"){
+        alert("Has salido del descanso")
+        data = {
+          'state' : 1,
+          'interaction_type' : "break"                
+        }
+        workingStatus = "working"
+    }
+    sendDataToAjax();
+});
+function sendDataToDb(data){
+    data["date_time"] = new Date().toLocaleString('es-ES', { hour12: false, hour: "numeric",  minute: "numeric"})
+
+    $.ajax({
+    url: '/ajax/insert_job_interaction/',
+    data: data,
+    dataType: 'json',
+    success: function (data) {
+      if (data.is_taken) {
+        alert("exists.");
+      }
+    }
+    });
+}
+</script>
+ <!--
+   <script src="{% static 'js/home.js' %}"></script>
+--> 
+   
+{% endblock %}
