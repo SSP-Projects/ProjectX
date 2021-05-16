@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^home/', views.home, name='home'), # This view will change if u re admin
     url(r'^admin/', views.admin, name='admin'),
     url(r'^notification/', views.send_notification, name='send_notification'),
+    path('ajax/insert_job_interaction/',views.postInteraction),
 ]
