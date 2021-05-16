@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^register/', views.register, name='register'),
     url(r'^home/', views.home, name='home'), # This view will change if u re admin
     url(r'^admin/', views.admin, name='admin'),
+    path('ajax/insert_job_interaction/',views.postInteraction),
 ]

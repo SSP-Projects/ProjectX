@@ -62,3 +62,4 @@ class Interaction(models.Model):
     date_time             = models.DateTimeField(auto_now=True)
     state                 = models.IntegerField(choices=States.choices)
     interaction_type      = models.CharField(max_length=20)
+    employee              = models.ForeignKey(Employee, on_delete=models.CASCADE)

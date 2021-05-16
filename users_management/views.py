@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from . import forms
-from .models import Employee,Interaction
+from .models import Employee,Interaction,Schedule
 from django.core import serializers
 
 
@@ -32,14 +32,18 @@ def postInteraction(request):
 
     if request.is_ajax and request.method == "POST":
 
+        interaction=Interaction.objects.create(
+        date_time=request.POST['date_time'],
+        state=request.POST['state'],
+        interaction_type=request.POST['interaction_type'],
+        employee=request.user
+        )
 
-        ser_instance = serializers.serialize('json', [ instance, ])
-        # send to client side.
-        return JsonResponse({"instance": ser_instance}, status=200)
-
-
+        interaction.save()
+        home()
+    else:
+        home()
     # some error occured
-    return JsonResponse({"error": ""}, status=400)
 
 
 @login_required(login_url='/accounts/login/')
