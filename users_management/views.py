@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from . import forms
+import json
 from .models import Employee, Interaction, Notification
 from django.core import serializers
 
@@ -30,21 +31,23 @@ def home(request):
         "workingStatus": workingStatus
         
         })
+
 def postInteraction(request):
-
+    print("dfishbfihdbufijbsfijku")
     if request.is_ajax and request.method == "POST":
-
+        actual_employee =Employee.objects.get(user=request.user)
+        print("PRUEBARDA->"+request.POST['state'] )
         interaction=Interaction.objects.create(
-        date_time=request.POST['date_time'],
         state=request.POST['state'],
         interaction_type=request.POST['interaction_type'],
-        employee=request.user
+        employee=actual_employee
         )
 
         interaction.save()
-        home()
+        return redirect("/home/")
     else:
-        home()
+        return redirect("/home/")
+       
     # some error occured
 
 

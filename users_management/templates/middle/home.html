@@ -8,11 +8,8 @@
 {% endblock %}
 
 {% block body %}   
-=======
-{% extends "generic.html" %} {% load static %} {% block extra_head %}
 <section class="container-fluid d-flex flex-wrap my-5">
 
-<<<<<<< HEAD
 <section id="top_section " class="container-fluid d-flex justify-content-end flex-wrap ">
   <section class="col-5 container-fluid  d-flex flex-wrap mx-5">
     <div class="col-6">
@@ -183,66 +180,77 @@
 {% endblock body%}
 {% block extra_scripts %}
 <script>
+$(document).ready(function(){
   var workingStatus = '{{workingStatus}}';
   var data = {}
-$("#work-button").click(function() {
-    if(workingStatus == "isntWorking"){
-        alert("Entras del trabajo")
-        data = {
-          'state' : 0,
-          'interaction_type' : "work"                
-        }
-        workingStatus = "working"
-    }else if(workingStatus == "working"){
-        alert("Has salido del trabajo")
-        data = {
-          'state' : 1,
-          'interaction_type' : "work"                
-        }
-        workingStatus = "isntWorking"
-    }else if(workingStatus == "breaking"){
-        alert("No puedes salir del trabajo sin haber salido del descanso")
-    }
-
-    sendDataToAjax();
-
-});
-
-$("#break-button").click(function() {
-
-    if(workingStatus == "isntWorking"){
-        alert("No puedes entrar al descanso si no estas trabajando")
-    }else if(workingStatus == "working"){
-        alert("Entras al descanso")
-        data = {
-          'state' : 0,
-          'interaction_type' : "break"                
-        }
-        workingStatus = "breaking"
-    }else if(workingStatus == "breaking"){
-        alert("Has salido del descanso")
-        data = {
-          'state' : 1,
-          'interaction_type' : "break"                
-        }
-        workingStatus = "working"
-    }
-    sendDataToAjax();
-});
-function sendDataToDb(data){
-    data["date_time"] = new Date().toLocaleString('es-ES', { hour12: false, hour: "numeric",  minute: "numeric"})
-
-    $.ajax({
-    url: '/ajax/insert_job_interaction/',
-    data: data,
-    dataType: 'json',
-    success: function (data) {
-      if (data.is_taken) {
-        alert("exists.");
+  $("#work-button").click(function() {
+      if(workingStatus == "isntWorking"){
+          alert("Entras del trabajo")
+          data = {
+            'state' : 0,
+            'interaction_type' : "work" ,              
+          }
+          workingStatus = "working"
+          sendDataToDb(data);
+      }else if(workingStatus == "working"){
+          alert("Has salido del trabajo")
+          data = {
+            'state' : 1,
+            'interaction_type' : "work",             
+          }
+          workingStatus = "isntWorking"
+          sendDataToDb(data);
+      }else if(workingStatus == "breaking"){
+          alert("No puedes salir del trabajo sin haber salido del descanso")
       }
-    }
+
+
+  });
+
+  $("#break-button").click(function() {
+
+      if(workingStatus == "isntWorking"){
+          alert("No puedes entrar al descanso si no estas trabajando")
+      }else if(workingStatus == "working"){
+          alert("Entras al descanso")
+          data = {
+            'state' : 0,
+            'interaction_type' : "break",              
+          }
+          workingStatus = "breaking"
+          sendDataToDb(data);
+      }else if(workingStatus == "breaking"){
+          alert("Has salido del descanso")
+          data = {
+            'state' : 1,
+            'interaction_type' : "break",                
+          }
+          workingStatus = "working"
+          sendDataToDb(data);
+      }
+  });
+  function sendDataToDb(data){
+    //
+      console.log("valor del data-> "+ JSON.stringify((data)))      
+     $.ajax({
+       url: '/ajax/insert_job_interaction/',
+       type: 'POST',
+       data: data,
+       dataType: 'json',
+       
+       headers: {'X-CSRFToken': "{{csrf_token}}"},
+       success: function (data) {
+        alert("data inserted")
+         if (data.is_taken) {
+           alert("data already exists.");
+          }
+        },
+        error: function(jqxhr) {
+            alert(jqxhr.responseText); 
+        }    
     });
-}
+  }
+});
 </script>
  <!--
    <script src="{% static 'js/home.js' %}"></script>
