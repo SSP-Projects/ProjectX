@@ -48,7 +48,14 @@ class TicketForm(forms.Form):
 class UserForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = '__all__'
+        fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames']
+
+    form_type = forms.CharField( widget=forms.TextInput(attrs=
+        {
+            'id': 'type',
+            'type': 'hidden'
+        }
+    ))
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)

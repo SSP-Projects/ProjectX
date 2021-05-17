@@ -15,10 +15,10 @@
     </div>
     {% for employee in employees %}
     <div class="container-fluid row">
-        <h3 class="col-3">{{ employee.dni }}</h3>
-        <h3 class="col-8">{{ employee.name }} {{ employee.surname }}</h3>
+        <h3 id="DNI{{ forloop.counter }}" class="col-3">{{ employee.dni }}</h3>
+        <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
         <div class="container-fluid col-1">
-            <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario">R</button>
+            <button class="btn col-3" id="Button{{ forloop.counter }}" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario">R</button>
             <button class="btn col-3">V</button>
             <button class="btn col-3">D</button>
         </div>
@@ -40,8 +40,7 @@
                 <form method="POST">
                     {% csrf_token %}
                 <div class="container-fluid">
-                    
-                    
+                    {{ userForm.form_type }}
                     <div class="row">
                       <div class="col-4 text-center">Nombre</div>
                       <div class="col-4 text-center">Apellidos</div>
@@ -87,7 +86,7 @@
         $('#UserModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
-            console.log(button.parents)
+            document.getElementById("type").value = recipient
             var modal = $(this)
             modal.find('.modal-title').text(recipient)
         })

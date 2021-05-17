@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from . import forms
-from .models import Employee,Interaction
+from .models import Employee,Interaction, Center, User
 from django.core import serializers
 
 
@@ -47,26 +47,40 @@ def admin(request):
 
     if request.method == 'POST':
         form = forms.UserForm(request.POST)
-        print(form.errors)
+        
         if form.is_valid():
-            name = form.cleaned_data.get('name')
-            surname = form.cleaned_data.get('surname')
-            dni = form.cleaned_data.get('dni')
-            ss = form.cleaned_data.get('social_insurance')
-            phone = form.cleaned_data.get('phone')
-            email = form.cleaned_data.get('email')
 
-            employee = Employee()
-            employee.name = name
-            employee.surname = name
-            employee.ss_number = name
-            employee.name = name
-            employee.name = name
-            employee.name = name
+            formType = form.cleaned_data.get("form_type")
+            print(formType)
 
+            if formType == "Crear Usuario":
 
-            print(name)
-            return redirect('home')
+                name = form.cleaned_data.get('name')
+                surname = form.cleaned_data.get('surnames')
+                dni = form.cleaned_data.get('dni')
+                ss = form.cleaned_data.get('ss_number')
+                phone = form.cleaned_data.get('phone_number')
+                email = form.cleaned_data.get('email')
+
+                center = Center.objects.get(CIF='14231')
+                user = User.objects.create_user(email, name, dni)
+
+                employee = Employee()
+                employee.name = name
+                employee.user = user
+                employee.dni = dni
+                employee.center_id = center
+                employee.surnames = surname
+                employee.ss_number = ss
+                employee.phone_number = phone
+                employee.email = email
+                employee.professional_category = "Profesor"
+                
+                user.save()
+                employee.save()
+            else:
+                form.save()
+            return redirect('admin')
     
     employees = Employee.objects.all()
     userForm = forms.UserForm()
