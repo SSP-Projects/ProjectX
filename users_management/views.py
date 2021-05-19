@@ -86,7 +86,7 @@ def admin(request):
                 email = form.cleaned_data.get('email')
 
                 center = Center.objects.get(CIF='14231')
-                user = User.objects.create_user(email, name, dni)
+                user = User.objects.create_user(email, email, dni)
 
                 employee = Employee()
                 employee.name = name
