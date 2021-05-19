@@ -124,7 +124,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{{workingStatus}}</h5>
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -134,7 +134,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary">Confirmar</button>
+        <button id="confirmationButton" type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
       </div>
     </div>
   </div>
@@ -150,17 +150,15 @@ $(document).ready(function(){
   var workingStatus = '{{workingStatus}}';
   var textToShowInModal ="default"
   var data = {}
-  $('#exampleModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        //var recipient = button.data('whatever') // Extract info from data-* attributes
-        
-        var modal = $(this)
-        modal.find('.modal-title').text(textToShowInModal)
-        //modal.find('.modal-body input').val(recipient)
-    })
+  $('#confirmationModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            //var recipient = button.data('whatever') // Extract info from data-* attributes
+            //document.getElementById("type").value = recipient
+            var modal = $(this)
+            modal.find('.modal-title').text(textToShowInModal)
+        })
   $("#work-button").click(function() {
       if(workingStatus == "isntWorking"){
-          alert("Entras del trabajo")
           data = {
             'state' : 0,
             'interaction_type' : "work" ,              
@@ -169,13 +167,12 @@ $(document).ready(function(){
           textToShowInModal = "¿Entrar al trabajo?"
           //sendDataToDb(data);
       }else if(workingStatus == "working"){
-          alert("Has salido del trabajo")
           data = {
             'state' : 1,
             'interaction_type' : "work",             
           }
           workingStatus = "isntWorking"
-          textToShowInModal = "¿Entrar al trabajo?"
+          textToShowInModal = "¿Salir del trabajo?"
           //sendDataToDb(data);
       }else if(workingStatus == "breaking"){
           alert("No puedes salir del trabajo sin haber salido del descanso")
@@ -189,23 +186,27 @@ $(document).ready(function(){
       if(workingStatus == "isntWorking"){
           alert("No puedes entrar al descanso si no estas trabajando")
       }else if(workingStatus == "working"){
-          alert("Entras al descanso")
           data = {
             'state' : 0,
             'interaction_type' : "break",              
           }
           workingStatus = "breaking"
-          sendDataToDb(data);
+          textToShowInModal = "¿Entrar al descanso?"
+         
       }else if(workingStatus == "breaking"){
-          alert("Has salido del descanso")
           data = {
             'state' : 1,
             'interaction_type' : "break",                
           }
+          textToShowInModal = "¿Salir del descanso?"
           workingStatus = "working"
-          sendDataToDb(data);
+        
       }
   });
+  $("#confirmationButton").click(function() {
+    sendDataToDb(data)
+  });
+  
   function sendDataToDb(data){
     //
       console.log("valor del data-> "+ JSON.stringify((data)))      
@@ -215,13 +216,10 @@ $(document).ready(function(){
        data: data,
        headers: {'X-CSRFToken': "{{csrf_token}}"},
        success: function (data) {
-        alert("data inserted")
-         if (data.is_taken) {
-           alert("data already exists.");
-          }
+        alert("Correcto")
         },
         error: function(jqxhr) {
-            alert(jqxhr.responseText); 
+            alert("Error"); 
         }    
     });
   }

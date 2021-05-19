@@ -16,7 +16,10 @@ def home(request):
     #companies = json_serializer.serialize(Company.objects.all().order_by('id')[:5], ensure_ascii=False)
 
     username = ""
-    workingStatus = "isntWorking"
+    actual_employee =Employee.objects.get(user=request.user)
+    workingStatus = actual_employee.work_status
+    if workingStatus == "new":
+       workingStatus = "isntWorking" 
     app_tittle = "SIGNET"
     studycenter_name = "GMQ CENTER"
 
@@ -34,13 +37,26 @@ def postInteraction(request):
     print("dfishbfihdbufijbsfijku")
     if request.is_ajax and request.method == "POST":
         actual_employee =Employee.objects.get(user=request.user)
+        
+        state = request.POST['state']
+        interaction_type=request.POST['interaction_type']
         print("PRUEBARDA->"+request.POST['state'] )
         interaction=Interaction.objects.create(
-        state=request.POST['state'],
-        interaction_type=request.POST['interaction_type'],
+        state=state,
+        interaction_type=interaction_type,
         employee=actual_employee
         )
+        if interaction_type == "work" and state == 0:
+           actual_employee.work_status ="isWorking"
+        if interaction_type == "work" and state == 1:
+           actual_employee.work_status ="isntWorking"
+        if interaction_type == "break" and state == 0:
+           actual_employee.work_status ="breaking"
+        if interaction_type == "break" and state == 1:
+           actual_employee.work_status ="isWorking"
 
+
+        actual_employee.save()
         interaction.save()
         return redirect("/home/")
     else:
