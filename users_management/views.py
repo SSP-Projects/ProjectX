@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from . import forms
-from .models import Employee, Notification
-
+from .models import Employee, Interaction, Notification, Center, User
+from django.core import serializers
 
 def register(request):
     form = forms.RegisterForm()
@@ -34,3 +34,7 @@ def send_notification(request):
             if not current_user.is_superuser:
                 notification.receiver = request.user #TODO: get the admin of the system
             notification.save()
+    userForm = forms.UserForm()
+    employees = Employee.objects.all()
+
+    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm})

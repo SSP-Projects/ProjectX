@@ -46,8 +46,9 @@ class Employee(models.Model):
 class Notification(models.Model):
     sender                = models.OneToOneField(User, related_name='sender', on_delete=models.CASCADE)
     receiver              = models.OneToOneField(User, related_name='receiver', on_delete=models.CASCADE)
-    description           = models.CharField(max_length=500)
     notification_type     = models.CharField(max_length=50)
+    description           = models.CharField(max_length=500)
+    
 
 class Schedule(models.Model):
     entry_time            = models.TimeField()
