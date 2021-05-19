@@ -2,8 +2,11 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from . import forms
 import json
+from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, User
 from django.core import serializers
+
+last_user = None
 
 def register(request):
     form = forms.RegisterForm()
@@ -65,6 +68,7 @@ def postInteraction(request):
     # some error occured
 
 
+
 #@login_required(login_url='/accounts/login/')
 def admin(request):
 
@@ -74,20 +78,17 @@ def admin(request):
         if form.is_valid():
 
             formType = form.cleaned_data.get("form_type")
-            print(formType)
+            name = form.cleaned_data.get('name')
+            surname = form.cleaned_data.get('surnames')
+            dni = form.cleaned_data.get('dni')
+            ss = form.cleaned_data.get('ss_number')
+            phone = form.cleaned_data.get('phone_number')
+            email = form.cleaned_data.get('email')
 
             if formType == "Crear Usuario":
 
-                name = form.cleaned_data.get('name')
-                surname = form.cleaned_data.get('surnames')
-                dni = form.cleaned_data.get('dni')
-                ss = form.cleaned_data.get('ss_number')
-                phone = form.cleaned_data.get('phone_number')
-                email = form.cleaned_data.get('email')
-
-                center = Center.objects.get(CIF='14231')
+                center = Center.objects.get(CIF='A3424F23424')
                 user = User.objects.create_user(email, email, dni)
-
                 employee = Employee()
                 employee.name = name
                 employee.user = user
@@ -102,14 +103,43 @@ def admin(request):
                 user.save()
                 employee.save()
             else:
-                form.save()
+                employee = Employee.objects.get(dni=last_user.dni)
+                user = User.objects.get(username=last_user.email)
+
+                employee.name = name
+                employee.user = user
+                employee.dni = dni
+                employee.surnames = surname
+                employee.ss_number = ss
+                employee.phone_number = phone
+                employee.email = email
+
+                user.username = email
+                user.password = dni
+
+                employee.save()
+                user.save()
+
+
             return redirect('admin')
     
     employees = Employee.objects.all()
+    userForm = forms.UserForm()
+    app_tittle = "SIGNET"
     # employees[0].name = 'adawda'
     # employees[0].save()
     # employees = Employee.objects.get(name='oeoe')
-    return render(request, 'admin.html', context={'employees':employees})
+    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm, "app_tittle":app_tittle,})
+
+
+def getUser(request):
+    if request.is_ajax and request.method == "GET":
+        dni = request.GET['dni']
+        user = Employee.objects.get(dni=dni)
+        globals()['last_user'] = user
+        userJson = serializers.serialize('json', [ user, ])
+        return HttpResponse(userJson, content_type="application/json")
+    return redirect('/home')
 
 def send_notification(request):
     if request.method == 'POST':

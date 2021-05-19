@@ -84,9 +84,10 @@ class UserForm(forms.ModelForm):
         model = Employee
         fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames']
 
-    form_type = forms.CharField( widget=forms.TextInput(attrs=
+    form_type = forms.CharField( widget=forms.HiddenInput(attrs=
         {
             'id': 'type',
+            'class': 'form-control',
             'type': 'hidden'
         }
     ))

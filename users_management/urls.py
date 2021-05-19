@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^admin/', views.admin, name='admin'),
     url(r'^notification/', views.send_notification, name='send_notification'),
     url(r'^ajax/insert_job_interaction/',views.postInteraction, name='postInteraction'),
+    url(r'^ajax/get_user/',views.getUser, name='getUser'),
 ]
