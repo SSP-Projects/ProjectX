@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from . import forms
@@ -32,6 +33,12 @@ def home(request):
         "workingStatus": workingStatus
         
         })
+
+
+def getEmployeeInteractions(request):
+    actual_employee =Employee.objects.get(user=request.user)
+    employee_interactions = Interaction.objects.get(employee = actual_employee)
+    return HttpResponse()
 
 def postInteraction(request):
     print("dfishbfihdbufijbsfijku")

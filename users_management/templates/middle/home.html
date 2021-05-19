@@ -42,6 +42,7 @@
         <h4 class="col-4">Tipo</h4>
         <h4 class="col-4">Fecha</h4>
         <h4 class="col-4">Hora</h4>
+        <button id="refreshButton">RRRR</button>
         
     </div>
     <hr>
@@ -55,28 +56,6 @@
       {% endfor %}
 
     </section>
-    <section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4 ">
-        <div class="container-fluid background-blue border">
-            <div class="container-fluid row mx-1  py-2">
-                <h4 class="col-3">Tipo</h4>
-                <h4 class="col-3">Fecha</h4>
-                <h4 class="col-3">Hora</h4>
-                <h4 class="col-3">filtrar por</h4>
-
-            </div>
-            <hr>
-            <div id="register_container">
-                {% for i in '0123456789123131312313' %}
-                <div class="container-fluid background-grey font-black row m-1  py-1">
-                    <h5 class="col-3">Descanso</h5>
-                    <h5 class="col-3">05/05/2021</h5>
-                    <h5 class="col-3">19:56</h5>
-                    <h5 class="col-3"></h5>
-                </div>
-                {% endfor %}
-
-            </div>
-            <br>
 
             <!--{% for employee in employees %} 
     <div class="container-fluid row">
@@ -93,7 +72,7 @@
 
 
 
-    </section>
+
 
     <!--
   <div class=" col-sm-12 col-md-6 relative text-end m-4">
@@ -161,7 +140,6 @@ $(document).ready(function(){
             'state' : 0,
             'interaction_type' : "work" ,              
           }
-          workingStatus = "working"
           textToShowInModal = "¿Entrar al trabajo?"
           //sendDataToDb(data);
       }else if(workingStatus == "working"){
@@ -169,7 +147,6 @@ $(document).ready(function(){
             'state' : 1,
             'interaction_type' : "work",             
           }
-          workingStatus = "isntWorking"
           textToShowInModal = "¿Salir del trabajo?"
           //sendDataToDb(data);
       }else if(workingStatus == "breaking"){
@@ -188,7 +165,6 @@ $(document).ready(function(){
             'state' : 0,
             'interaction_type' : "break",              
           }
-          workingStatus = "breaking"
           textToShowInModal = "¿Entrar al descanso?"
          
       }else if(workingStatus == "breaking"){
@@ -197,8 +173,6 @@ $(document).ready(function(){
             'interaction_type' : "break",                
           }
           textToShowInModal = "¿Salir del descanso?"
-          workingStatus = "working"
-        
       }
   });
   $("#confirmationButton").click(function() {
@@ -221,6 +195,24 @@ $(document).ready(function(){
         }    
     });
   }
+
+  $("#refreshButton").click(function() {
+    $.ajax({
+       url: '/ajax/get_employee_job_interactions/',
+       type: 'GET',
+       dataType: 'json',
+       data: data,
+       headers: {'X-CSRFToken': "{{csrf_token}}"},
+       success: function (data) {
+        alert("Correcto")
+        },
+        error: function(jqxhr) {
+            alert("Error"); 
+        }    
+    });
+  });
+
+
 });
 </script>
  <!--
