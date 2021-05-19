@@ -2,16 +2,14 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from . import forms
 import json
-from .models import Employee, Interaction, Notification
+from .models import Employee, Interaction, Notification, Center, User
 from django.core import serializers
-
-
 
 def register(request):
     form = forms.RegisterForm()
     return render(request, 'register.html', context={'form': form})
 
-@login_required(login_url='/accounts/login/')
+#@login_required(login_url='/accounts/login/')
 def home(request):
 
     json_serializer = serializers.get_serializer("json")()
@@ -51,8 +49,46 @@ def postInteraction(request):
     # some error occured
 
 
-@login_required(login_url='/accounts/login/')
+#@login_required(login_url='/accounts/login/')
 def admin(request):
+
+    if request.method == 'POST':
+        form = forms.UserForm(request.POST)
+        
+        if form.is_valid():
+
+            formType = form.cleaned_data.get("form_type")
+            print(formType)
+
+            if formType == "Crear Usuario":
+
+                name = form.cleaned_data.get('name')
+                surname = form.cleaned_data.get('surnames')
+                dni = form.cleaned_data.get('dni')
+                ss = form.cleaned_data.get('ss_number')
+                phone = form.cleaned_data.get('phone_number')
+                email = form.cleaned_data.get('email')
+
+                center = Center.objects.get(CIF='14231')
+                user = User.objects.create_user(email, name, dni)
+
+                employee = Employee()
+                employee.name = name
+                employee.user = user
+                employee.dni = dni
+                employee.center_id = center
+                employee.surnames = surname
+                employee.ss_number = ss
+                employee.phone_number = phone
+                employee.email = email
+                employee.professional_category = "Profesor"
+                
+                user.save()
+                employee.save()
+            else:
+                form.save()
+            return redirect('admin')
+    
     employees = Employee.objects.all()
     # employees[0].name = 'adawda'
     # employees[0].save()
@@ -69,3 +105,6 @@ def send_notification(request):
             if not current_user.is_superuser:
                 notification.receiver = request.user #TODO: get the admin of the system
             notification.save()
+    userForm = forms.UserForm()
+
+    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm})
