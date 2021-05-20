@@ -93,3 +93,6 @@
   .ml-3 {
     margin-left: 3%;
   }
+  #refreshButton{
+    max-width: 60px !important;
+  }
