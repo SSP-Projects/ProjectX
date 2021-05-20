@@ -158,5 +158,5 @@ def send_notification(request):
                 notification.receiver = request.user #TODO: get the admin of the system
             notification.save()
     userForm = forms.UserForm()
-
+    employees = Employee.objects.all()
     return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm})
