@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^notification/', views.send_notification, name='send_notification'),
     url(r'^ajax/insert_job_interaction/',views.postInteraction, name='postInteraction'),
     url(r'^ajax/get_user/',views.getUser, name='getUser'),
+    url(r'^ajax/delete_user/',views.delete_user, name='delete_user'),
 ]

@@ -37,7 +37,6 @@ def home(request):
         })
 
 def postInteraction(request):
-    print("dfishbfihdbufijbsfijku")
     if request.is_ajax and request.method == "POST":
         actual_employee =Employee.objects.get(user=request.user)
         
@@ -126,9 +125,6 @@ def admin(request):
     employees = Employee.objects.all()
     userForm = forms.UserForm()
     app_tittle = "SIGNET"
-    # employees[0].name = 'adawda'
-    # employees[0].save()
-    # employees = Employee.objects.get(name='oeoe')
     return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm, "app_tittle":app_tittle,})
 
 
@@ -139,7 +135,17 @@ def getUser(request):
         globals()['last_user'] = user
         userJson = serializers.serialize('json', [ user, ])
         return HttpResponse(userJson, content_type="application/json")
-    return redirect('/home')
+    return None
+
+def delete_user(request):
+    if request.is_ajax and request.method == "POST":
+        dni = request.POST['dni']
+        employee = Employee.objects.get(dni=dni)
+        user = employee.user
+        user.is_active = False
+        user.save()
+    return redirect('/admin/')
+
 
 def send_notification(request):
     if request.method == 'POST':
