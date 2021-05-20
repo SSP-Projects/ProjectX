@@ -19,7 +19,7 @@
     </div>
     <div class="col-6">
       <a href="#">
-        <button id="break-button" class="big-button" data-toggle="modal" data-target="#confirmationModal">descanso</button>
+        <button id="break-button" class="big-button" data-toggle="modal" data-target="#confirmationModal" disabled="true">descanso</button>
       </a>
     </div>
   </section>
@@ -39,22 +39,16 @@
 <section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4 ">
   <div class="container-fluid background-blue  border">
     <div class="container-fluid row mx-1  py-2">
-        <h4 class="col-4">Tipo</h4>
-        <h4 class="col-4">Fecha</h4>
-        <h4 class="col-4">Hora</h4>
-        <button id="refreshButton">RRRR</button>
+        <h4 class="col-3">Tipo</h4>
+        <h4 class="col-3">Fecha</h4>
+        <h4 class="col-3">Hora</h4>
+        <img class="col-3" id="refreshButton" src="{% static 'media/images/refresh_button.png' %}"  alt="refresh">
         
     </div>
     <hr>
     <div id="register_container">
-      {% for i in '0123456789123131312313' %}
-      <div  class="container-fluid background-grey font-black row m-1  py-1">
-        <h5 class="col-4">Descanso</h5>
-        <h5 class="col-4">05/05/2021</h5>
-        <h5 class="col-4">19:56</h5>
-      </div>
-      {% endfor %}
 
+    </div>
     </section>
 
             <!--{% for employee in employees %} 
@@ -68,7 +62,6 @@
         </div>
     </div>
      {% endfor %}-->
-        </div>
 
 
 
@@ -127,6 +120,14 @@ $(document).ready(function(){
   var workingStatus = '{{workingStatus}}';
   var textToShowInModal ="default"
   var data = {}
+  if(workingStatus == "isntWorking"){
+            $("#break-button" ).prop('disabled', true)
+  }else if(workingStatus == "isWorking"){
+              $("#break-button" ).prop('disabled', false)
+  }else if(workingStatus == "breaking"){
+              $("#work-button" ).prop('disabled', true)
+  }
+
   $('#confirmationModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             //var recipient = button.data('whatever') // Extract info from data-* attributes
@@ -141,13 +142,16 @@ $(document).ready(function(){
             'interaction_type' : "work" ,              
           }
           textToShowInModal = "¿Entrar al trabajo?"
+
+         
           //sendDataToDb(data);
-      }else if(workingStatus == "working"){
+      }else if(workingStatus == "isWorking"){
           data = {
             'state' : 1,
             'interaction_type' : "work",             
           }
           textToShowInModal = "¿Salir del trabajo?"
+          $("#break-button" ).prop('disabled', false)
           //sendDataToDb(data);
       }else if(workingStatus == "breaking"){
           alert("No puedes salir del trabajo sin haber salido del descanso")
@@ -160,7 +164,7 @@ $(document).ready(function(){
 
       if(workingStatus == "isntWorking"){
           alert("No puedes entrar al descanso si no estas trabajando")
-      }else if(workingStatus == "working"){
+      }else if(workingStatus == "isWorking"){
           data = {
             'state' : 0,
             'interaction_type' : "break",              
@@ -177,6 +181,8 @@ $(document).ready(function(){
   });
   $("#confirmationButton").click(function() {
     sendDataToDb(data)
+
+
   });
   
   function sendDataToDb(data){
@@ -189,6 +195,7 @@ $(document).ready(function(){
        headers: {'X-CSRFToken': "{{csrf_token}}"},
        success: function (data) {
         alert("Correcto")
+       
         },
         error: function(jqxhr) {
             alert("Error"); 
@@ -204,15 +211,54 @@ $(document).ready(function(){
        data: data,
        headers: {'X-CSRFToken': "{{csrf_token}}"},
        success: function (data) {
-        alert("Correcto")
+        $("#register_container").empty()
+        data.forEach(interaction => {
+          //RESOLV FIELDS
+
+          date = new Date(interaction.fields.date_time);
+          year = date.getFullYear();
+          month = date.getMonth()+1;
+          dt = date.getDate();
+
+          if (dt < 10) {
+            dt = '0' + dt;
+          }
+          if (month < 10) {
+            month = '0' + month;
+          }
+          datetimeResolved = year+'-' + month + '-'+dt
+
+          interactionTypeResolved = ""
+          if(interaction.fields.interaction_type == "work"){
+            interactionTypeResolved ="Trabajo"
+          }else{
+            interactionTypeResolved ="Descanso"
+          }
+
+          stateResolved = ""
+          if(interaction.fields.state == 0){
+            stateResolved ="Entrada"
+          }else{
+            stateResolved ="Salida"
+          }
+          
+          $("#register_container").append(` 
+            <div  class="container-fluid background-grey font-black row m-1  py-1">
+              <h5 class="col-3">`+datetimeResolved+`</h5>
+              <h5 class="col-3">`+stateResolved+`</h5>
+              <h5 class="col-3">`+interactionTypeResolved+`</h5> 
+            </div>`
+          );
+
+        });
         },
         error: function(jqxhr) {
-            alert("Error"); 
+            alert("Error refreshing"); 
         }    
     });
   });
 
-
+  $("#refreshButton").click()
 });
 </script>
  <!--

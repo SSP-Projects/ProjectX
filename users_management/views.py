@@ -13,7 +13,7 @@ def register(request):
     form = forms.RegisterForm()
     return render(request, 'register.html', context={'form': form})
 
-#@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def home(request):
 
     json_serializer = serializers.get_serializer("json")()
@@ -22,6 +22,7 @@ def home(request):
     username = ""
     actual_employee =Employee.objects.get(user=request.user)
     workingStatus = actual_employee.work_status
+    print("WORKUING STATUS"+workingStatus)
     if workingStatus == "new":
        workingStatus = "isntWorking" 
     app_tittle = "SIGNET"
@@ -40,11 +41,13 @@ def home(request):
 
 def getEmployeeInteractions(request):
     actual_employee =Employee.objects.get(user=request.user)
-    employee_interactions = Interaction.objects.get(employee = actual_employee)
-    return HttpResponse()
-
+    employee_interactions = Interaction.objects.filter(employee = actual_employee)
+    
+    interactions_json = serializers.serialize('json',employee_interactions)
+    return HttpResponse(interactions_json, content_type="application/json")
+   
 def postInteraction(request):
-    print("dfishbfihdbufijbsfijku")
+    
     if request.is_ajax and request.method == "POST":
         actual_employee =Employee.objects.get(user=request.user)
         
@@ -56,6 +59,8 @@ def postInteraction(request):
         interaction_type=interaction_type,
         employee=actual_employee
         )
+  
+        state = int(state)    
         if interaction_type == "work" and state == 0:
            actual_employee.work_status ="isWorking"
         if interaction_type == "work" and state == 1:
@@ -64,7 +69,6 @@ def postInteraction(request):
            actual_employee.work_status ="breaking"
         if interaction_type == "break" and state == 1:
            actual_employee.work_status ="isWorking"
-
 
         actual_employee.save()
         interaction.save()
