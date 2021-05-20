@@ -39,7 +39,7 @@ def home(request):
 def postInteraction(request):
     print("dfishbfihdbufijbsfijku")
     if request.is_ajax and request.method == "POST":
-        actual_employee =Employee.objects.get(user=request.user)
+        actual_employee = Employee.objects.get(user=request.user)
         
         state = request.POST['state']
         interaction_type=request.POST['interaction_type']
@@ -135,22 +135,39 @@ def admin(request):
 def getUser(request):
     if request.is_ajax and request.method == "GET":
         dni = request.GET['dni']
+        print(dni)
         user = Employee.objects.get(dni=dni)
         globals()['last_user'] = user
         userJson = serializers.serialize('json', [ user, ])
         return HttpResponse(userJson, content_type="application/json")
     return redirect('/home')
 
+def staff_send_notification(request):
+    if request.is_ajax and request.method == "POST":
+        current_user = request.user
+        dnis = request.POST['dnis']
+        notification_type = request.POST['not_type']
+        notification_desc = request.POST['not_desc']
+        for dni in dnis:
+            a = Notification()
+            a.sender = current_user
+            a.receiver = Employee.objects.get(dni=dni)
+            a.notification_type = notification_type
+            a.description = notification_desc
+            a.save()
+    return HttpResponse(code=200)
+
 def send_notification(request):
-    if request.method == 'POST':
-        form = forms.NotificationForm(request.POST) 
-        if form.is_valid():
-            current_user = request.user
-            notification = form.save(commit=False)
-            notification.sender = request.user
-            if not current_user.is_superuser:
-                notification.receiver = request.user #TODO: get the admin of the system
-            notification.save()
-    userForm = forms.UserForm()
-    employees = Employee.objects.all()
-    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm})
+    if request.is_ajax and request.method == "POST":
+        current_user = request.user
+        admins = Employee.objects.filter(is_staff=True)
+        notification_type = request.POST['not_type']
+        notification_desc = request.POST['not_desc']
+        for admin in admins:
+            a = Notification()
+            a.sender = current_user
+            a.receiver = admin
+            a.notification_type = notification_type
+            a.description = notification_desc
+            a.save()
+    return HttpResponse(code=200)

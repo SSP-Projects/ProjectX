@@ -5,17 +5,26 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+        <div>
+            <button class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
+            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+        </div>
     </div>
 </nav>
 <div class="container-fluid">
-    <div class="container-fluid row">
-        <h3 class="col-3">DNI</h3>
+    <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
+        <div class="form-check col-1 justify-content-center align-items-center">
+            <input class="select_all form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." onclick="changeAll()">
+        </div>
+        <h3 class="col-2">DNI</h3>
         <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
     </div>
     {% for employee in employees %}
-    <div class="container-fluid row">
-        <h3 id="DNI{{ forloop.counter }}" class="col-3">{{ employee.dni }}</h3>
+    <div class="container-fluid row justify-content-center align-items-center">
+        <div class="form-check col-1 justify-content-center align-items-center">
+            <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+        </div>
+        <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
         <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
         <div class="container-fluid col-1" name="prueba">
             <button class="btn col-3" id="Button{{ forloop.counter }}" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario">R</button>
@@ -35,78 +44,85 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <form method="POST">
                     {% csrf_token %}
-                <div class="container-fluid">
-                    {{ userForm.form_type }}
-                    <div class="row">
-                      <div class="col-4 text-center">Nombre</div>
-                      <div class="col-4 text-center">Apellidos</div>
-                      <div class="col-4 text-center">DNI</div>
+                    <div class="container-fluid">
+                        {{ userForm.form_type }}
+                        <div class="row">
+                            <div class="col-4 text-center">Nombre</div>
+                            <div class="col-4 text-center">Apellidos</div>
+                            <div class="col-4 text-center">DNI</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-center">{{ userForm.name }}</div>
+                            <div class="col-4 text-center">{{ userForm.surnames }}</div>
+                            <div class="col-4 text-center">{{ userForm.dni }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-center">Nº SS</div>
+                            <div class="col-4 text-center">Teléfono</div>
+                            <div class="col-4 text-center">E-Mail</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-center">{{ userForm.ss_number }}</div>
+                            <div class="col-4 text-center">{{ userForm.phone_number }}</div>
+                            <div class="col-4 text-center">{{ userForm.email }}</div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="">FIRMA</div>
+                        </div>
+                        <div class="row form-group text-center">
+
+                        </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-center">{{ userForm.name }}</div>
-                        <div class="col-4 text-center">{{ userForm.surnames }}</div>
-                        <div class="col-4 text-center">{{ userForm.dni }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 text-center">Nº SS</div>
-                        <div class="col-4 text-center">Teléfono</div>
-                        <div class="col-4 text-center">E-Mail</div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-center">{{ userForm.ss_number }}</div>
-                        <div class="col-4 text-center">{{ userForm.phone_number }}</div>
-                        <div class="col-4 text-center">{{ userForm.email }}</div>
-                    </div>
-                    <div class="row text-center">
-                      <div class="">FIRMA</div>
-                    </div>
-                    <div class="row form-group text-center">
-                        
-                    </div>
-                  </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Confirmar</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
             </div>
-        </form>
+            </form>
         </div>
     </div>
 </div>
 
-{% endblock body %}
+{% endblock body %} {% block extra_scripts %}
+<script>
+    function changeAll() {
+        state = document.getElementsByClassName('select_all')[0].checked;
+        checkboxes = document.getElementsByClassName('select_user');
+        Array.from(checkboxes).forEach(checkbox => checkbox.checked = state);
+    }
+</script>
+<script>
+    $('#UserModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        var dni = button.parents()[0].parentNode.childNodes[3].innerText;
 
-{% block extra_scripts %}
-    <script>
-        $('#UserModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            var dni = button.parents()[0].parentNode.childNodes[1].innerText;
+        var data = {
+            "dni": dni
+        }
 
-            var data = {
-                "dni": dni
-            }
-
-            if (recipient === "Crear Usuario"){
-                document.getElementById("id_name").value = ""
-                document.getElementById("id_surnames").value = ""
-                document.getElementById("id_dni").value = ""
-                document.getElementById("id_ss_number").value = "" 
-                document.getElementById("id_phone_number").value = ""
-                document.getElementById("id_email").value = ""
-            }else{
-                $.ajax({
+        if (recipient === "Crear Usuario") {
+            document.getElementById("id_name").value = ""
+            document.getElementById("id_surnames").value = ""
+            document.getElementById("id_dni").value = ""
+            document.getElementById("id_ss_number").value = ""
+            document.getElementById("id_phone_number").value = ""
+            document.getElementById("id_email").value = ""
+        } else {
+            $.ajax({
                 url: '/ajax/get_user/',
                 type: 'GET',
                 dataType: "json",
                 data: data,
-                headers: {'X-CSRFToken': "{{csrf_token}}"},
-                success: function (data) {
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
                     document.getElementById("id_name").value = data[0].fields.name
                     document.getElementById("id_surnames").value = data[0].fields.surnames
                     document.getElementById("id_dni").value = data[0].fields.dni
@@ -115,15 +131,12 @@
                     document.getElementById("id_phone_number").value = data[0].fields.phone_number
                     document.getElementById("id_email").value = data[0].fields.email
                 },
-                error: function(jqxhr) {
-                }    
-             });
-            }
-            document.getElementById("type").value = recipient
-            var modal = $(this)
-            modal.find('.modal-title').text(recipient)
-        })
-
-        
-    </script>
+                error: function(jqxhr) {}
+            });
+        }
+        document.getElementById("type").value = recipient
+        var modal = $(this)
+        modal.find('.modal-title').text(recipient)
+    })
+</script>
 {% endblock %}
