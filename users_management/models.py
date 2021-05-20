@@ -33,7 +33,7 @@ class Center(models.Model):
 
 class Employee(models.Model):
     user                  = models.OneToOneField(User, on_delete=models.CASCADE)
-    center_id             = models.OneToOneField(Center, on_delete=models.CASCADE)
+    center_id             = models.ForeignKey(Center, on_delete=models.CASCADE)
     dni                   = models.CharField(max_length=9)
     ss_number             = models.CharField(max_length=12, validators=[RegexValidator(r'^\d{1,10}$')])
     professional_category = models.CharField(max_length=20) 
@@ -42,6 +42,7 @@ class Employee(models.Model):
     email                 = models.EmailField()
     name                  = models.CharField(max_length=30)
     surnames              = models.CharField(max_length=120)
+    work_status           = models.CharField(max_length=20)
 
 class Notification(models.Model):
     sender                = models.OneToOneField(User, related_name='sender', on_delete=models.CASCADE)
@@ -63,3 +64,4 @@ class Interaction(models.Model):
     date_time             = models.DateTimeField(auto_now=True)
     state                 = models.IntegerField(choices=States.choices)
     interaction_type      = models.CharField(max_length=20)
+    employee              = models.ForeignKey(Employee, on_delete=models.CASCADE)
