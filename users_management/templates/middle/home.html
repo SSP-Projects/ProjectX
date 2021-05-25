@@ -7,20 +7,21 @@
 
 {% endblock %}
 
-{% block body %}   
-<section class="container-fluid d-flex flex-wrap my-5">
+{% block body %}
+   
+<section class="container-fluid d-flex flex-wrap my-4">
 
 <section id="top_section " class="container-fluid d-flex justify-content-end flex-wrap ">
   <section class="col-5 container-fluid  d-flex flex-wrap mx-5">
-    <div class="col-6">
-      <a href="#">
-      <button id="work-button" class="big-button" data-toggle="modal" data-target="#confirmationModal">trabajo</button>
-      </a>
+    <div class="col-6 align-middle  d-flex"style="align-items:center;">
+
+        <button id="work-button" class="btn btn-success rounded-circle w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="work-button-img"></button>
+      <!--<button id="work-button" class="big-button" data-toggle="modal" data-target="#confirmationModal">trabajo</button>-->
+
     </div>
-    <div class="col-6">
-      <a href="#">
-        <button id="break-button" class="big-button" data-toggle="modal" data-target="#confirmationModal" disabled="true">descanso</button>
-      </a>
+    <div class="col-6 align-middle  d-flex"style="align-items:center;">
+        <button id="break-button" class="btn btn-success rounded-circle w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="break-button-img"></button>
+       <!-- <button id="break-button" class="big-button" data-toggle="modal" data-target="#confirmationModal" disabled="true">descanso</button>-->
     </div>
   </section>
   <!--MANDADOR DE TICKETS-->
@@ -38,57 +39,39 @@
 </section>
 <section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4 ">
   <div class="container-fluid background-blue  border">
-    <div class="container-fluid row mx-1  py-2">
-        <h4 class="col-3">Tipo</h4>
-        <h4 class="col-3">Fecha</h4>
-        <h4 class="col-3">Hora</h4>
-        <img class="col-3" id="refreshButton" src="{% static 'media/images/refresh_button.png' %}"  alt="refresh">
+    <div class="container-fluid row mx-1  py-2 ">
+        <h4 class="col-3 my-0">Tipo</h4>
+        <h4 class="col-3 my-0">Acción</h4>
+        <h4 class="col-3 my-0">Hora</h4>
+        <div class="col-3 container-fluid row">
+          <h4 class="col-10 my-0">Fecha</h4>
+          <!--
+            <img class="col-2" id="refreshButton" src="{% static 'media/images/refresh_button.png' %}"  alt="refresh">
+            
+          -->
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+        <a class="col-2" href="#" id="#refreshButton">
+          <lord-icon
+             
+              src="https://cdn.lordicon.com/krmfspeu.json"
+              trigger="click"
+              colors="primary:#16a9c7,secondary:#86c716"
+              stroke="68"
+              scale="60"
+              axis-x="49"
+              style="width:60px;height:40px">
+          </lord-icon>
+        </a>
+        </div>
         
     </div>
     <hr>
     <div id="register_container">
 
     </div>
-    </section>
-
-            <!--{% for employee in employees %} 
-    <div class="container-fluid row">
-        <h3 class="col-3">{{ employee.dni }}</h3>
-        <h3 class="col-8">{{ employee.name }} {{ employee.surname }}</h3>
-        <div class="container-fluid col-1">
-            <button class="btn col-3" data-toggle="modal" data-target="#createUserModal" data-whatever="Editar Usuario">R</button>
-            <button class="btn col-3">V</button>
-            <button class="btn col-3">D</button>
-        </div>
-    </div>
-     {% endfor %}-->
-
-
-
-
-
-    <!--
-  <div class=" col-sm-12 col-md-6 relative text-end m-4">
-    <a href="#">
-        <img class="blur borderR-20px" src="{% static 'media/images/enter_work_background.png' %}" alt="enter_work_background">
-        <div class="image_text ">
-           <h5 class="pr-3 pl-3 mb-2 mx-5">ENTRAR TRABAJO</h5>
-  
-        </div>
-    </a>
   </div>
+</section>
 
-
-    <div class=" col-sm-12 col-md-6 relative text-end m-4">
-    <a href="#">
-        <img class="blur borderR-20px" src="" alt="">
-        <div class="image_text ">
-           <h5 class="pr-3 pl-3 mb-2 mx-5">hkk</h5>
-        </div>
-    </a>
-  </div>
-
--->
     <!-- Modal -->
 <!-- Button trigger modal -->
 <!-- Modal -->
@@ -116,16 +99,34 @@
 {% block extra_scripts %}
 <script>
 $(document).ready(function(){
-  
+  $('#confirmationButtonSuccess').click(function() {
+    location.reload();
+  })
+  $('#confirmationButtonError').click(function() {
+    location.reload();
+  })
   var workingStatus = '{{workingStatus}}';
   var textToShowInModal ="default"
   var data = {}
   if(workingStatus == "isntWorking"){
             $("#break-button" ).prop('disabled', true)
+            $("#work-button-img").prop('src', "{% static 'media/images/enter_work_icon.png' %}")
+            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_icon.png' %}")
+            $("#work-button" ).prop('title',"Entrar al trabajo")
+            $("#break-button" ).prop('title',"No puedes entrar al descanso sin haber entrado al trabajo")
   }else if(workingStatus == "isWorking"){
               $("#break-button" ).prop('disabled', false)
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_icon.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_break_icon.png' %}")
+              $("#work-button" ).prop('title',"Salir del trabajo")
+              $("#break-button" ).prop('title',"Entrar al descanso")
   }else if(workingStatus == "breaking"){
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_icon.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_work_icon.png' %}")
+              $("#work-button" ).prop('title',"No puedes salir del trabajo sin haber salido del descanso")
+              $("#break-button" ).prop('title',"Salir del descanso")
               $("#work-button" ).prop('disabled', true)
+              $("#break-button" ).prop('disabled', false)
   }
 
   $('#confirmationModal').on('show.bs.modal', function (event) {
@@ -194,16 +195,37 @@ $(document).ready(function(){
        data: data,
        headers: {'X-CSRFToken': "{{csrf_token}}"},
        success: function (data) {
-        alert("Correcto")
-       
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Guardado, ¡gracias!',
+            showConfirmButton: false,
+            timer: 1500,
+            backdrop: `
+              rgba(80,80,80,0.4)
+            `
+          })
+          .then(()=> location.reload());
+          
         },
         error: function(jqxhr) {
-            alert("Error"); 
+   
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡Algo ha salido mal!',
+            footer: '<a href>¿Porque he tenido este problema?</a>',
+            backdrop: `
+              rgba(0,0,123,0.4)
+            `
+          })
+          .then(()=> location.reload());
         }    
     });
   }
+//GET DE LAS INTERACCIONES
+function refreshInteractions(){
 
-  $("#refreshButton").click(function() {
     $.ajax({
        url: '/ajax/get_employee_job_interactions/',
        type: 'GET',
@@ -214,7 +236,7 @@ $(document).ready(function(){
         $("#register_container").empty()
         data.forEach(interaction => {
           //RESOLV FIELDS
-
+         
           date = new Date(interaction.fields.date_time);
           year = date.getFullYear();
           month = date.getMonth()+1;
@@ -226,7 +248,8 @@ $(document).ready(function(){
           if (month < 10) {
             month = '0' + month;
           }
-          datetimeResolved = year+'-' + month + '-'+dt
+          dateResolved = year+'-' + month + '-'+dt
+          timeResolved = date.toLocaleTimeString('es-ES')
 
           interactionTypeResolved = ""
           if(interaction.fields.interaction_type == "work"){
@@ -237,16 +260,19 @@ $(document).ready(function(){
 
           stateResolved = ""
           if(interaction.fields.state == 0){
-            stateResolved ="Entrada"
+            stateResolved = "Entrada"
           }else{
-            stateResolved ="Salida"
+            stateResolved = "Salida"
           }
           
           $("#register_container").append(` 
             <div  class="container-fluid background-grey font-black row m-1  py-1">
-              <h5 class="col-3">`+datetimeResolved+`</h5>
-              <h5 class="col-3">`+stateResolved+`</h5>
               <h5 class="col-3">`+interactionTypeResolved+`</h5> 
+              <h5 class="col-3">`+stateResolved+`</h5>
+              <h5 class="col-3">`+timeResolved+`</h5>
+              <div class="col-3 container-fluid row">
+                <h5 class="col-10">`+dateResolved+`</h5>
+              </div>
             </div>`
           );
 
@@ -256,10 +282,11 @@ $(document).ready(function(){
             alert("Error refreshing"); 
         }    
     });
+  }
+  refreshInteractions()
   });
+ 
 
-  $("#refreshButton").click()
-});
 </script>
  <!--
    <script src="{% static 'js/home.js' %}"></script>
