@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^ajax/insert_job_interaction/',views.postInteraction, name='postInteraction'),
     url(r'^ajax/get_employee_job_interactions/',views.getEmployeeInteractions, name='getEmployeeInteractions'),
     url(r'^ajax/get_user/',views.getUser, name='getUser'),
-    url(r'^ajax/notification_ad', views.staff_send_notification, name='sendNotificationAd'),
-    url(r'^ajax/notification', views.send_notification, name='sendNotification')
+    url(r'^ajax/notification_ad/', views.staff_send_notification, name='sendNotificationAd'),
+    url(r'^ajax/notification/', views.send_notification, name='sendNotification'),
+    url(r'^ajax/delete_user/',views.delete_user, name='delete_user'),
 ]

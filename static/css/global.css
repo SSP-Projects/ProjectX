@@ -14,6 +14,7 @@ body{
 .header_background{
   background: rgb(0,149,226);
   background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
+  color: white;
 }
 .background-blue {
   background-color:#4b566d;

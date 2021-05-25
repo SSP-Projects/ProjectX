@@ -29,7 +29,7 @@
     <div class="border text-center p-3  background-blue" style="width: 100%;">
         <h3>INFORMAR</h3>
         <hr>
-        <form action="{% url 'send_notification' %}" method="post">
+        <form action="{% url 'sendNotification' %}" method="post">
             {% csrf_token %} {{ form }}
             <hr>
             <input class="btn btn-info" type="submit" value="Enviar al administrador">

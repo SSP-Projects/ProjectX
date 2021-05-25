@@ -26,7 +26,7 @@ def home(request):
     if workingStatus == "new":
        workingStatus = "isntWorking" 
     app_tittle = "SIGNET"
-    studycenter_name = "GMQ CENTER"
+    studycenter_name = "GMQ TECH"
 
     form = forms.NotificationForm()
     return render(request, 'middle/home.html', context={
@@ -136,11 +136,14 @@ def admin(request):
     
     employees = Employee.objects.all()
     userForm = forms.UserForm()
-    app_tittle = "SIGNET"
-    # employees[0].name = 'adawda'
-    # employees[0].save()
-    # employees = Employee.objects.get(name='oeoe')
-    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm, "app_tittle":app_tittle,})
+    app_tittle = 'SIGNET'
+    studycenter_name = 'GMQ TECH'
+    return render(request, 'admin.html', context={
+        'employees':employees,
+        'studycenter_name':studycenter_name,
+        'userForm' : userForm,
+        'app_tittle':app_tittle,
+        })
 
 
 def getUser(request):
@@ -151,7 +154,17 @@ def getUser(request):
         globals()['last_user'] = user
         userJson = serializers.serialize('json', [ user, ])
         return HttpResponse(userJson, content_type="application/json")
-    return redirect('/home')
+    return None
+
+def delete_user(request):
+    if request.is_ajax and request.method == "POST":
+        dni = request.POST['dni']
+        employee = Employee.objects.get(dni=dni)
+        user = employee.user
+        user.is_active = False
+        user.save()
+    return redirect('/admin/')
+
 
 def staff_send_notification(request):
     if request.is_ajax and request.method == "POST":

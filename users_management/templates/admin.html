@@ -20,19 +20,47 @@
         <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
     </div>
     {% for employee in employees %}
-    <div class="container-fluid row justify-content-center align-items-center">
-        <div class="form-check col-1 justify-content-center align-items-center">
-            <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
-        </div>
-        <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
-        <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
-        <div class="container-fluid col-1" name="prueba">
-            <button class="btn col-3" id="Button{{ forloop.counter }}" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario">R</button>
-            <button class="btn col-3">V</button>
-            <button class="btn col-3">D</button>
-        </div>
-    </div>
+        {% if employee.user.is_active == True %}
+            {% if forloop.counter|divisibleby:2 %}
+                <div class="container-fluid row bg-white">
+            {% else %}
+                <div class="container-fluid row bg-light">
+            {% endif %}
+                    <div class="form-check col-1 justify-content-center align-items-center">
+                        <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                    </div>
+                    <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
+                    <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
+                    <div class="container-fluid col-1" name="prueba">
+                        <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i class="fas fa-user-edit"></i></button>
+                        <button class="btn col-3"><i class="fas fa-clipboard-list"></i></button>
+                        <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+        {% endif %}
+    {% empty %}
+        <h1>No hay empleados.</h1>
     {% endfor %}
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">¿Seguro que quieres borrar este usuario?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <h3 id="userToDelete"></h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal fade bd-example-modal-lg" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
@@ -88,55 +116,95 @@
     </div>
 </div>
 
-{% endblock body %} {% block extra_scripts %}
-<script>
-    function changeAll() {
-        state = document.getElementsByClassName('select_all')[0].checked;
-        checkboxes = document.getElementsByClassName('select_user');
-        Array.from(checkboxes).forEach(checkbox => checkbox.checked = state);
-    }
-</script>
-<script>
-    $('#UserModal').on('show.bs.modal', function(event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var recipient = button.data('whatever') // Extract info from data-* attributes
-        var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-
-        var data = {
-            "dni": dni
+{% endblock body %} 
+{% block extra_scripts %}
+    <script>
+        function changeAll() {
+            state = document.getElementsByClassName('select_all')[0].checked;
+            checkboxes = document.getElementsByClassName('select_user');
+            Array.from(checkboxes).forEach(checkbox => checkbox.checked = state);
         }
 
-        if (recipient === "Crear Usuario") {
-            document.getElementById("id_name").value = ""
-            document.getElementById("id_surnames").value = ""
-            document.getElementById("id_dni").value = ""
-            document.getElementById("id_ss_number").value = ""
-            document.getElementById("id_phone_number").value = ""
-            document.getElementById("id_email").value = ""
-        } else {
+        var dniToDisable = {};
+
+        $('#UserModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+            console.log("Hola", dni);
+            console.log("hola");
+
+            var data = {
+                "dni": dni
+            }
+
+            if (recipient === "Crear Usuario"){
+                document.getElementById("id_name").value = "";
+                document.getElementById("id_surnames").value = "";
+                document.getElementById("id_dni").value = "";
+                document.getElementById("id_ss_number").value = "" ;
+                document.getElementById("id_phone_number").value = "";
+                document.getElementById("id_email").value = "";
+            }else{
+                $.ajax({
+                url: '/ajax/get_user/',
+                type: 'GET',
+                dataType: "json",
+                data: data,
+                headers: {'X-CSRFToken': "{{csrf_token}}"},
+                success: function (data) {
+                    document.getElementById("id_name").value = data[0].fields.name;
+                    document.getElementById("id_surnames").value = data[0].fields.surnames;
+                    document.getElementById("id_dni").value = data[0].fields.dni;
+                    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
+                    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
+                    document.getElementById("id_email").value = data[0].fields.email;
+                },
+                error: function(jqxhr) {
+                }    
+             });
+            }
+            document.getElementById("type").value = recipient
+            var modal = $(this)
+            modal.find('.modal-title').text(recipient)
+        })
+
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) 
+            var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+            var data = {
+                "dni": dni
+            }
+
             $.ajax({
                 url: '/ajax/get_user/',
                 type: 'GET',
                 dataType: "json",
                 data: data,
-                headers: {
-                    'X-CSRFToken': "{{csrf_token}}"
+                headers: {'X-CSRFToken': "{{csrf_token}}"},
+                success: function (data) {
+                    $("#userToDelete").text(data[0].fields.name + " " + data[0].fields.surnames); 
                 },
-                success: function(data) {
-                    document.getElementById("id_name").value = data[0].fields.name
-                    document.getElementById("id_surnames").value = data[0].fields.surnames
-                    document.getElementById("id_dni").value = data[0].fields.dni
-                    document.getElementById("id_dni").enable = false
-                    document.getElementById("id_ss_number").value = data[0].fields.ss_number
-                    document.getElementById("id_phone_number").value = data[0].fields.phone_number
-                    document.getElementById("id_email").value = data[0].fields.email
+                error: function(jqxhr) {
+                }    
+             });
+
+            dniToDisable = data;
+        });
+
+        $("#confirmationButton").click(function() {
+            $.ajax({
+                url: '/ajax/delete_user/',
+                type: 'POST',
+                data: dniToDisable,
+                headers: {'X-CSRFToken': "{{csrf_token}}"},
+                success: function (data) {
+                    document.location.reload()
                 },
-                error: function(jqxhr) {}
-            });
-        }
-        document.getElementById("type").value = recipient
-        var modal = $(this)
-        modal.find('.modal-title').text(recipient)
-    })
-</script>
+                error: function(jqxhr) {
+                    alert("algo ha pasado")
+                }    
+             });
+        });
+    </script>
 {% endblock %}
