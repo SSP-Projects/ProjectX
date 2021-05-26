@@ -26,7 +26,7 @@ def home(request):
     if workingStatus == "new":
        workingStatus = "isntWorking" 
     app_tittle = "SIGNET"
-    studycenter_name = "GMQ CENTER"
+    studycenter_name = "GMQ TECH"
 
     form = forms.NotificationForm()
     return render(request, 'middle/home.html', context={
@@ -49,7 +49,7 @@ def getEmployeeInteractions(request):
 def postInteraction(request):
     
     if request.is_ajax and request.method == "POST":
-        actual_employee =Employee.objects.get(user=request.user)
+        actual_employee = Employee.objects.get(user=request.user)
         
         state = request.POST['state']
         interaction_type=request.POST['interaction_type']
@@ -136,32 +136,62 @@ def admin(request):
     
     employees = Employee.objects.all()
     userForm = forms.UserForm()
-    app_tittle = "SIGNET"
-    # employees[0].name = 'adawda'
-    # employees[0].save()
-    # employees = Employee.objects.get(name='oeoe')
-    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm, "app_tittle":app_tittle,})
+    app_tittle = 'SIGNET'
+    studycenter_name = 'GMQ TECH'
+    return render(request, 'admin.html', context={
+        'employees':employees,
+        'studycenter_name':studycenter_name,
+        'userForm' : userForm,
+        'app_tittle':app_tittle,
+        })
 
 
 def getUser(request):
     if request.is_ajax and request.method == "GET":
         dni = request.GET['dni']
+        print(dni)
         user = Employee.objects.get(dni=dni)
         globals()['last_user'] = user
         userJson = serializers.serialize('json', [ user, ])
         return HttpResponse(userJson, content_type="application/json")
-    return redirect('/home')
+    return None
+
+def delete_user(request):
+    if request.is_ajax and request.method == "POST":
+        dni = request.POST['dni']
+        employee = Employee.objects.get(dni=dni)
+        user = employee.user
+        user.is_active = False
+        user.save()
+    return redirect('/admin/')
+
+
+def staff_send_notification(request):
+    if request.is_ajax and request.method == "POST":
+        current_user = request.user
+        dnis = request.POST['dnis']
+        notification_type = request.POST['not_type']
+        notification_desc = request.POST['not_desc']
+        for dni in dnis:
+            a = Notification()
+            a.sender = current_user
+            a.receiver = Employee.objects.get(dni=dni)
+            a.notification_type = notification_type
+            a.description = notification_desc
+            a.save()
+    return HttpResponse(code=200)
 
 def send_notification(request):
-    if request.method == 'POST':
-        form = forms.NotificationForm(request.POST) 
-        if form.is_valid():
-            current_user = request.user
-            notification = form.save(commit=False)
-            notification.sender = request.user
-            if not current_user.is_superuser:
-                notification.receiver = request.user #TODO: get the admin of the system
-            notification.save()
-    userForm = forms.UserForm()
-    employees = Employee.objects.all()
-    return render(request, 'admin.html', context={'employees':employees, 'userForm' : userForm})
+    if request.is_ajax and request.method == "POST":
+        current_user = request.user
+        admins = Employee.objects.filter(is_staff=True)
+        notification_type = request.POST['not_type']
+        notification_desc = request.POST['not_desc']
+        for admin in admins:
+            a = Notification()
+            a.sender = current_user
+            a.receiver = admin
+            a.notification_type = notification_type
+            a.description = notification_desc
+            a.save()
+    return HttpResponse(code=200)

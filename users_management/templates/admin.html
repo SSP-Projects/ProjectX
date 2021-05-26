@@ -5,25 +5,62 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+        <div>
+            <button class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
+            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+        </div>
     </div>
 </nav>
 <div class="container-fluid">
-    <div class="container-fluid row">
-        <h3 class="col-3">DNI</h3>
+    <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
+        <div class="form-check col-1 justify-content-center align-items-center">
+            <input class="select_all form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." onclick="changeAll()">
+        </div>
+        <h3 class="col-2">DNI</h3>
         <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
     </div>
     {% for employee in employees %}
-    <div class="container-fluid row">
-        <h3 id="DNI{{ forloop.counter }}" class="col-3">{{ employee.dni }}</h3>
-        <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
-        <div class="container-fluid col-1" name="prueba">
-            <button class="btn col-3" id="Button{{ forloop.counter }}" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario">R</button>
-            <button class="btn col-3">V</button>
-            <button class="btn col-3">D</button>
-        </div>
-    </div>
+        {% if employee.user.is_active == True %}
+            {% if forloop.counter|divisibleby:2 %}
+                <div class="container-fluid row bg-white">
+            {% else %}
+                <div class="container-fluid row bg-light">
+            {% endif %}
+                    <div class="form-check col-1 justify-content-center align-items-center">
+                        <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                    </div>
+                    <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
+                    <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
+                    <div class="container-fluid col-1" name="prueba">
+                        <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i class="fas fa-user-edit"></i></button>
+                        <button class="btn col-3"><i class="fas fa-clipboard-list"></i></button>
+                        <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+        {% endif %}
+    {% empty %}
+        <h1>No hay empleados.</h1>
     {% endfor %}
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">¿Seguro que quieres borrar este usuario?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <h3 id="userToDelete"></h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal fade bd-example-modal-lg" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
@@ -35,70 +72,79 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <form method="POST">
                     {% csrf_token %}
-                <div class="container-fluid">
-                    {{ userForm.form_type }}
-                    <div class="row">
-                      <div class="col-4 text-center">Nombre</div>
-                      <div class="col-4 text-center">Apellidos</div>
-                      <div class="col-4 text-center">DNI</div>
+                    <div class="container-fluid">
+                        {{ userForm.form_type }}
+                        <div class="row">
+                            <div class="col-4 text-center">Nombre</div>
+                            <div class="col-4 text-center">Apellidos</div>
+                            <div class="col-4 text-center">DNI</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-center">{{ userForm.name }}</div>
+                            <div class="col-4 text-center">{{ userForm.surnames }}</div>
+                            <div class="col-4 text-center">{{ userForm.dni }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-center">Nº SS</div>
+                            <div class="col-4 text-center">Teléfono</div>
+                            <div class="col-4 text-center">E-Mail</div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-4 text-center">{{ userForm.ss_number }}</div>
+                            <div class="col-4 text-center">{{ userForm.phone_number }}</div>
+                            <div class="col-4 text-center">{{ userForm.email }}</div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="">FIRMA</div>
+                        </div>
+                        <div class="row form-group text-center">
+
+                        </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-center">{{ userForm.name }}</div>
-                        <div class="col-4 text-center">{{ userForm.surnames }}</div>
-                        <div class="col-4 text-center">{{ userForm.dni }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 text-center">Nº SS</div>
-                        <div class="col-4 text-center">Teléfono</div>
-                        <div class="col-4 text-center">E-Mail</div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-4 text-center">{{ userForm.ss_number }}</div>
-                        <div class="col-4 text-center">{{ userForm.phone_number }}</div>
-                        <div class="col-4 text-center">{{ userForm.email }}</div>
-                    </div>
-                    <div class="row text-center">
-                      <div class="">FIRMA</div>
-                    </div>
-                    <div class="row form-group text-center">
-                        
-                    </div>
-                  </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success">Confirmar</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
             </div>
-        </form>
+            </form>
         </div>
     </div>
 </div>
 
-{% endblock body %}
-
+{% endblock body %} 
 {% block extra_scripts %}
     <script>
+        function changeAll() {
+            state = document.getElementsByClassName('select_all')[0].checked;
+            checkboxes = document.getElementsByClassName('select_user');
+            Array.from(checkboxes).forEach(checkbox => checkbox.checked = state);
+        }
+
+        var dniToDisable = {};
+
         $('#UserModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
-            var dni = button.parents()[0].parentNode.childNodes[1].innerText;
+            var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+            console.log("Hola", dni);
+            console.log("hola");
 
             var data = {
                 "dni": dni
             }
 
             if (recipient === "Crear Usuario"){
-                document.getElementById("id_name").value = ""
-                document.getElementById("id_surnames").value = ""
-                document.getElementById("id_dni").value = ""
-                document.getElementById("id_ss_number").value = "" 
-                document.getElementById("id_phone_number").value = ""
-                document.getElementById("id_email").value = ""
+                document.getElementById("id_name").value = "";
+                document.getElementById("id_surnames").value = "";
+                document.getElementById("id_dni").value = "";
+                document.getElementById("id_ss_number").value = "" ;
+                document.getElementById("id_phone_number").value = "";
+                document.getElementById("id_email").value = "";
             }else{
                 $.ajax({
                 url: '/ajax/get_user/',
@@ -107,13 +153,12 @@
                 data: data,
                 headers: {'X-CSRFToken': "{{csrf_token}}"},
                 success: function (data) {
-                    document.getElementById("id_name").value = data[0].fields.name
-                    document.getElementById("id_surnames").value = data[0].fields.surnames
-                    document.getElementById("id_dni").value = data[0].fields.dni
-                    document.getElementById("id_dni").enable = false
-                    document.getElementById("id_ss_number").value = data[0].fields.ss_number
-                    document.getElementById("id_phone_number").value = data[0].fields.phone_number
-                    document.getElementById("id_email").value = data[0].fields.email
+                    document.getElementById("id_name").value = data[0].fields.name;
+                    document.getElementById("id_surnames").value = data[0].fields.surnames;
+                    document.getElementById("id_dni").value = data[0].fields.dni;
+                    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
+                    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
+                    document.getElementById("id_email").value = data[0].fields.email;
                 },
                 error: function(jqxhr) {
                 }    
@@ -124,6 +169,42 @@
             modal.find('.modal-title').text(recipient)
         })
 
-        
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) 
+            var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+            var data = {
+                "dni": dni
+            }
+
+            $.ajax({
+                url: '/ajax/get_user/',
+                type: 'GET',
+                dataType: "json",
+                data: data,
+                headers: {'X-CSRFToken': "{{csrf_token}}"},
+                success: function (data) {
+                    $("#userToDelete").text(data[0].fields.name + " " + data[0].fields.surnames); 
+                },
+                error: function(jqxhr) {
+                }    
+             });
+
+            dniToDisable = data;
+        });
+
+        $("#confirmationButton").click(function() {
+            $.ajax({
+                url: '/ajax/delete_user/',
+                type: 'POST',
+                data: dniToDisable,
+                headers: {'X-CSRFToken': "{{csrf_token}}"},
+                success: function (data) {
+                    document.location.reload()
+                },
+                error: function(jqxhr) {
+                    alert("algo ha pasado")
+                }    
+             });
+        });
     </script>
 {% endblock %}
