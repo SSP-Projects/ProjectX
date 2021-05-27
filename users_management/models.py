@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 import uuid
+from datetime import datetime, timedelta
 
 # AUX TABLES
 
@@ -61,7 +62,7 @@ class Interaction(models.Model):
     class States(models.IntegerChoices):
         ENTER = 0
         EXIT  = 1
-    date_time             = models.DateTimeField(auto_now=True)
+    date_time             = models.DateTimeField()
     state                 = models.IntegerField(choices=States.choices)
     interaction_type      = models.CharField(max_length=20)
     employee              = models.ForeignKey(Employee, on_delete=models.CASCADE)

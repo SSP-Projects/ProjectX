@@ -1,4 +1,4 @@
-{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %} {% include "top/header.html" %} {% block body %}
+{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %} {% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <form class="d-flex">
@@ -6,8 +6,9 @@
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <div>
-            <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
-            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+            <button class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
+            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
+                    class="fas fa-user-plus"></i></button>
         </div>
     </div>
 </nav>
@@ -30,26 +31,59 @@
             <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
             <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
             <div class="container-fluid col-1" name="prueba">
-                <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i class="fas fa-user-edit"></i></button>
-                <button class="btn col-3"><i class="fas fa-clipboard-list"></i></button>
-                <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash"></i></button>
+                <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                        class="fas fa-user-edit"></i></button>
+                <button data-toggle="modal" data-target="#userInteractions" class="btn col-3"><i
+                        class="fas fa-clipboard-list"></i></button>
+                <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                        class="fas fa-trash"></i></button>
             </div>
         </div>
         {% endif %} {% empty %}
         <h1>No hay empleados.</h1>
         {% endfor %}
     </div>
+
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">¿Seguro que quieres borrar este usuario?</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body text-center">
                     <h3 id="userToDelete"></h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="container-fluid background-blue border">
+                        <div class="container-fluid row g-0">
+                            <h4 class="col-3 font-white">Tipo</h4>
+                            <h4 class="col-3 font-white">Acción</h4>
+                            <h4 class="col-3 font-white">Hora</h4>
+                            <h4 class="col-3 font-white">Fecha</h4>
+                        </div>
+                        <div id="register_container">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
@@ -65,8 +99,8 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="createUserModalLabel">Nuevo usuario</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
                 <div class="modal-body">
@@ -213,7 +247,124 @@
             document.getElementById("type").value = recipient
             var modal = $(this)
             modal.find('.modal-title').text(recipient)
-        })
+        });
+
+        $('#userInteractions').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+            console.log(dni)
+
+            var data = {
+                "dni": dni
+            }
+
+            $.ajax({
+                url: '/ajax/get_employee_job_interactions_dni/',
+                type: 'GET',
+                dataType: 'json',
+                data: data,
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    $("#register_container").empty()
+                    data.forEach(interaction => {
+                        //RESOLV FIELDS
+
+                        date = new Date(interaction.fields.date_time);
+                        year = date.getFullYear();
+                        month = date.getMonth() + 1;
+                        dt = date.getDate();
+
+                        if (dt < 10) {
+                            dt = '0' + dt;
+                        }
+                        if (month < 10) {
+                            month = '0' + month;
+                        }
+                        dateResolved = year + '-' + month + '-' + dt
+                        timeResolved = date.toLocaleTimeString('es-ES')
+                        if (timeResolved.length < 8) {
+                            timeResolved = "0" + timeResolved;
+                        }
+
+                        interactionTypeResolved = ""
+                        if (interaction.fields.interaction_type == "work") {
+                            interactionTypeResolved = "Trabajo"
+                        } else {
+                            interactionTypeResolved = "Descanso"
+                        }
+
+                        stateResolved = ""
+                        if (interaction.fields.state == 0) {
+                            stateResolved = "Entrada"
+                        } else {
+                            stateResolved = "Salida"
+                        }
+
+                        $("#register_container").append(` 
+                        <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
+                        <h5 class="col-3">` + interactionTypeResolved + `</h5> 
+                        <h5 class="col-3">` + stateResolved + `</h5>
+                        
+                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="` + timeResolved + `" />
+                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="` + dateResolved + `" />
+                        </div>`);
+                    });
+                },
+                error: function(jqxhr) {
+                    alert("Error refreshing");
+                }
+            });
+        });
+
+        function updateInteraction(key, value, type) {
+
+            console.log("Updating key(" + key + "): " + value);
+
+            var newInput = {
+                "type": type,
+                "key": key,
+                "value": value
+            };
+
+            changeInteraction(newInput);
+
+        }
+
+        function changeInteraction(newInput) {
+            $.ajax({
+                url: '/ajax/modifyInteraction/',
+                type: 'POST',
+                data: newInput,
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Modificado con éxito!',
+                        showConfirmButton: false,
+                        timer: 750,
+                        backdrop: `
+                        rgba(80,80,80,0.4)
+                        `
+                    });
+                },
+                error: function(jqxhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '¡Algo ha salido mal!',
+                        footer: '<a href>¿Porque he tenido este problema?</a>',
+                        backdrop: `
+                        rgba(0,0,123,0.4)
+                        `
+                    });
+                }
+            });
+        }
 
         $('#confirmDeleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)

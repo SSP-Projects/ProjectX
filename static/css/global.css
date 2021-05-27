@@ -9,10 +9,15 @@ body{
   font-weight: 700;
   line-height: 1;
   color: #000;
-  text-shadow: 0 1px 0 #fff;
+  text-shadow: 0 1px 0 rgb(82, 82, 82);
   filter: alpha(opacity=20);
   opacity: .2;
 }
+
+.align {
+  --bs-gutter-x: 0rem !important;
+}
+
 .header_background{
   background: rgb(0,149,226);
   background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
@@ -20,6 +25,9 @@ body{
 }
 .background-blue {
   background-color:#4b566d;
+}
+.background-lightblue {
+  background-color: rgb(33, 148, 241);
 }
 .background-grey {
   background-color:rgb(250, 244, 244) !important;

@@ -6,6 +6,8 @@ import json
 from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, NotificationTypesAuxiliar, User
 from django.core import serializers
+from datetime import datetime, timedelta
+
 
 last_user = None
 
@@ -15,7 +17,10 @@ def register(request):
 
 @login_required(login_url='/accounts/login/')
 def home(request):
-
+    if request.user.is_staff:
+        return redirect("/admin/")
+    json_serializer = serializers.get_serializer("json")()
+    #companies = json_serializer.serialize(Company.objects.all().order_by('id')[:5], ensure_ascii=False)
 
     actual_employee =Employee.objects.get(user=request.user)
     if actual_employee != None:
@@ -37,6 +42,19 @@ def home(request):
             })
     return redirect("/")
 
+def get_employee_job_interactions_dni(request):
+    if request.is_ajax:
+        dni = request.GET['dni']
+        user = Employee.objects.get(dni=dni)
+        
+        today = datetime.now()
+        starting_date = datetime.now() - timedelta(days=35)
+
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
+
+        interactions_json = serializers.serialize('json',employee_interactions)
+        return HttpResponse(interactions_json, content_type="application/json")
+    return None
 
 def getEmployeeInteractions(request):
 
@@ -54,9 +72,9 @@ def postInteraction(request):
         if actual_employee != None:
             state = request.POST['state']
             interaction_type=request.POST['interaction_type']
-            print("PRUEBARDA->"+request.POST['state'] )
             interaction=Interaction.objects.create(
             state=state,
+            date_time=datetime.now(),
             interaction_type=interaction_type,
             employee=actual_employee
             )
@@ -81,8 +99,10 @@ def postInteraction(request):
 
 
 
-#@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def admin(request):
+    if not request.user.is_staff:
+        return redirect("/home/")
 
     if request.method == 'POST':
         form = forms.UserForm(request.POST)
@@ -156,6 +176,32 @@ def get_notifications_from_current_user(request):
         notifications = serializers.serialize('json', Notification.objects.filter(receiver=request.user))
         return HttpResponse(notifications, content_type="application/json")
     return None
+
+
+def modifyInteraction(request):
+    if request.is_ajax and request.method == "POST":
+        changeType = request.POST['type']
+        key = request.POST['key']
+        newvalue = request.POST['value']
+       
+        interaction = Interaction.objects.get(pk=key);
+        old_date = interaction.date_time.strftime("%m-%d-%Y %H:%M:%S+00:00")
+        if (changeType == 'time'):
+            old_time = old_date[11:19]
+            print("old", old_time)
+            print("new", newvalue)
+            new_date = datetime.strptime(old_date.replace(old_time, newvalue), "%m-%d-%Y %H:%M:%S+00:00")
+            interaction.date_time = new_date
+        else:
+            new_string = newvalue[5:7] + "-" + newvalue[8:10] + "-" + newvalue[0:4]
+            old_string = old_date[0:10]
+            new_date = datetime.strptime(old_date.replace(old_string, new_string), "%m-%d-%Y %H:%M:%S+00:00")
+            interaction.date_time = new_date
+            
+        interaction.save()
+
+        return HttpResponse(status=200)
+    return HttpResponse(status=403)
 
 def getUser(request):
     if request.is_ajax and request.method == "GET":
