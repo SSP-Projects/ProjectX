@@ -76,7 +76,7 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Registros del usuario</h5>
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -243,6 +243,9 @@
                         }
                         dateResolved = year + '-' + month + '-' + dt
                         timeResolved = date.toLocaleTimeString('es-ES')
+                        if (timeResolved.length < 8){
+                            timeResolved = "0" + timeResolved;
+                        }
 
                         interactionTypeResolved = ""
                         if (interaction.fields.interaction_type == "work") {
@@ -262,8 +265,9 @@
                         <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
                         <h5 class="col-3">`+ interactionTypeResolved + `</h5> 
                         <h5 class="col-3">`+ stateResolved + `</h5>
-                        <input type="time" id="time` + interaction.pk + `" class="col-3 text-center " value="`+ timeResolved + `" />
-                        <input type="date" id="date` + interaction.pk + `" class="col-3 text-center " value="`+ dateResolved + `" />
+                        
+                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="`+ timeResolved + `" />
+                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="`+ dateResolved + `" />
                         </div>`
                         );
                     });
@@ -273,6 +277,51 @@
                 }
             });
         });
+
+        function updateInteraction(key, value, type){
+
+            console.log("Updating key("+ key + "): " + value);
+            
+            var newInput = {
+                "type": type,
+                "key": key,
+                "value": value
+            };
+
+            changeInteraction(newInput);
+
+        }
+
+        function changeInteraction(newInput){
+            $.ajax({
+                url: '/ajax/modifyInteraction/',
+                type: 'POST',
+                data: newInput,
+                headers: { 'X-CSRFToken': "{{csrf_token}}" },
+                success: function (data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Modificado con éxito!',
+                        showConfirmButton: false,
+                        timer: 750,
+                        backdrop: `
+                        rgba(80,80,80,0.4)
+                        `
+                    });
+                },
+                error: function (jqxhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '¡Algo ha salido mal!',
+                        footer: '<a href>¿Porque he tenido este problema?</a>',
+                        backdrop: `
+                        rgba(0,0,123,0.4)
+                        `
+                    });
+                }
+            });
+        }
 
         $('#confirmDeleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)

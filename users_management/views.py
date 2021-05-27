@@ -50,13 +50,9 @@ def get_employee_job_interactions_dni(request):
         today = datetime.now()
         starting_date = datetime.now() - timedelta(days=35)
 
-        print("Today's date:", today)
-        print("starting date:", starting_date)
-
         employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
 
         interactions_json = serializers.serialize('json',employee_interactions)
-        print(interactions_json)
         return HttpResponse(interactions_json, content_type="application/json")
     return None
 
@@ -76,9 +72,9 @@ def postInteraction(request):
         if actual_employee != None:
             state = request.POST['state']
             interaction_type=request.POST['interaction_type']
-            print("PRUEBARDA->"+request.POST['state'] )
             interaction=Interaction.objects.create(
             state=state,
+            date_time=datetime.now(),
             interaction_type=interaction_type,
             employee=actual_employee
             )
@@ -124,7 +120,7 @@ def admin(request):
             if formType == "Crear Usuario":
 
                 center = Center.objects.get(CIF='A3424F23424')
-                user = User.objects.create_user(name, email, dni)
+                user = User.objects.create_user(email, email, dni)
                 employee = Employee()
                 employee.name = name
                 employee.user = user
@@ -170,10 +166,34 @@ def admin(request):
         'app_tittle':app_tittle,})
 
 
+def modifyInteraction(request):
+    if request.is_ajax and request.method == "POST":
+        changeType = request.POST['type']
+        key = request.POST['key']
+        newvalue = request.POST['value']
+       
+        interaction = Interaction.objects.get(pk=key);
+        old_date = interaction.date_time.strftime("%m-%d-%Y %H:%M:%S+00:00")
+        if (changeType == 'time'):
+            old_time = old_date[11:19]
+            print("old", old_time)
+            print("new", newvalue)
+            new_date = datetime.strptime(old_date.replace(old_time, newvalue), "%m-%d-%Y %H:%M:%S+00:00")
+            interaction.date_time = new_date
+        else:
+            new_string = newvalue[5:7] + "-" + newvalue[8:10] + "-" + newvalue[0:4]
+            old_string = old_date[0:10]
+            new_date = datetime.strptime(old_date.replace(old_string, new_string), "%m-%d-%Y %H:%M:%S+00:00")
+            interaction.date_time = new_date
+            
+        interaction.save()
+
+        return HttpResponse(status=200)
+    return HttpResponse(status=403)
+
 def getUser(request):
     if request.is_ajax and request.method == "GET":
         dni = request.GET['dni']
-        print(dni)
         user = Employee.objects.get(dni=dni)
         globals()['last_user'] = user
         userJson = serializers.serialize('json', [ user, ])
