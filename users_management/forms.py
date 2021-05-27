@@ -6,16 +6,20 @@ from . import models
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100, widget=forms.TextInput(attrs=
         {
-            'class': 'form-control',
-            'id': 'username',
-            'type': 'text'
+            'class': 'input',
+            'id': 'user',
+            'type': 'text',
+            'placeholder':"Nombre de usuario",
+           
         }
+
     ))
     password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs=
         {
             'class': 'form-control',
             'id': 'password',
-            'type': 'password'
+            'type': 'password',
+            'placeholder':"Contraseña"
         }
     ))
     sign_on_login = forms.BooleanField(widget=forms.CheckboxInput(attrs=

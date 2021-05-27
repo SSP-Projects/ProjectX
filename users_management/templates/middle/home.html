@@ -6,8 +6,8 @@
 <link href="{% static 'css/home/home_styles.css' %}" rel="stylesheet">
 
 {% endblock %}
-
 {% block body %}
+{% include "top/header.html" %} 
    
 <section class="container-fluid d-flex flex-wrap my-4">
 
@@ -15,12 +15,12 @@
   <section class="col-5 container-fluid  d-flex flex-wrap mx-5">
     <div class="col-6 align-middle  d-flex"style="align-items:center;">
 
-        <button id="work-button" class="btn btn-success rounded-circle w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="work-button-img"></button>
+        <button id="work-button" class="btn  w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="work-button-img"></button>
       <!--<button id="work-button" class="big-button" data-toggle="modal" data-target="#confirmationModal">trabajo</button>-->
 
     </div>
     <div class="col-6 align-middle  d-flex"style="align-items:center;">
-        <button id="break-button" class="btn btn-success rounded-circle w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="break-button-img"></button>
+        <button id="break-button" class="btn  w-75 h-75" data-toggle="modal" data-target="#confirmationModal"><img class="img-fluid"  id="break-button-img"></button>
        <!-- <button id="break-button" class="big-button" data-toggle="modal" data-target="#confirmationModal" disabled="true">descanso</button>-->
     </div>
   </section>
@@ -69,6 +69,7 @@
     <div id="register_container">
 
     </div>
+    <br>
   </div>
 </section>
 
@@ -110,19 +111,19 @@ $(document).ready(function(){
   var data = {}
   if(workingStatus == "isntWorking"){
             $("#break-button" ).prop('disabled', true)
-            $("#work-button-img").prop('src', "{% static 'media/images/enter_work_icon.png' %}")
-            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_icon.png' %}")
+            $("#work-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
+            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
             $("#work-button" ).prop('title',"Entrar al trabajo")
             $("#break-button" ).prop('title',"No puedes entrar al descanso sin haber entrado al trabajo")
   }else if(workingStatus == "isWorking"){
               $("#break-button" ).prop('disabled', false)
-              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_icon.png' %}")
-              $("#break-button-img").prop('src', "{% static 'media/images/enter_break_icon.png' %}")
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
               $("#work-button" ).prop('title',"Salir del trabajo")
               $("#break-button" ).prop('title',"Entrar al descanso")
   }else if(workingStatus == "breaking"){
-              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_icon.png' %}")
-              $("#break-button-img").prop('src', "{% static 'media/images/enter_work_icon.png' %}")
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
               $("#work-button" ).prop('title',"No puedes salir del trabajo sin haber salido del descanso")
               $("#break-button" ).prop('title',"Salir del descanso")
               $("#work-button" ).prop('disabled', true)

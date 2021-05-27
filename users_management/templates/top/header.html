@@ -1,11 +1,11 @@
-<nav class="container-fluid header_background border-gray d-flex px-4">
+<nav class="container-fluid header_background border-gray d-flex px-4 py-2">
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center ">
         {% load static %}
         <img src="{% static 'media/images/studycenter_logo.PNG' %}" alt="studycenter_icon">
-        <h2 class="m-4">{{studycenter_name}}</h2>
+        <h3 class="mx-4 my-2">{{studycenter_name}}</h3>
     </div>
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-center">
-        <h2>{{app_tittle}}</h2>
+        <h3>{{app_tittle}}</h3>
     </div>
     {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
@@ -15,7 +15,7 @@
                 <span class="badge">3</span>
             </a>
         </div>
-        <h5 class="m-4">{{ user.username }}</h5>
+        <h5 class="mx-4 my-2">{{ user.username }}</h5>
         <div class="dropdown col-1">
             <img onclick="showMenu()" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
             <div id="myDropdown" class="dropdown-content ">
