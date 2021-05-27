@@ -12,7 +12,7 @@
         <div>
             <a>
                 <img src="{% static 'media/images/notifications_icon.png' %}" class="dropbtn img-fluid" alt="menu_icon">
-                <span class="badge">3</span>
+                <span id="notification_number" class="badge">3</span>
             </a>
         </div>
         <h5 class="m-4">{{ user.username }}</h5>
@@ -22,5 +22,6 @@
                 <a href="{% url 'logout' %}">Cerrar sesión</a>
             </div>
         </div>
-    {% endif %}
+        {% endif %}
+
 </nav>

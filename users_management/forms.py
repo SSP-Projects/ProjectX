@@ -48,36 +48,9 @@ class NotificationForm(forms.ModelForm):
             'class': 'form-control no-resize',
             'required': False,
             'rows':"5",
-            'id': 'description'
+            'id': 'ticket_description'
         })     
-        self.fields['description'].label = 'Descripción del problema'
-
-class AdminNotificationForm(forms.ModelForm):
-    class Meta:
-        model = models.Notification
-        exclude = ['sender']
-
-    def __init__(self, *args, **kwargs):
-        super(AdminNotificationForm, self).__init__(*args, **kwargs)
-        notification_types = models.NotificationTypesAuxiliar.objects.all()
-        notification_types_titles = [(notification_type.id, notification_type.name) for notification_type in notification_types]
-        self.fields['notification_type'].widget.attrs['class'] = 'form-control text-center'
-        self.fields['notification_type'].widget = forms.Select(
-            choices=notification_types_titles, 
-            attrs= {
-                'class': 'form-control text-center',
-                'required': True,
-                'id': 'ticket_type'
-            }
-        )
-        self.fields['notification_type'].label = 'Tipo de notificación'
-        self.fields['description'].widget=forms.Textarea(attrs={
-            'class': 'form-control no-resize',
-            'required': False,
-            'rows':"5",
-            'id': 'description'
-        })     
-        self.fields['description'].label = 'Descripción del problema'
+        self.fields['description'].label = 'Descripción'
 
 class UserForm(forms.ModelForm):
     class Meta:

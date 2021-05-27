@@ -45,11 +45,11 @@ class Employee(models.Model):
     work_status           = models.CharField(max_length=20, default="new")
 
 class Notification(models.Model):
-    sender                = models.OneToOneField(User, related_name='sender', on_delete=models.CASCADE)
-    receiver              = models.OneToOneField(User, related_name='receiver', on_delete=models.CASCADE)
+    sender                = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
+    receiver              = models.ForeignKey(User, related_name='receiver', on_delete=models.CASCADE)
     notification_type     = models.CharField(max_length=50)
     description           = models.CharField(max_length=500)
-    
+    date_time             = models.DateTimeField(auto_now=True)
 
 class Schedule(models.Model):
     entry_time            = models.TimeField()
