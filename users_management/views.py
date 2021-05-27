@@ -16,64 +16,66 @@ def register(request):
 @login_required(login_url='/accounts/login/')
 def home(request):
 
-    json_serializer = serializers.get_serializer("json")()
-    #companies = json_serializer.serialize(Company.objects.all().order_by('id')[:5], ensure_ascii=False)
 
-    username = ""
     actual_employee =Employee.objects.get(user=request.user)
-    workingStatus = actual_employee.work_status
-    print("WORKUING STATUS"+workingStatus)
-    if workingStatus == "new":
-       workingStatus = "isntWorking" 
-    app_tittle = "SIGNET"
-    studycenter_name = "GMQ TECH"
+    if actual_employee != None:
+        username = ""
+        workingStatus = actual_employee.work_status
+        if workingStatus == "new":
+            workingStatus = "isntWorking" 
+        app_tittle = "SIGNET"
+        studycenter_name = "GMQ TECH"
 
-    form = forms.NotificationForm()
-    return render(request, 'middle/home.html', context={
-        "studycenter_name":studycenter_name,
-        "app_tittle":app_tittle,
-        "username":username,
-        'form': form,
-        "workingStatus": workingStatus
-    })
+        form = forms.NotificationForm()
+        return render(request, 'middle/home.html', context={
+            "studycenter_name":studycenter_name,
+            "app_tittle":app_tittle,
+            "username":username,
+            'form': form,
+            "workingStatus": workingStatus
+            
+            })
+    return redirect("/")
 
 
 def getEmployeeInteractions(request):
-    actual_employee =Employee.objects.get(user=request.user)
-    employee_interactions = Interaction.objects.filter(employee = actual_employee).order_by('-date_time')
+
+    actual_employee = Employee.objects.get(user=request.user)
+    if actual_employee != None:
+        employee_interactions = Interaction.objects.filter(employee = actual_employee).order_by('-date_time')
+        interactions_json = serializers.serialize('json',employee_interactions)
+        return HttpResponse(interactions_json, content_type="application/json")
+    return redirect("/")
     
-    interactions_json = serializers.serialize('json',employee_interactions)
-    return HttpResponse(interactions_json, content_type="application/json")
-   
 def postInteraction(request):
     
     if request.is_ajax and request.method == "POST":
         actual_employee = Employee.objects.get(user=request.user)
-        
-        state = request.POST['state']
-        interaction_type=request.POST['interaction_type']
-        print("PRUEBARDA->"+request.POST['state'] )
-        interaction=Interaction.objects.create(
-        state=state,
-        interaction_type=interaction_type,
-        employee=actual_employee
-        )
-  
-        state = int(state)    
-        if interaction_type == "work" and state == 0:
-           actual_employee.work_status ="isWorking"
-        if interaction_type == "work" and state == 1:
-           actual_employee.work_status ="isntWorking"
-        if interaction_type == "break" and state == 0:
-           actual_employee.work_status ="breaking"
-        if interaction_type == "break" and state == 1:
-           actual_employee.work_status ="isWorking"
+        if actual_employee != None:
+            state = request.POST['state']
+            interaction_type=request.POST['interaction_type']
+            print("PRUEBARDA->"+request.POST['state'] )
+            interaction=Interaction.objects.create(
+            state=state,
+            interaction_type=interaction_type,
+            employee=actual_employee
+            )
+    
+            state = int(state)    
+            if interaction_type == "work" and state == 0:
+                actual_employee.work_status ="isWorking"
+            if interaction_type == "work" and state == 1:
+                actual_employee.work_status ="isntWorking"
+            if interaction_type == "break" and state == 0:
+                actual_employee.work_status ="breaking"
+            if interaction_type == "break" and state == 1:
+                actual_employee.work_status ="isWorking"
 
-        actual_employee.save()
-        interaction.save()
-        return redirect("/home/")
-    else:
-        return redirect("/home/")
+            actual_employee.save()
+            interaction.save()
+            return redirect("/home/")
+        
+    return redirect("/")
        
     # some error occured
 
