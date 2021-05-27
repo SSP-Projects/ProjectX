@@ -124,7 +124,7 @@ def admin(request):
             if formType == "Crear Usuario":
 
                 center = Center.objects.get(CIF='A3424F23424')
-                user = User.objects.create_user(email, email, dni)
+                user = User.objects.create_user(name, email, dni)
                 employee = Employee()
                 employee.name = name
                 employee.user = user
