@@ -6,6 +6,8 @@ import json
 from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, User
 from django.core import serializers
+from datetime import datetime, timedelta
+
 
 last_user = None
 
@@ -15,7 +17,8 @@ def register(request):
 
 @login_required(login_url='/accounts/login/')
 def home(request):
-
+    if request.user.is_staff:
+        return redirect("/admin/")
     json_serializer = serializers.get_serializer("json")()
     #companies = json_serializer.serialize(Company.objects.all().order_by('id')[:5], ensure_ascii=False)
 
@@ -26,7 +29,7 @@ def home(request):
     if workingStatus == "new":
        workingStatus = "isntWorking" 
     app_tittle = "SIGNET"
-    studycenter_name = "GMQ TECH"
+    studycenter_name = "GMQ CENTER"
 
     form = forms.NotificationForm()
     return render(request, 'middle/home.html', context={
@@ -38,6 +41,23 @@ def home(request):
         
         })
 
+def get_employee_job_interactions_dni(request):
+    if request.is_ajax:
+        dni = request.GET['dni']
+        user = Employee.objects.get(dni=dni)
+        
+        today = datetime.now()
+        starting_date = datetime.now() - timedelta(days=35)
+
+        print("Today's date:", today)
+        print("starting date:", starting_date)
+
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
+
+        interactions_json = serializers.serialize('json',employee_interactions)
+        print(interactions_json)
+        return HttpResponse(interactions_json, content_type="application/json")
+    return None
 
 def getEmployeeInteractions(request):
     actual_employee =Employee.objects.get(user=request.user)
@@ -80,8 +100,10 @@ def postInteraction(request):
 
 
 
-#@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def admin(request):
+    if not request.user.is_staff:
+        return redirect("/home/")
 
     if request.method == 'POST':
         form = forms.UserForm(request.POST)
@@ -136,14 +158,13 @@ def admin(request):
     
     employees = Employee.objects.all()
     userForm = forms.UserForm()
-    app_tittle = 'SIGNET'
     studycenter_name = 'GMQ TECH'
+    app_tittle = 'SIGNET'
     return render(request, 'admin.html', context={
         'employees':employees,
         'studycenter_name':studycenter_name,
         'userForm' : userForm,
-        'app_tittle':app_tittle,
-        })
+        'app_tittle':app_tittle,})
 
 
 def getUser(request):
