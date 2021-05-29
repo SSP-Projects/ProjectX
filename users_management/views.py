@@ -173,8 +173,20 @@ def admin(request):
 
 def get_notifications_from_current_user(request):
     if request.is_ajax and request.method == "POST":
-        notifications = serializers.serialize('json', Notification.objects.filter(receiver=request.user))
-        return HttpResponse(notifications, content_type="application/json")
+        to_return = []
+        notifications = Notification.objects.filter(receiver=request.user)
+        for notification in notifications:
+            notif_sender = notification.sender.username
+            notif_date = notification.date_time.strftime("%H:%M %d-%m-%Y")
+            notif_type = NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name
+            notif_desc = notification.description
+            to_return.append({
+                'sender':notif_sender,
+                'date': notif_date,
+                'type': notif_type,
+                'description': notif_desc
+            })
+        return HttpResponse(json.dumps(to_return), content_type='application/json')
     return None
 
 
@@ -228,11 +240,9 @@ def staff_send_notification(request):
         dnis = request.POST.getlist('dnis[]')
         notification_type = request.POST['notification_type']
         notification_desc = request.POST['notification_desc']
-        print(dnis)
         for dni in dnis:
             a = Notification()
             a.sender = current_user
-            print(dni)
             b = Employee.objects.get(dni=dni)
             a.receiver = b.user
             a.notification_type = notification_type

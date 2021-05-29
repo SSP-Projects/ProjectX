@@ -1,5 +1,4 @@
- {% extends "generic.html" %} {% load static %} {% block extra_head %}
-<link href="{% static 'css/home/home_styles.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% extends "generic.html" %} {% load static %} {% block extra_head %}
+{% extends "generic.html" %} {% load static %} {% block extra_head %}
 <link href="{% static 'css/home/home_styles.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% include "top/header.html" %}
 
 <section class="container-fluid d-flex flex-wrap my-4">
@@ -286,8 +285,15 @@
                 'X-CSRFToken': "{{csrf_token}}"
             },
             success: function(data) {
-                alert("Notificación enviada correctamente")
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Enviado, ¡gracias!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: 'rgba(80,80,80,0.4)'
+                })
                 desc.value = ""
+                $('#sendNotification').modal('toggle');
             },
             error: function(jqxhr) {
                 alert("Error al enviar la notificación")
@@ -304,9 +310,17 @@
                 'X-CSRFToken': "{{csrf_token}}"
             },
             success: function(data) {
+                notification_panel = document.getElementById("notifications_dropdown")
+                notification_panel.innerHTML = ""
                 notification_number = document.getElementById("notification_number")
                 notification_number.innerText = data.length
-                console.log(data.length)
+                console.log(data)
+                data.forEach(notification => {
+                    item = document.createElement("a")
+                    item.setAttribute("class", "dropdown-item")
+                    item.innerText = notification.type + " " + notification.date
+                    notification_panel.appendChild(item)
+                });
             },
             error: function() {
                 console.log("Error al traer las notificationes")
@@ -315,6 +329,10 @@
     }
     refresh_notifications();
     setInterval(refresh_notifications, 300000);
+
+    function show_notifications() {
+        document.getElementById("notifications_dropdown").classList.toggle("show");
+    }
 </script>
 <!--
    <script src="{% static 'js/home.js' %}"></script>
