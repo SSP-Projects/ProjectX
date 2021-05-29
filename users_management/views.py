@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from . import forms
 import json
 from django.http import HttpResponse
-from .models import Employee, Interaction, Notification, Center, User
+from .models import Employee, Interaction, Notification, Center, NotificationTypesAuxiliar, User
 from django.core import serializers
 from datetime import datetime, timedelta
 
@@ -157,13 +157,37 @@ def admin(request):
     
     employees = Employee.objects.filter(user__is_active = True)
     userForm = forms.UserForm()
-    studycenter_name = 'GMQ TECH'
+    notification_types = NotificationTypesAuxiliar.objects.all()
     app_tittle = 'SIGNET'
+    studycenter_name = 'GMQ TECH'
+
+    
+
     return render(request, 'admin.html', context={
         'employees':employees,
         'studycenter_name':studycenter_name,
         'userForm' : userForm,
-        'app_tittle':app_tittle,})
+        'app_tittle':app_tittle,
+        'notification_types': notification_types,
+    })
+
+def get_notifications_from_current_user(request):
+    if request.is_ajax and request.method == "POST":
+        to_return = []
+        notifications = Notification.objects.filter(receiver=request.user)
+        for notification in notifications:
+            notif_sender = notification.sender.username
+            notif_date = notification.date_time.strftime("%H:%M %d-%m-%Y")
+            notif_type = NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name
+            notif_desc = notification.description
+            to_return.append({
+                'sender':notif_sender,
+                'date': notif_date,
+                'type': notif_type,
+                'description': notif_desc
+            })
+        return HttpResponse(json.dumps(to_return), content_type='application/json')
+    return None
 
 
 def modifyInteraction(request):
@@ -218,24 +242,25 @@ def delete_user(request):
 def staff_send_notification(request):
     if request.is_ajax and request.method == "POST":
         current_user = request.user
-        dnis = request.POST['dnis']
-        notification_type = request.POST['not_type']
-        notification_desc = request.POST['not_desc']
+        dnis = request.POST.getlist('dnis[]')
+        notification_type = request.POST['notification_type']
+        notification_desc = request.POST['notification_desc']
         for dni in dnis:
             a = Notification()
             a.sender = current_user
-            a.receiver = Employee.objects.get(dni=dni)
+            b = Employee.objects.get(dni=dni)
+            a.receiver = b.user
             a.notification_type = notification_type
             a.description = notification_desc
             a.save()
-    return HttpResponse(code=200)
+    return redirect('/admin/')
 
 def send_notification(request):
     if request.is_ajax and request.method == "POST":
         current_user = request.user
-        admins = Employee.objects.filter(is_staff=True)
-        notification_type = request.POST['not_type']
-        notification_desc = request.POST['not_desc']
+        admins = User.objects.filter(is_staff=True)
+        notification_type = request.POST['notification_type']
+        notification_desc = request.POST['notification_desc']
         for admin in admins:
             a = Notification()
             a.sender = current_user
@@ -243,4 +268,4 @@ def send_notification(request):
             a.notification_type = notification_type
             a.description = notification_desc
             a.save()
-    return HttpResponse(code=200)
+    return redirect('/home/')
