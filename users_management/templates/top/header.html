@@ -10,18 +10,28 @@
     </div>
     {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
-        <div>
-            <a>
-                <img src="{% static 'media/images/notifications_icon.png' %}" class="dropbtn img-fluid" alt="menu_icon">
-                <span class="badge">3</span>
-            </a>
+        <div class="dropdown">
+            <img onclick="show_notifications()" src="{% static 'media/images/notifications_icon.png' %}" class="dropbtn img-fluid" alt="menu_icon">
+            <div id="notifications_dropdown" class="dropdown-menu" style="right: 0; left: auto;">
+            </div>
+            <span id="notification_number" class="badge">3</span>
         </div>
+        <!--<div>
+            <a>
+
+                <div id="notifications_dropdown" class="dropdown-content">
+
+                </div>
+
+            </a>
+        </div>-->
         <h5 class="mx-4 my-2">{{ user.username }}</h5>
         <div class="dropdown col-1">
             <img onclick="showMenu()" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
-            <div id="myDropdown" class="dropdown-content ">
+            <div id="myDropdown" class="dropdown-content">
                 <a href="{% url 'logout' %}">Cerrar sesión</a>
             </div>
         </div>
-    {% endif %}
+        {% endif %}
+
 </nav>

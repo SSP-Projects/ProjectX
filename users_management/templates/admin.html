@@ -1,12 +1,5 @@
-{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %}
-  
-{% block extra_head %}
-{% load static %}
-<link href="{% static 'css/admin/admin.css' %}" rel="stylesheet">
-
-{% endblock %}
-
-{% block body %} {% include "top/header.html" %}
+{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %} {% block extra_head %} {% load static %}
+<link href="{% static 'css/admin/admin.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <form class="d-flex">
@@ -14,73 +7,83 @@
             <button id="searchButton" class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <div>
-            <button class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
+            <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
                     class="fas fa-user-plus"></i></button>
         </div>
     </div>
 </nav>
 <div class="container">
-	
-	<div class="table">
-		<div class="table-header">
-            <div id="header__item__checkbox"  class="header__item">
+
+    <div class="table">
+        <div class="table-header">
+            <div id="header__item__checkbox" class="header__item">
                 <div class="form-check  ">
-                <input class="select_all form-check-input position-static" type="checkbox" id="blankCheckbox"
-                    value="option1" aria-label="..." onclick="changeAll()">
+                    <input class="select_all form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." onclick="changeAll()">
+                </div>
             </div>
-        </div>
-			<div class="header__item"><h5>DNI</h5></div>
-			<div class="header__item"><h5>NOMBRE Y APELLIDOS</h5></div>
-            <div class="header__item"><h5>EMAIL</h5></div>
-            <div class="header__item"><h5>TELÉFONO</h5></div>
+            <div class="header__item">
+                <h5>DNI</h5>
+            </div>
+            <div class="header__item">
+                <h5>NOMBRE Y APELLIDOS</h5>
+            </div>
+            <div class="header__item">
+                <h5>EMAIL</h5>
+            </div>
+            <div class="header__item">
+                <h5>TELÉFONO</h5>
+            </div>
             <div class="header__item"></div>
 
-		</div>
-		<div class="table-content">
-            {% for i in "123456789"%}
-            {% for employee in employees %}
-            {% if forloop.counter|divisibleby:2 %}
-			<div class="table-row-2">
-            {% else %}
-            <div class="table-row-1">
-            {% endif %}
-                <div id="table-data-checkbox" class="table-data">
-                    <div class="form-check col-1 justify-content-center align-items-center">
-                    <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
-                        value="option1" aria-label="...">
+        </div>
+        <div class="table-content">
+            {% for i in "123456789"%} {% for employee in employees %} {% if forloop.counter|divisibleby:2 %}
+            <div class="table-row-2">
+                {% else %}
+                <div class="table-row-1">
+                    {% endif %}
+                    <div id="table-data-checkbox" class="table-data">
+                        <div class="form-check col-1 justify-content-center align-items-center">
+                            <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                        </div>
+                    </div>
+
+                    <div class="table-data">
+                        <h5 id="DNI{{ forloop.counter }}">{{ employee.dni }}</h5>
+                    </div>
+                    <div class="table-data">
+                        <h5>{{ employee.name }} {{ employee.surnames }}</h5>
+                    </div>
+                    <div class="table-data">
+                        <h5>{{ employee.email }}</h5>
+                    </div>
+                    <div class="table-data">
+                        <h5>{{ employee.phone_number }}</h5>
+                    </div>
+                    <div class="table-data d-inline" name="prueba">
+                        <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                            class="fas fa-user-edit"></i></button>
+                        <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
+                            class="fas fa-clipboard-list"></i></button>
+                        <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                            class="fas fa-trash"></i></button>
                     </div>
                 </div>
-		
-				<div class="table-data"><h5 id="DNI{{ forloop.counter }}">{{ employee.dni }}</h5></div>
-				<div class="table-data"><h5>{{ employee.name }} {{ employee.surnames }}</h5></div>
-                <div class="table-data"><h5>{{ employee.email }}</h5></div>
-                <div class="table-data"><h5>{{ employee.phone_number }}</h5></div>
-                <div class="table-data d-inline"name="prueba">
-                    <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
-                            class="fas fa-user-edit"></i></button>
-                    <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
-                            class="fas fa-clipboard-list"></i></button>
-                    <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                            class="fas fa-trash"></i></button>
-                </div>
-			</div>
-            {% empty %}
-            <h1>No hay empleados.</h1>
-            {% endfor %}
-            {% endfor %}
-      
+                {% empty %}
+                <h1>No hay empleados.</h1>
+                {% endfor %} {% endfor %}
 
-		</div>	
-	</div>
-</div>
-<!--
+
+            </div>
+        </div>
+    </div>
+    <!--
 
     <div class="container-fluid">
         <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
             <div class="form-check col-1 justify-content-center align-items-center">
-                <input class="select_all form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
-                    value="option1" aria-label="..." onclick="changeAll()">
+                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." onclick="changeOne()">
             </div>
             <h3 class="col-2">DNI</h3>
             <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
@@ -114,8 +117,7 @@
         </div>
 -->
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -129,8 +131,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmationButton" type="button" class="btn btn-success"
-                        data-dismiss="modal">Confirmar</button>
+                    <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -160,15 +161,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmationButton" type="button" class="btn btn-success"
-                        data-dismiss="modal">Confirmar</button>
+                    <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade bd-example-modal-lg" id="UserModal" tabindex="-1" role="dialog"
-        aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -221,23 +220,105 @@
         </div>
     </div>
 
-    {% endblock body %}
-    {% block extra_scripts %}
+    <div class="modal fade" id="sendNotification" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createUserModalLabel">Enviar notificaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="dropdown text-center mt-3" style="width:100%;">
+                    <button onclick="showDestinataries()" class="btn btn-secondary dropbtn" style="width:92%">Ver destinatario</button>
+                    <div id="users_to_notify" class="dropdown-content"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center px-3">
+                        <label for="ticket_type">Tipo de notificación:</label>
+                        <select class="form-control text-center" required="" id="ticket_type">
+                                {% for option in notification_types %}
+                                <option value="{{ option.pk }}">{{ option.name }}</option>   
+                                {% endfor %}
+                              </select>
+                        <label for="ticket_description">Descripción:</label>
+                        <textarea cols="40" rows="5" class="form-control no-resize" required="" id="ticket_description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm_send" class="btn btn-success">Enviar</button>
+                    <button id="cancel_send" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sendNotification" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createUserModalLabel">Enviar notificaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="dropdown text-center mt-3" style="width:100%;">
+                    <button onclick="showDestinataries()" class="btn btn-secondary dropbtn" style="width:92%">Ver destinatario</button>
+                    <div id="users_to_notify" class="dropdown-content"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center px-3">
+                        <label for="ticket_type">Tipo de notificación:</label>
+                        <select class="form-control text-center" required="" id="ticket_type">
+                                {% for option in notification_types %}
+                                <option value="{{ option.pk }}">{{ option.name }}</option>   
+                                {% endfor %}
+                              </select>
+                        <label for="ticket_description">Descripción:</label>
+                        <textarea cols="40" rows="5" class="form-control no-resize" required="" id="ticket_description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm_send" class="btn btn-success">Enviar</button>
+                    <button id="cancel_send" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock body %} {% block extra_scripts %}
     <script>
+        function showDestinataries() {
+            document.getElementById("users_to_notify").classList.toggle("show");
+        }
+
         function changeAll() {
             state = document.getElementsByClassName('select_all')[0].checked;
             checkboxes = document.getElementsByClassName('select_user');
             Array.from(checkboxes).forEach(checkbox => checkbox.checked = state);
         }
 
+        function changeOne() {
+            general = document.getElementsByClassName('select_all')[0];
+            checkboxes = document.getElementsByClassName('select_user');
+            all_checked = true
+            Array.from(checkboxes).forEach(checkbox => {
+                if (checkbox.checked == false) {
+                    general.checked = false
+                    all_checked = false
+                }
+            });
+            if (all_checked) {
+                general.checked = true
+            }
+        }
+
         var dniToDisable = {};
 
-        $('#UserModal').on('show.bs.modal', function (event) {
+        $('#UserModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-            console.log("Hola", dni);
-            console.log("hola");
 
             var data = {
                 "dni": dni
@@ -256,8 +337,10 @@
                     type: 'GET',
                     dataType: "json",
                     data: data,
-                    headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                    success: function (data) {
+                    headers: {
+                        'X-CSRFToken': "{{csrf_token}}"
+                    },
+                    success: function(data) {
                         document.getElementById("id_name").value = data[0].fields.name;
                         document.getElementById("id_surnames").value = data[0].fields.surnames;
                         document.getElementById("id_dni").value = data[0].fields.dni;
@@ -265,8 +348,7 @@
                         document.getElementById("id_phone_number").value = data[0].fields.phone_number;
                         document.getElementById("id_email").value = data[0].fields.email;
                     },
-                    error: function (jqxhr) {
-                    }
+                    error: function(jqxhr) {}
                 });
             }
             document.getElementById("type").value = recipient
@@ -274,7 +356,7 @@
             modal.find('.modal-title').text(recipient)
         });
 
-        $('#userInteractions').on('show.bs.modal', function (event) {
+        $('#userInteractions').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
@@ -289,8 +371,10 @@
                 type: 'GET',
                 dataType: 'json',
                 data: data,
-                headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                success: function (data) {
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
                     $("#register_container").empty()
                     data.forEach(interaction => {
                         //RESOLV FIELDS
@@ -308,7 +392,7 @@
                         }
                         dateResolved = year + '-' + month + '-' + dt
                         timeResolved = date.toLocaleTimeString('es-ES')
-                        if (timeResolved.length < 8){
+                        if (timeResolved.length < 8) {
                             timeResolved = "0" + timeResolved;
                         }
 
@@ -328,25 +412,24 @@
 
                         $("#register_container").append(` 
                         <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
-                        <h5 class="col-3">`+ interactionTypeResolved + `</h5> 
-                        <h5 class="col-3">`+ stateResolved + `</h5>
+                        <h5 class="col-3">` + interactionTypeResolved + `</h5> 
+                        <h5 class="col-3">` + stateResolved + `</h5>
                         
-                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="`+ timeResolved + `" />
-                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="`+ dateResolved + `" />
-                        </div>`
-                        );
+                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="` + timeResolved + `" />
+                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="` + dateResolved + `" />
+                        </div>`);
                     });
                 },
-                error: function (jqxhr) {
+                error: function(jqxhr) {
                     alert("Error refreshing");
                 }
             });
         });
 
-        function updateInteraction(key, value, type){
+        function updateInteraction(key, value, type) {
 
-            console.log("Updating key("+ key + "): " + value);
-            
+            console.log("Updating key(" + key + "): " + value);
+
             var newInput = {
                 "type": type,
                 "key": key,
@@ -357,13 +440,15 @@
 
         }
 
-        function changeInteraction(newInput){
+        function changeInteraction(newInput) {
             $.ajax({
                 url: '/ajax/modifyInteraction/',
                 type: 'POST',
                 data: newInput,
-                headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                success: function (data) {
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
                     Swal.fire({
                         icon: 'success',
                         title: '¡Modificado con éxito!',
@@ -374,7 +459,7 @@
                         `
                     });
                 },
-                error: function (jqxhr) {
+                error: function(jqxhr) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -388,7 +473,7 @@
             });
         }
 
-        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+        $('#confirmDeleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
             var data = {
@@ -400,57 +485,151 @@
                 type: 'GET',
                 dataType: "json",
                 data: data,
-                headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                success: function (data) {
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
                     $("#userToDelete").text(data[0].fields.name + " " + data[0].fields.surnames);
                 },
-                error: function (jqxhr) {
-                }
+                error: function(jqxhr) {}
             });
 
             dniToDisable = data;
         });
 
-        $("#confirmationButton").click(function () {
+        $("#confirmationButton").click(function() {
             $.ajax({
                 url: '/ajax/delete_user/',
                 type: 'POST',
                 data: dniToDisable,
-                headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                success: function (data) {
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
                     document.location.reload()
                 },
-                error: function (jqxhr) {
+                error: function(jqxhr) {
                     alert("algo ha pasado")
                 }
             });
         });
-        $("#searchButton").click(function () {
+        $("#searchButton").click(function() {
             var nameToSearch = $("#searchInput").val()
-            if(nameToSearch != ""){
+            if (nameToSearch != "") {
 
-               $(".table-content").empty()
+                $(".table-content").empty()
                 $.ajax({
                     url: '/ajax/get_users_by_name/',
                     type: 'POST',
-                    data: {"name":nameToSearch},
-                    headers: { 'X-CSRFToken': "{{csrf_token}}" },
-                    success: function (data) {
+                    data: {
+                        "name": nameToSearch
+                    },
+                    headers: {
+                        'X-CSRFToken': "{{csrf_token}}"
+                    },
+                    success: function(data) {
                         $("#register_container").append(` 
                         
                         
                         
                         `)
                     },
-                    error: function (jqxhr) {
+                    error: function(jqxhr) {
                         alert("algo ha pasado")
                     }
                 });
-                
+
 
             }
-            
+
         })
-        
+
+
+        $('#sendNotification').on('show.bs.modal', function(event) {
+            checkboxes = document.getElementsByClassName('select_user');
+            users_div = document.getElementById("users_to_notify")
+            users_div.innerHTML = ""
+            Array.from(checkboxes).forEach(checkbox => {
+                if (checkbox.checked) {
+                    a = document.createElement("a")
+                    name = checkbox.parentNode.parentNode.childNodes[5].innerText
+                    dni = checkbox.parentNode.parentNode.childNodes[3].innerText
+                    a.appendChild(document.createTextNode("(" + dni + ") " + name))
+                    users_div.appendChild(a)
+                }
+            });
+        });
+
+        $("#confirm_send").click(function() {
+            dnis = []
+            checkboxes = document.getElementsByClassName('select_user');
+            Array.from(checkboxes).forEach(checkbox => {
+                if (checkbox.checked) {
+                    dni = checkbox.parentNode.parentNode.childNodes[3].innerText
+                    dnis.push(dni)
+                }
+            });
+            n = document.getElementById('ticket_type')
+            desc = document.getElementById('ticket_description')
+            $.ajax({
+                url: '/ajax/notification_ad/',
+                type: 'POST',
+                data: {
+                    "dnis": dnis,
+                    "notification_type": n.options[n.selectedIndex].value,
+                    "notification_desc": desc.value
+                },
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Enviado, ¡gracias!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        backdrop: 'rgba(80,80,80,0.4)'
+                    })
+                    desc.value = ""
+                    $('#sendNotification').modal('toggle');
+                },
+                error: function() {
+                    alert("Error al enviar la notificación")
+                }
+            });
+        });
+
+        function refresh_notifications() {
+            $.ajax({
+                url: '/ajax/get_notifications/',
+                type: 'POST',
+                dataType: "json",
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    notification_panel = document.getElementById("notifications_dropdown")
+                    notification_panel.innerHTML = ""
+                    notification_number = document.getElementById("notification_number")
+                    notification_number.innerText = data.length
+                    console.log(data)
+                    data.forEach(notification => {
+                        item = document.createElement("a")
+                        item.setAttribute("class", "dropdown-item")
+                        item.innerText = notification.date + " " + notification.type
+                        notification_panel.appendChild(item)
+                    });
+                },
+                error: function() {
+                    console.log("Error al traer las notificationes")
+                }
+            });
+        }
+        refresh_notifications();
+        setInterval(refresh_notifications, 300000);
+
+        function show_notifications() {
+            document.getElementById("notifications_dropdown").classList.toggle("show");
+        }
     </script>
     {% endblock %}
