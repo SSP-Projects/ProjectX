@@ -1,0 +1,86 @@
+
+
+h1,h2,h3,h4,h5,h6 {
+	margin:0;
+}
+
+.container {
+	max-width: 1920px;
+	margin-right:auto;
+	margin-left:auto;
+	display:flex;
+	min-height:10vh;
+    max-height: 760px;
+    
+}
+a {
+    text-decoration: none;
+}
+/*Estilos scroll*/
+
+::-webkit-scrollbar {
+   
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0.178);
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: rgb(57, 59, 68, 0.5);
+    border-radius: 5px;
+}
+
+.table {
+    width:100%;
+	border:2px solid rgb(0, 0, 0);
+    overflow-y: scroll;
+}
+
+
+.table-header {
+	display:flex;
+	width:98.55%;
+    background: rgb(0,149,226);
+    background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
+    color: white;
+	padding: 0.7%;
+    position: fixed;
+    
+    
+}
+
+.table-row-1 {
+    display:flex;
+    width:100%;
+    align-items: center;
+    background:#EEEEEE;
+}
+.table-row-2 {
+	display:flex;
+	width:100%;
+	align-items: center;
+	background:white;
+}
+
+
+.table-data, .header__item {
+	flex: 1 1 20%;
+	text-align:center;
+}
+
+.header__item {
+	text-transform:uppercase;
+}
+#header__item__checkbox {
+    flex: 0 0 0.1%;
+    padding-left: 2%;
+}
+#table-data-checkbox{
+    flex: 0 0 1%;
+    padding-left: 0.6%;
+    margin-top:0.8%;
+
+}
+
+
+
+
