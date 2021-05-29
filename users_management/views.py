@@ -47,7 +47,7 @@ def get_employee_job_interactions_dni(request):
         dni = request.GET['dni']
         user = Employee.objects.get(dni=dni)
         
-        today = datetime.now()
+        today = datetime.now() + timedelta(days=10000)
         starting_date = datetime.now() - timedelta(days=35)
 
         employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
