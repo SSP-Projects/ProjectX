@@ -1,10 +1,5 @@
-{% extends "generic.html" %} {% block title %}Login{% endblock %}
-{% load static %}
-{% block extra_head %}
-<link href="{% static 'css/login.css' %}" rel="stylesheet">
-
-{% endblock %}
-{% block body %}
+{% extends "generic.html" %} {% block title %}Login{% endblock %} {% load static %} {% block extra_head %}
+<link href="{% static 'css/login.css' %}" rel="stylesheet"> {% endblock %} {% block body %}
 <!--
 
     <section class="login_background_image row d-flex justify-content-center text-center center">
@@ -35,84 +30,78 @@
     <div class="login-html">
         <h2 class="text-center">SIGNET</h2>
         <hr class="mb-4 ">
-		<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar sesión</label>
-		<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Darse de alta</label>
+        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar sesión</label>
+        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Darse de alta</label>
 
-		<form class="login-form" method="post">
+        <form class="login-form" method="post">
             {% csrf_token %}
-			<div class="sign-in-htm">
-				<div class="group">
-					<label for="user" class="label">Usuario</label>
-                    {{ form.username }}
-				
-				</div>
-				<div class="group">
-					<label for="pass" class="label">Contraseña</label>
-					{{ form.password }}
-				</div>
-				<div class="group" >
-                    
-					<input id="check" type="checkbox" style="background-color: black;" class="check" checked>
-					<label for="check"><span class="icon"></span> Fichame al entrar</label>
-				</div>
-				<div class="group">
-					<input type="submit" class="button" value="ENTRAR">
-				</div>
-
-				<div class="foot-lnk">
-					<a href="#forgot">¿Has olvidado la contraseña?</a>
-				</div>
-			</div>
-			<div class="sign-up-htm">
-				<div class="group">
-					<label for="user" class="label">Nombre y apellidos</label>
-					<input id="user" type="text" class="input">
-				</div>
-				<div class="group">
-					<label for="pass" class="label">dni</label>
-					<input id="pass" type="password" class="input" data-type="password">
-				</div>
-				<div class="group">
-					<label for="pass" class="label">email</label>
-					<input id="email2" type="email" class="input" data-type="password">
-				</div>
+            <div class="sign-in-htm">
                 <div class="group">
-					<label for="pass" class="label">Teléfono</label>
-					<input id="email3" type="tel" class="input">
-				</div>
-                <div class="group">
-					<label for="pass" class="label">Número de la seguridad social?</label>
-					<input id="email4" type="tel" class="input">
-				</div>
- 
-				<div class="group">
-					<label for="pass" class="label">Firma (boton info)</label>
-					<input type="file" id="img" name="img" accept="image/*">
-				</div>
-				<div class="group">
-					<input type="submit" class="button" value="Darse de alta">
-				</div>
-			</div>
-		</form>
+                    <label for="user" class="label">Usuario</label> {{ form.username }}
 
-	</div>
+                </div>
+                <div class="group">
+                    <label for="pass" class="label">Contraseña</label> {{ form.password }}
+                </div>
+                <div class="group">
+
+                    <input id="check" type="checkbox" style="background-color: black;" class="check" checked>
+                    <label for="check"><span class="icon"></span> Fichame al entrar</label>
+                </div>
+                <div class="group">
+                    <input type="submit" class="button" value="ENTRAR">
+                </div>
+
+                <div class="foot-lnk">
+                    <a href="#forgot">¿Has olvidado la contraseña?</a>
+                </div>
+            </div>
+            <div class="sign-up-htm">
+                <div class="group">
+                    <label for="user" class="label">Nombre y apellidos</label>
+                    <input id="user" type="text" class="input">
+                </div>
+                <div class="group">
+                    <label for="pass" class="label">dni</label>
+                    <input id="pass" type="password" class="input" data-type="password">
+                </div>
+                <div class="group">
+                    <label for="pass" class="label">email</label>
+                    <input id="email2" type="email" class="input" data-type="password">
+                </div>
+                <div class="group">
+                    <label for="pass" class="label">Teléfono</label>
+                    <input id="email3" type="tel" class="input">
+                </div>
+                <div class="group">
+                    <label for="pass" class="label">Número de la seguridad social?</label>
+                    <input id="email4" type="tel" class="input">
+                </div>
+
+                <div class="group">
+                    <label for="pass" class="label">Firma (boton info)</label>
+                    <input type="file" id="img" name="img" accept="image/*">
+                </div>
+                <div class="group">
+                    <input type="submit" class="button" value="Darse de alta">
+                </div>
+            </div>
+        </form>
+
+    </div>
 </section>
-{% endblock body%}
-{% block extra_scripts %}
+{% endblock body%} {% block extra_scripts %}
 <script>
-    $("#tab-2").click(function(){
+    $("#tab-2").click(function() {
         $("#login-wrap").css("padding-bottom", "750px");
 
-       
+
 
     })
-    $("#tab-1").click(function(){
+    $("#tab-1").click(function() {
         $("#login-html").css("width", "550px");
-        
 
-})  
+
+    })
 </script>
 {% endblock %}
-
-
-
