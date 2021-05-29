@@ -125,7 +125,7 @@ def admin(request):
                 employee.name = name
                 employee.user = user
                 employee.dni = dni
-                employee.center_id = center
+                employee.center = center
                 employee.surnames = surname
                 employee.ss_number = ss
                 employee.phone_number = phone
@@ -155,7 +155,7 @@ def admin(request):
 
             return redirect('admin')
     
-    employees = Employee.objects.all()
+    employees = Employee.objects.filter(user__is_active = True)
     userForm = forms.UserForm()
     studycenter_name = 'GMQ TECH'
     app_tittle = 'SIGNET'
@@ -199,6 +199,11 @@ def getUser(request):
         userJson = serializers.serialize('json', [ user, ])
         return HttpResponse(userJson, content_type="application/json")
     return None
+def get_users_by_name(request):
+     if request.is_ajax and request.method == "POST":
+        actual_employee = Employee.objects.get(user=request.user)
+        if actual_employee != None:
+            pass
 
 def delete_user(request):
     if request.is_ajax and request.method == "POST":

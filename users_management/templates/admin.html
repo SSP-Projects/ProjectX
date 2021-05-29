@@ -1,9 +1,17 @@
-{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %}  {% block body %} {% include "top/header.html" %}
+{% extends "generic.html" %} {% block title %}Admin Panel{% endblock %}
+  
+{% block extra_head %}
+{% load static %}
+<link href="{% static 'css/admin/admin.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button id="searchButton" class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <div>
             <button class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
@@ -12,42 +20,99 @@
         </div>
     </div>
 </nav>
-<div class="container-fluid">
-    <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
-        <div class="form-check col-1 justify-content-center align-items-center">
-            <input class="select_all form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
-                value="option1" aria-label="..." onclick="changeAll()">
+<div class="container">
+	
+	<div class="table">
+		<div class="table-header">
+            <div id="header__item__checkbox"  class="header__item">
+                <div class="form-check  ">
+                <input class="select_all form-check-input position-static" type="checkbox" id="blankCheckbox"
+                    value="option1" aria-label="..." onclick="changeAll()">
+            </div>
         </div>
-        <h3 class="col-2">DNI</h3>
-        <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
-    </div>
-    {% for employee in employees %}
-    {% if employee.user.is_active == True %}
-    {% if forloop.counter|divisibleby:2 %}
-    <div class="container-fluid row bg-white">
-        {% else %}
-        <div class="container-fluid row bg-light">
+			<div class="header__item"><h5>DNI</h5></div>
+			<div class="header__item"><h5>NOMBRE Y APELLIDOS</h5></div>
+            <div class="header__item"><h5>EMAIL</h5></div>
+            <div class="header__item"><h5>TELÉFONO</h5></div>
+            <div class="header__item"></div>
+
+		</div>
+		<div class="table-content">
+            {% for i in "123456789"%}
+            {% for employee in employees %}
+            {% if forloop.counter|divisibleby:2 %}
+			<div class="table-row-2">
+            {% else %}
+            <div class="table-row-1">
             {% endif %}
+                <div id="table-data-checkbox" class="table-data">
+                    <div class="form-check col-1 justify-content-center align-items-center">
+                    <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
+                        value="option1" aria-label="...">
+                    </div>
+                </div>
+		
+				<div class="table-data"><h5 id="DNI{{ forloop.counter }}">{{ employee.dni }}</h5></div>
+				<div class="table-data"><h5>{{ employee.name }} {{ employee.surnames }}</h5></div>
+                <div class="table-data"><h5>{{ employee.email }}</h5></div>
+                <div class="table-data"><h5>{{ employee.phone_number }}</h5></div>
+                <div class="table-data d-inline"name="prueba">
+                    <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                            class="fas fa-user-edit"></i></button>
+                    <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
+                            class="fas fa-clipboard-list"></i></button>
+                    <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                            class="fas fa-trash"></i></button>
+                </div>
+			</div>
+            {% empty %}
+            <h1>No hay empleados.</h1>
+            {% endfor %}
+            {% endfor %}
+      
+
+		</div>	
+	</div>
+</div>
+<!--
+
+    <div class="container-fluid">
+        <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
             <div class="form-check col-1 justify-content-center align-items-center">
-                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
-                    value="option1" aria-label="...">
+                <input class="select_all form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
+                    value="option1" aria-label="..." onclick="changeAll()">
             </div>
-            <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
-            <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
-            <div class="container-fluid col-1" name="prueba">
-                <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
-                        class="fas fa-user-edit"></i></button>
-                <button data-toggle="modal" data-target="#userInteractions" class="btn col-3"><i
-                        class="fas fa-clipboard-list"></i></button>
-                <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                        class="fas fa-trash"></i></button>
-            </div>
+            <h3 class="col-2">DNI</h3>
+            <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
         </div>
-        {% endif %}
-        {% empty %}
-        <h1>No hay empleados.</h1>
-        {% endfor %}
-    </div>
+        {% for employee in employees %}
+        {% if employee.user.is_active == True %}
+        {% if forloop.counter|divisibleby:2 %}
+        <div class="container-fluid row bg-white">
+            {% else %}
+            <div class="container-fluid row bg-light">
+                {% endif %}
+                <div class="form-check col-1 justify-content-center align-items-center">
+                    <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
+                        value="option1" aria-label="...">
+                </div>
+                <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
+                <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
+                <div class="container-fluid col-1" name="prueba">
+                    <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                            class="fas fa-user-edit"></i></button>
+                    <button data-toggle="modal" data-target="#userInteractions" class="btn col-3"><i
+                            class="fas fa-clipboard-list"></i></button>
+                    <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                            class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <h1>No hay empleados.</h1>
+            {% endfor %}
+        </div>
+-->
 
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -360,5 +425,32 @@
                 }
             });
         });
+        $("#searchButton").click(function () {
+            var nameToSearch = $("#searchInput").val()
+            if(nameToSearch != ""){
+
+               $(".table-content").empty()
+                $.ajax({
+                    url: '/ajax/get_users_by_name/',
+                    type: 'POST',
+                    data: {"name":nameToSearch},
+                    headers: { 'X-CSRFToken': "{{csrf_token}}" },
+                    success: function (data) {
+                        $("#register_container").append(` 
+                        
+                        
+                        
+                        `)
+                    },
+                    error: function (jqxhr) {
+                        alert("algo ha pasado")
+                    }
+                });
+                
+
+            }
+            
+        })
+        
     </script>
     {% endblock %}
