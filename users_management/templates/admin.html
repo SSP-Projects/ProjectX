@@ -2,10 +2,11 @@
 <link href="{% static 'css/admin/admin.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <form class="d-flex">
-            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button id="searchButton" class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        <div class="d-flex align-items-center"></form>
+            <input id="searchInput" class="form-control me-2" type="search" placeholder="Buscar por nombre" aria-label="Search">
+            <i class="fas fa-search  me-2"></i>
+
+        </div>
         <div>
             <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
@@ -37,45 +38,9 @@
             <div class="header__item"></div>
 
         </div>
-        <div class="table-content">
-            {% for i in "123456789"%} {% for employee in employees %} {% if forloop.counter|divisibleby:2 %}
-            <div class="table-row-2">
-                {% else %}
-                <div class="table-row-1">
-                    {% endif %}
-                    <div id="table-data-checkbox" class="table-data">
-                        <div class="form-check col-1 justify-content-center align-items-center">
-                            <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
-                        </div>
-                    </div>
+        <div id="tableContent" class="table-content">
 
-                    <div class="table-data">
-                        <h5 id="DNI{{ forloop.counter }}">{{ employee.dni }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.name }} {{ employee.surnames }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.email }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.phone_number }}</h5>
-                    </div>
-                    <div class="table-data d-inline" name="prueba">
-                        <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
-                            class="fas fa-user-edit"></i></button>
-                        <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
-                            class="fas fa-clipboard-list"></i></button>
-                        <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                            class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-                {% empty %}
-                <h1>No hay empleados.</h1>
-                {% endfor %} {% endfor %}
-
-
-            </div>
+        </div>
         </div>
     </div>
     <!--
@@ -508,36 +473,70 @@
                 }
             });
         });
-        $("#searchButton").click(function() {
-            var nameToSearch = $("#searchInput").val()
-            if (nameToSearch != "") {
-
-                $(".table-content").empty()
-                $.ajax({
+        function get_employees_by_name(name){
+            $.ajax({
                     url: '/ajax/get_users_by_name/',
-                    type: 'POST',
+                    type: 'GET',
                     data: {
-                        "name": nameToSearch
+                        "name": name
                     },
+                    dataType:"json",
                     headers: {
                         'X-CSRFToken': "{{csrf_token}}"
                     },
                     success: function(data) {
-                        $("#register_container").append(` 
-                        
-                        
-                        
-                        `)
+                        $("#tableContent").empty()
+                        if(data.length == 0){
+                            $("#tableContent").append(` <div class="table-data"><h5 class="text-center">No se ha encontrado empleados</h5></div>`)
+                        }
+                        data.forEach( function (employee,i ) {
+                           
+                            rowColor =`<div class="table-row-2">`
+                            if(i%2 == 0){
+                            rowColor =`<div class="table-row-1">`   
+                            } 
+                            $("#tableContent").append(
+                            rowColor+`
+                        <div id="table-data-checkbox" class="table-data">
+                            <div class="form-check col-1 justify-content-center align-items-center">
+                                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                            </div>
+                        </div>
+
+                        <div class="table-data">
+                            <h5 id="DNI{{ forloop.counter }}">`+employee.fields.dni+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.name+" "+employee.fields.surnames+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.email+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.phone_number+`</h5>
+                        </div>
+                        <div class="table-data d-inline" name="prueba">
+                            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                                class="fas fa-user-edit"></i></button>
+                            <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
+                                class="fas fa-clipboard-list"></i></button>
+                            <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                                class="fas fa-trash"></i></button>
+                        </div>
+                        </div> `);
+                        });
+                   
                     },
                     error: function(jqxhr) {
                         alert("algo ha pasado")
                     }
                 });
+        }
 
-
-            }
-
-        })
+        $('#searchInput').on('input', function() {
+            var nameToSearch = $("#searchInput").val()
+            get_employees_by_name(nameToSearch)
+        });
 
 
         $('#sendNotification').on('show.bs.modal', function(event) {
@@ -626,5 +625,6 @@
         function show_notifications() {
             document.getElementById("notifications_dropdown").classList.toggle("show");
         }
+        get_employees_by_name("")
     </script>
     {% endblock %}
