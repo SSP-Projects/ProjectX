@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'^ajax/get_employee_job_interactions_dni/',views.get_employee_job_interactions_dni, name='get_employee_job_interactions_dni'),
     url(r'^ajax/modifyInteraction/',views.modifyInteraction, name='modifyInteraction'),
     url(r'^ajax/get_users_by_name/',views.get_users_by_name, name='get_users_by_name'),
-    
+    url(r'^ajax/get_employee_job_interactions_date_range/',views.get_employee_job_interactions_date_range, name='get_employee_job_interactions_date_range'),
 ]
