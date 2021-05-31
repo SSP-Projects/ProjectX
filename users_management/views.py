@@ -14,7 +14,7 @@ last_user = None
 def register(request):
     form = forms.RegisterForm()
     return render(request, 'register.html', context={'form': form})
-
+##HOME
 @login_required(login_url='/accounts/login/')
 def home(request):
     if request.user.is_staff:
@@ -56,6 +56,10 @@ def get_employee_job_interactions_dni(request):
         return HttpResponse(interactions_json, content_type="application/json")
     return None
 
+def get_employee_actual_status(request):
+    actual_employee = Employee.objects.get(user=request.user)
+
+    return HttpResponse(json.dumps({"employeeStatus":actual_employee.work_status}), content_type="application/json")
 def getEmployeeInteractions(request):
 
     actual_employee = Employee.objects.get(user=request.user)

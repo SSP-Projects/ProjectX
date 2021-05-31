@@ -8,8 +8,11 @@ urlpatterns = [
     url(r'^register/', views.register, name='register'),
     url(r'^home/', views.home, name='home'), # This view will change if u re admin
     url(r'^admin/', views.admin, name='admin'),
+    #home
     url(r'^ajax/insert_job_interaction/',views.postInteraction, name='postInteraction'),
     url(r'^ajax/get_employee_job_interactions/',views.getEmployeeInteractions, name='getEmployeeInteractions'),
+    url(r'^ajax/get_employee_actual_status/',views.get_employee_actual_status, name='get_employee_actual_status'),
+    #admin
     url(r'^ajax/get_user/',views.getUser, name='getUser'),
     url(r'^ajax/notification_ad/', views.staff_send_notification, name='sendNotificationAd'),
     url(r'^ajax/notification/', views.send_notification, name='sendNotification'),
@@ -18,5 +21,6 @@ urlpatterns = [
     url(r'^ajax/get_employee_job_interactions_dni/',views.get_employee_job_interactions_dni, name='get_employee_job_interactions_dni'),
     url(r'^ajax/modifyInteraction/',views.modifyInteraction, name='modifyInteraction'),
     url(r'^ajax/get_users_by_name/',views.get_users_by_name, name='get_users_by_name'),
+
     
 ]

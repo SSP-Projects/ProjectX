@@ -32,6 +32,14 @@
         </section>
     </section>
     <section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4 ">
+      <div class="container-fluid background-blue  border">
+        <div class="container-fluid row mx-1  py-2 ">
+          <input class="col-2 my-0" type="date">
+          <h4 class="col-3 my-0">Acción</h4>
+          <h4 class="col-3 my-0">Hora</h4>
+
+        </div>
+      <!--
         <div class="container-fluid background-blue  border">
             <div class="container-fluid row mx-1  py-2 ">
                 <h4 class="col-3 my-0">Tipo</h4>
@@ -39,12 +47,10 @@
                 <h4 class="col-3 my-0">Hora</h4>
                 <div class="col-3 container-fluid row">
                     <h4 class="col-10 my-0">Fecha</h4>
-                    <!--
-            <img class="col-2" id="refreshButton" src="{% static 'media/images/refresh_button.png' %}"  alt="refresh">
-            
-          -->
+                        
+          
                     <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
-                    <a class="col-2" href="#" id="#refreshButton">
+                    <a class="col-2" href="#" id="refreshButton">
                         <lord-icon src="https://cdn.lordicon.com/krmfspeu.json" trigger="click" colors="primary:#16a9c7,secondary:#86c716" stroke="68" scale="60" axis-x="49" style="width:60px;height:40px">
                         </lord-icon>
                     </a>
@@ -57,6 +63,7 @@
             </div>
             <br>
         </div>
+      -->
     </section>
 
     <!-- Modal -->
@@ -71,7 +78,6 @@
           <span aria-hidden="true">&times;</span>
         </button>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button id="confirmationButton" type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
@@ -85,95 +91,125 @@
 {% endblock body%} {% block extra_scripts %}
 <script>
     $(document).ready(function() {
-        $('#confirmationButtonSuccess').click(function() {
-            location.reload();
-        })
-        $('#confirmationButtonError').click(function() {
-            location.reload();
-        })
-        var workingStatus = '{{workingStatus}}';
-        var textToShowInModal = "default"
-        var data = {}
-        if (workingStatus == "isntWorking") {
-            $("#break-button").prop('disabled', true)
-            $("#work-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
-            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
-            $("#work-button").prop('title', "Entrar al trabajo")
-            $("#break-button").prop('title', "No puedes entrar al descanso sin haber entrado al trabajo")
-        } else if (workingStatus == "isWorking") {
-            $("#break-button").prop('disabled', false)
-            $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
-            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
-            $("#work-button").prop('title', "Salir del trabajo")
-            $("#break-button").prop('title', "Entrar al descanso")
-        } else if (workingStatus == "breaking") {
-            $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
-            $("#break-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
-            $("#work-button").prop('title', "No puedes salir del trabajo sin haber salido del descanso")
-            $("#break-button").prop('title', "Salir del descanso")
-            $("#work-button").prop('disabled', true)
-            $("#break-button").prop('disabled', false)
+      var data = {}
+      var textToShowInModal = "default"
+      function get_employee_actual_status(){
+        $.ajax({
+              url: '/ajax/get_employee_actual_status/',
+              type: 'GET',
+              dataType:"json",
+              data: undefined,
+              headers: {
+                  'X-CSRFToken': "{{csrf_token}}"
+              },
+              success: function(data) {
+
+                load_buttons_status(data.employeeStatus)
+
+              },
+              error: function(xhr, status, error) {
+                
+                  Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: '¡Algo ha salido mal!',
+                          footer: '<a href>¿Porque he tenido este problema?</a>',
+                          backdrop: 'rgba(0,0,123,0.4)'
+                      })
+                      .then(() => location.reload());
+              }
+          });
+
+        
         }
+        
+        function load_buttons_status(status){
 
-        $('#confirmationModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-                //var recipient = button.data('whatever') // Extract info from data-* attributes
-                //document.getElementById("type").value = recipient
-            var modal = $(this)
-            modal.find('.modal-title').text(textToShowInModal)
-        })
-        $("#work-button").click(function() {
-            if (workingStatus == "isntWorking") {
-                data = {
-                    'state': 0,
-                    'interaction_type': "work",
-                }
-                textToShowInModal = "¿Entrar al trabajo?"
-
-
-                //sendDataToDb(data);
-            } else if (workingStatus == "isWorking") {
-                data = {
-                    'state': 1,
-                    'interaction_type': "work",
-                }
-                textToShowInModal = "¿Salir del trabajo?"
-                $("#break-button").prop('disabled', false)
-                    //sendDataToDb(data);
-            } else if (workingStatus == "breaking") {
-                alert("No puedes salir del trabajo sin haber salido del descanso")
-            }
-
-
-        });
-
-        $("#break-button").click(function() {
-
-            if (workingStatus == "isntWorking") {
-                alert("No puedes entrar al descanso si no estas trabajando")
-            } else if (workingStatus == "isWorking") {
-                data = {
-                    'state': 0,
-                    'interaction_type': "break",
-                }
-                textToShowInModal = "¿Entrar al descanso?"
-
-            } else if (workingStatus == "breaking") {
-                data = {
-                    'state': 1,
-                    'interaction_type': "break",
-                }
-                textToShowInModal = "¿Salir del descanso?"
-            }
-        });
-        $("#confirmationButton").click(function() {
-            sendDataToDb(data)
-
-
-        });
-
+          var workingStatus = status;
+          
+          
+          if (workingStatus == "isntWorking") {
+              $("#break-button").prop('disabled', true)
+              $("#work-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
+              $("#work-button").prop('title', "Entrar al trabajo")
+              $("#break-button").prop('title', "No puedes entrar al descanso sin haber entrado al trabajo")
+          } else if (workingStatus == "isWorking") {
+              $("#break-button").prop('disabled', false)
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
+              $("#work-button").prop('title', "Salir del trabajo")
+              $("#work-button").prop('disabled', false)
+              $("#break-button").prop('title', "Entrar al descanso")
+          } else if (workingStatus == "breaking") {
+              $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+              $("#break-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
+              $("#work-button").prop('title', "No puedes salir del trabajo sin haber salido del descanso")
+              $("#break-button").prop('title', "Salir del descanso")
+              $("#work-button").prop('disabled', true)
+              $("#break-button").prop('disabled', false)
+          }
+          $("#work-button").click(function() {
+              if (workingStatus == "isntWorking") {
+                  data = {
+                      'state': 0,
+                      'interaction_type': "work",
+                  }
+                  textToShowInModal = "¿Entrar al trabajo?"
+  
+  
+                  //sendDataToDb(data);
+              } else if (workingStatus == "isWorking") {
+                  data = {
+                      'state': 1,
+                      'interaction_type': "work",
+                  }
+                  textToShowInModal = "¿Salir del trabajo?"
+                  $("#break-button").prop('disabled', false)
+                      //sendDataToDb(data);
+              } else if (workingStatus == "breaking") {
+                  //alert("No puedes salir del trabajo sin haber salido del descanso")
+              }
+  
+  
+          });
+  
+          $("#break-button").click(function() {
+  
+              if (workingStatus == "isntWorking") {
+                  //alert("No puedes entrar al descanso si no estas trabajando")
+              } else if (workingStatus == "isWorking") {
+                  data = {
+                      'state': 0,
+                      'interaction_type': "break",
+                  }
+                  textToShowInModal = "¿Entrar al descanso?"
+  
+              } else if (workingStatus == "breaking") {
+                  data = {
+                      'state': 1,
+                      'interaction_type': "break",
+                  }
+                  textToShowInModal = "¿Salir del descanso?"
+              }
+          });
+        }
+          $("#confirmationButton").click(function() {
+              sendDataToDb(data)
+  
+  
+          });
+          
+                  $('#confirmationModal').on('show.bs.modal', function(event) {
+                      var button = $(event.relatedTarget) // Button that triggered the modal
+                          //var recipient = button.data('whatever') // Extract info from data-* attributes
+                          //document.getElementById("type").value = recipient
+                      var modal = $(this)
+                      modal.find('.modal-title').text(textToShowInModal)
+                  })
+        
         function sendDataToDb(data) {
-            //
+          
             console.log("valor del data-> " + JSON.stringify((data)))
             $.ajax({
                 url: '/ajax/insert_job_interaction/',
@@ -191,7 +227,8 @@
                             timer: 1500,
                             backdrop: 'rgba(80,80,80,0.4)'
                         })
-                        .then(() => location.reload());
+                        .then(() => get_employee_actual_status());
+                        
 
                 },
                 error: function(jqxhr) {
@@ -203,10 +240,11 @@
                             footer: '<a href>¿Porque he tenido este problema?</a>',
                             backdrop: 'rgba(0,0,123,0.4)'
                         })
-                        .then(() => location.reload());
+                        
                 }
             });
         }
+
         //GET DE LAS INTERACCIONES
         function refreshInteractions() {
 
@@ -268,8 +306,12 @@
                 }
             });
         }
-        refreshInteractions()
+        $("#refreshButton").click(function(){
+          refreshInteractions()
+        });
+        get_employee_actual_status()
     });
+
 
     $("#confirm_send").click(function() {
         n = document.getElementById('ticket_type')
