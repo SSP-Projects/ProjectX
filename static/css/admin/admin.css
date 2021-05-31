@@ -38,15 +38,16 @@ a {
 
 .table-header {
 	display:flex;
-	width:98.55%;
+
     background: rgb(0,149,226);
     background: linear-gradient(0deg, rgba(0,149,226,1) 0%, rgba(2,110,231,1) 100%, rgba(0,149,226,1) 100%);
     color: white;
 	padding: 0.7%;
-    position: fixed;
+    
     
     
 }
+
 
 .table-row-1 {
     display:flex;

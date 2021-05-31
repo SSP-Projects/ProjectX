@@ -224,10 +224,18 @@ def getUser(request):
         return HttpResponse(userJson, content_type="application/json")
     return None
 def get_users_by_name(request):
-     if request.is_ajax and request.method == "POST":
-        actual_employee = Employee.objects.get(user=request.user)
+     if request.is_ajax and request.method == "GET":
+        actual_employee =" Employee.objects.get(user=request.user)"
         if actual_employee != None:
-            pass
+            nameToSearch = request.GET['name']
+            if nameToSearch == "":
+                employees = Employee.objects.all()
+            else:
+                employees = Employee.objects.filter(name__contains = nameToSearch)
+            employees_json = serializers.serialize('json',employees)
+            return HttpResponse(employees_json, content_type="application/json")
+        else:
+            return HttpResponse(405)
 
 def delete_user(request):
     if request.is_ajax and request.method == "POST":
