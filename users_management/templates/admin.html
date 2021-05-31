@@ -102,8 +102,9 @@
         </div>
     </div>
 
-    <div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+    <div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
@@ -112,6 +113,20 @@
                     </button>
                 </div>
                 <div class="modal-body text-center">
+                    <input type="hidden" id="hidden-dni">
+                    <div class="container-fluid row m-1">
+                        <div class="col-5">
+                            <label class="col-4" for="startDate">Primera Fecha:</label>
+                            <input class="col-6" type="date" name="startDate" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-5">
+                            <label class="col-4" for="startDate">Segunda Fecha:</label>
+                            <input class="col-6" type="date" name="startDate" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-2">
+                            <button id="searchDateButton" class="btn btn-info">Buscar <i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
                     <div class="container-fluid background-blue border">
                         <div class="container-fluid row g-0">
                             <h4 class="col-3 font-white">Tipo</h4>
@@ -252,6 +267,101 @@
 
     {% endblock body %} {% block extra_scripts %}
     <script>
+
+        $( "#searchDateButton" ).click(function() {
+            
+            var startDate = document.getElementById("startDate").value;
+            var endDate = document.getElementById("endDate").value;
+            var dni = document.getElementById("hidden-dni").value;
+            var data = {
+                "dni": dni,
+                "startDate": startDate,
+                "endDate": endDate
+            }
+            $("#register_container").append(`<h2>No hay resultados </h2>`);
+            $.ajax({
+                url: '/ajax/get_employee_job_interactions_date_range/',
+                type: 'GET',
+                dataType: 'json',
+                data: data,
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    console.log("gola")
+                    document.getElementById("register_container").innerHTML = "";
+                    $("#register_container").empty()
+                    data.forEach(interaction => {
+                        //RESOLV FIELDS
+
+                        date = new Date(interaction.fields.date_time);
+                        year = date.getFullYear();
+                        month = date.getMonth() + 1;
+                        dt = date.getDate();
+
+                        if (dt < 10) {
+                            dt = '0' + dt;
+                        }
+                        if (month < 10) {
+                            month = '0' + month;
+                        }
+                        dateResolved = year + '-' + month + '-' + dt
+                        timeResolved = date.toLocaleTimeString('es-ES')
+                        if (timeResolved.length < 8) {
+                            timeResolved = "0" + timeResolved;
+                        }
+
+                        interactionTypeResolved = ""
+                        if (interaction.fields.interaction_type == "work") {
+                            interactionTypeResolved = "Trabajo"
+                        } else {
+                            interactionTypeResolved = "Descanso"
+                        }
+
+                        stateResolved = ""
+                        if (interaction.fields.state == 0) {
+                            stateResolved = "Entrada"
+                        } else {
+                            stateResolved = "Salida"
+                        }
+
+                        $("#register_container").append(` 
+                        <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
+                        <h5 class="col-3">` + interactionTypeResolved + `</h5> 
+                        <h5 class="col-3">` + stateResolved + `</h5>
+                        
+                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="` + timeResolved + `" />
+                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="` + dateResolved + `" />
+                        </div>`);
+
+                        
+                    });
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Búsqueda realizada con éxito!',
+                        showConfirmButton: false,
+                        timer: 750,
+                        backdrop: `
+                        rgba(80,80,80,0.4)
+                        `
+                    });
+                },
+                error: function(jqxhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '¡Algo ha salido mal!',
+                        footer: '<a href>¿Porque he tenido este problema?</a>',
+                        backdrop: `
+                        rgba(0,0,123,0.4)
+                        `
+                    });
+                }
+            });
+
+        });
+
         function showDestinataries() {
             document.getElementById("users_to_notify").classList.toggle("show");
         }
@@ -324,7 +434,7 @@
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-            console.log(dni)
+            document.getElementById("hidden-dni").value = dni;
 
             var data = {
                 "dni": dni
