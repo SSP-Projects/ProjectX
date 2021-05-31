@@ -42,12 +42,30 @@ def home(request):
             })
     return redirect("/")
 
+def get_employee_job_interactions_date_range(request):
+    if request.is_ajax:
+        dni = request.GET['dni']
+        start_date = request.GET['startDate']
+        end_date = request.GET['endDate']
+        user = Employee.objects.get(dni=dni)
+
+        date_time_obj = datetime.strptime(end_date, '%Y-%m-%d')
+        end_date_obj = date_time_obj + timedelta(days=1)
+
+
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(start_date, end_date_obj)).order_by('-date_time')
+
+        interactions_json = serializers.serialize('json',employee_interactions)
+        return HttpResponse(interactions_json, content_type="application/json")
+    return None
+ 
+
 def get_employee_job_interactions_dni(request):
     if request.is_ajax:
         dni = request.GET['dni']
         user = Employee.objects.get(dni=dni)
         
-        today = datetime.now()
+        today = datetime.now() + timedelta(days=10000)
         starting_date = datetime.now() - timedelta(days=35)
 
         employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
@@ -55,7 +73,7 @@ def get_employee_job_interactions_dni(request):
         interactions_json = serializers.serialize('json',employee_interactions)
         return HttpResponse(interactions_json, content_type="application/json")
     return None
-
+ 
 def getEmployeeInteractions(request):
 
     actual_employee = Employee.objects.get(user=request.user)
@@ -224,10 +242,18 @@ def getUser(request):
         return HttpResponse(userJson, content_type="application/json")
     return None
 def get_users_by_name(request):
-     if request.is_ajax and request.method == "POST":
-        actual_employee = Employee.objects.get(user=request.user)
+     if request.is_ajax and request.method == "GET":
+        actual_employee =" Employee.objects.get(user=request.user)"
         if actual_employee != None:
-            pass
+            nameToSearch = request.GET['name']
+            if nameToSearch == "":
+                employees = Employee.objects.all()
+            else:
+                employees = Employee.objects.filter(name__contains = nameToSearch)
+            employees_json = serializers.serialize('json',employees)
+            return HttpResponse(employees_json, content_type="application/json")
+        else:
+            return HttpResponse(405)
 
 def delete_user(request):
     if request.is_ajax and request.method == "POST":

@@ -2,10 +2,11 @@
 <link href="{% static 'css/admin/admin.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <form class="d-flex">
-            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button id="searchButton" class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        <div class="d-flex align-items-center"></form>
+            <input id="searchInput" class="form-control me-2" type="search" placeholder="Buscar por nombre" aria-label="Search">
+            <i class="fas fa-search  me-2"></i>
+
+        </div>
         <div>
             <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
@@ -37,45 +38,9 @@
             <div class="header__item"></div>
 
         </div>
-        <div class="table-content">
-            {% for i in "123456789"%} {% for employee in employees %} {% if forloop.counter|divisibleby:2 %}
-            <div class="table-row-2">
-                {% else %}
-                <div class="table-row-1">
-                    {% endif %}
-                    <div id="table-data-checkbox" class="table-data">
-                        <div class="form-check col-1 justify-content-center align-items-center">
-                            <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
-                        </div>
-                    </div>
+        <div id="tableContent" class="table-content">
 
-                    <div class="table-data">
-                        <h5 id="DNI{{ forloop.counter }}">{{ employee.dni }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.name }} {{ employee.surnames }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.email }}</h5>
-                    </div>
-                    <div class="table-data">
-                        <h5>{{ employee.phone_number }}</h5>
-                    </div>
-                    <div class="table-data d-inline" name="prueba">
-                        <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
-                            class="fas fa-user-edit"></i></button>
-                        <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
-                            class="fas fa-clipboard-list"></i></button>
-                        <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                            class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-                {% empty %}
-                <h1>No hay empleados.</h1>
-                {% endfor %} {% endfor %}
-
-
-            </div>
+        </div>
         </div>
     </div>
     <!--
@@ -137,8 +102,9 @@
         </div>
     </div>
 
-    <div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+    <div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
@@ -147,6 +113,20 @@
                     </button>
                 </div>
                 <div class="modal-body text-center">
+                    <input type="hidden" id="hidden-dni">
+                    <div class="container-fluid row m-1">
+                        <div class="col-5">
+                            <label class="col-4" for="startDate">Primera Fecha:</label>
+                            <input class="col-6" type="date" name="startDate" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-5">
+                            <label class="col-4" for="startDate">Segunda Fecha:</label>
+                            <input class="col-6" type="date" name="startDate" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-2">
+                            <button id="searchDateButton" class="btn btn-info">Buscar <i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
                     <div class="container-fluid background-blue border">
                         <div class="container-fluid row g-0">
                             <h4 class="col-3 font-white">Tipo</h4>
@@ -287,6 +267,101 @@
 
     {% endblock body %} {% block extra_scripts %}
     <script>
+
+        $( "#searchDateButton" ).click(function() {
+            
+            var startDate = document.getElementById("startDate").value;
+            var endDate = document.getElementById("endDate").value;
+            var dni = document.getElementById("hidden-dni").value;
+            var data = {
+                "dni": dni,
+                "startDate": startDate,
+                "endDate": endDate
+            }
+            $("#register_container").append(`<h2>No hay resultados </h2>`);
+            $.ajax({
+                url: '/ajax/get_employee_job_interactions_date_range/',
+                type: 'GET',
+                dataType: 'json',
+                data: data,
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    console.log("gola")
+                    document.getElementById("register_container").innerHTML = "";
+                    $("#register_container").empty()
+                    data.forEach(interaction => {
+                        //RESOLV FIELDS
+
+                        date = new Date(interaction.fields.date_time);
+                        year = date.getFullYear();
+                        month = date.getMonth() + 1;
+                        dt = date.getDate();
+
+                        if (dt < 10) {
+                            dt = '0' + dt;
+                        }
+                        if (month < 10) {
+                            month = '0' + month;
+                        }
+                        dateResolved = year + '-' + month + '-' + dt
+                        timeResolved = date.toLocaleTimeString('es-ES')
+                        if (timeResolved.length < 8) {
+                            timeResolved = "0" + timeResolved;
+                        }
+
+                        interactionTypeResolved = ""
+                        if (interaction.fields.interaction_type == "work") {
+                            interactionTypeResolved = "Trabajo"
+                        } else {
+                            interactionTypeResolved = "Descanso"
+                        }
+
+                        stateResolved = ""
+                        if (interaction.fields.state == 0) {
+                            stateResolved = "Entrada"
+                        } else {
+                            stateResolved = "Salida"
+                        }
+
+                        $("#register_container").append(` 
+                        <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
+                        <h5 class="col-3">` + interactionTypeResolved + `</h5> 
+                        <h5 class="col-3">` + stateResolved + `</h5>
+                        
+                        <input type="time" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'time' )" value="` + timeResolved + `" />
+                        <input type="date" class="col-3 text-center " onblur="updateInteraction(` + interaction.pk + `, this.value, 'date' )" value="` + dateResolved + `" />
+                        </div>`);
+
+                        
+                    });
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Búsqueda realizada con éxito!',
+                        showConfirmButton: false,
+                        timer: 750,
+                        backdrop: `
+                        rgba(80,80,80,0.4)
+                        `
+                    });
+                },
+                error: function(jqxhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '¡Algo ha salido mal!',
+                        footer: '<a href>¿Porque he tenido este problema?</a>',
+                        backdrop: `
+                        rgba(0,0,123,0.4)
+                        `
+                    });
+                }
+            });
+
+        });
+
         function showDestinataries() {
             document.getElementById("users_to_notify").classList.toggle("show");
         }
@@ -359,7 +434,7 @@
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-            console.log(dni)
+            document.getElementById("hidden-dni").value = dni;
 
             var data = {
                 "dni": dni
@@ -508,36 +583,70 @@
                 }
             });
         });
-        $("#searchButton").click(function() {
-            var nameToSearch = $("#searchInput").val()
-            if (nameToSearch != "") {
-
-                $(".table-content").empty()
-                $.ajax({
+        function get_employees_by_name(name){
+            $.ajax({
                     url: '/ajax/get_users_by_name/',
-                    type: 'POST',
+                    type: 'GET',
                     data: {
-                        "name": nameToSearch
+                        "name": name
                     },
+                    dataType:"json",
                     headers: {
                         'X-CSRFToken': "{{csrf_token}}"
                     },
                     success: function(data) {
-                        $("#register_container").append(` 
-                        
-                        
-                        
-                        `)
+                        $("#tableContent").empty()
+                        if(data.length == 0){
+                            $("#tableContent").append(` <div class="table-data"><h5 class="text-center">No se ha encontrado empleados</h5></div>`)
+                        }
+                        data.forEach( function (employee,i ) {
+                           
+                            rowColor =`<div class="table-row-2">`
+                            if(i%2 == 0){
+                            rowColor =`<div class="table-row-1">`   
+                            } 
+                            $("#tableContent").append(
+                            rowColor+`
+                        <div id="table-data-checkbox" class="table-data">
+                            <div class="form-check col-1 justify-content-center align-items-center">
+                                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+                            </div>
+                        </div>
+
+                        <div class="table-data">
+                            <h5 id="DNI{{ forloop.counter }}">`+employee.fields.dni+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.name+" "+employee.fields.surnames+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.email+`</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>`+employee.fields.phone_number+`</h5>
+                        </div>
+                        <div class="table-data d-inline" name="prueba">
+                            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+                                class="fas fa-user-edit"></i></button>
+                            <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
+                                class="fas fa-clipboard-list"></i></button>
+                            <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+                                class="fas fa-trash"></i></button>
+                        </div>
+                        </div> `);
+                        });
+                   
                     },
                     error: function(jqxhr) {
                         alert("algo ha pasado")
                     }
                 });
+        }
 
-
-            }
-
-        })
+        $('#searchInput').on('input', function() {
+            var nameToSearch = $("#searchInput").val()
+            get_employees_by_name(nameToSearch)
+        });
 
 
         $('#sendNotification').on('show.bs.modal', function(event) {
@@ -626,5 +735,6 @@
         function show_notifications() {
             document.getElementById("notifications_dropdown").classList.toggle("show");
         }
+        get_employees_by_name("")
     </script>
     {% endblock %}
