@@ -33,7 +33,7 @@ class LoginForm(forms.Form):
 class NotificationForm(forms.ModelForm):
     class Meta:
         model = models.Notification
-        exclude = ['sender', 'receiver']
+        exclude = ['sender', 'receiver', 'viewed']
 
     def __init__(self, *args, **kwargs):
         super(NotificationForm, self).__init__(*args, **kwargs)

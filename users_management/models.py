@@ -34,7 +34,7 @@ class Center(models.Model):
 
 class Employee(models.Model):
     user                  = models.OneToOneField(User, on_delete=models.CASCADE)
-    center             = models.ForeignKey(Center, on_delete=models.CASCADE)
+    center                = models.ForeignKey(Center, on_delete=models.CASCADE)
     dni                   = models.CharField(max_length=9)
     ss_number             = models.CharField(max_length=12, validators=[RegexValidator(r'^\d{1,10}$')])
     professional_category = models.CharField(max_length=20) 
@@ -51,6 +51,7 @@ class Notification(models.Model):
     notification_type     = models.CharField(max_length=50)
     description           = models.CharField(max_length=500)
     date_time             = models.DateTimeField(auto_now=True)
+    viewed                = models.BooleanField(default=False)
 
 class Schedule(models.Model):
     entry_time            = models.TimeField()

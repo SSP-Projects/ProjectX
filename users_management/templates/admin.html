@@ -252,38 +252,61 @@
         </div>
     </div>
 
-    <div class="modal fade" id="sendNotification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="showNotification" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createUserModalLabel">Enviar notificaciones</h5>
+                    <h5 class="modal-title" id="send_by_text_show_notification"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="dropdown text-center mt-3" style="width:100%;">
-                    <button onclick="showDestinataries()" class="btn btn-secondary dropbtn" style="width:92%">Ver destinatario</button>
-                    <div id="users_to_notify" class="dropdown-content"></div>
-                </div>
                 <div class="modal-body">
-                    <div class="text-center px-3">
-                        <label for="ticket_type">Tipo de notificación:</label>
-                        <select class="form-control text-center" required="" id="ticket_type">
-                                {% for option in notification_types %}
-                                <option value="{{ option.pk }}">{{ option.name }}</option>   
-                                {% endfor %}
-                              </select>
-                        <label for="ticket_description">Descripción:</label>
-                        <textarea cols="40" rows="5" class="form-control no-resize" required="" id="ticket_description"></textarea>
+                    <div class="px-3">
+                        <h5 id="show_notification_type" class="mb-3"></h5>
+                        <textarea cols="40" rows="5" class="form-control no-resize" id="show_notification_description" readonly></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="confirm_send" class="btn btn-success">Enviar</button>
-                    <button id="cancel_send" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <input id="response_to" type="hidden">
+                    <button id="make_a_response_notification" class="btn btn-success">Responder</button>
+                    <input id="set_as_viewed" type="hidden">
+                    <button id="set_as_viewed_notification" type="button" class="btn btn-danger" data-dismiss="modal">Marcar como leído</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="responseNotification" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="send_to_text_response_notification"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center px-3">
+                        <label for="response_ticket_type">Tipo de notificación:</label>
+                        <select class="form-control text-center" required="" id="response_ticket_type">
+                                {% for option in notification_types %}
+                                <option value="{{ option.pk }}">{{ option.name }}</option>   
+                                {% endfor %}
+                              </select>
+                        <label for="response_ticket_description">Descripción:</label>
+                        <textarea cols="40" rows="5" class="form-control no-resize" required="" id="response_ticket_description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="response_to" type="hidden">
+                    <button id="send_response_notification" class="btn btn-success">Enviar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {% endblock body %} {% block extra_scripts %}
     <script>
@@ -547,8 +570,8 @@
             Array.from(checkboxes).forEach(checkbox => {
                 if (checkbox.checked) {
                     a = document.createElement("a")
-                    name = checkbox.parentNode.parentNode.childNodes[5].innerText
-                    dni = checkbox.parentNode.parentNode.childNodes[3].innerText
+                    name = checkbox.parentNode.parentNode.parentNode.childNodes[5].innerText
+                    dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText
                     a.appendChild(document.createTextNode("(" + dni + ") " + name))
                     users_div.appendChild(a)
                 }
@@ -560,7 +583,7 @@
             checkboxes = document.getElementsByClassName('select_user');
             Array.from(checkboxes).forEach(checkbox => {
                 if (checkbox.checked) {
-                    dni = checkbox.parentNode.parentNode.childNodes[3].innerText
+                    dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText
                     dnis.push(dni)
                 }
             });
@@ -607,10 +630,13 @@
                     notification_panel.innerHTML = ""
                     notification_number = document.getElementById("notification_number")
                     notification_number.innerText = data.length
-                    console.log(data)
                     data.forEach(notification => {
                         item = document.createElement("a")
                         item.setAttribute("class", "dropdown-item")
+                        item.setAttribute("id", notification.id)
+                        item.setAttribute("onclick", "show_notification(this)")
+                        item.setAttribute("data-toggle", "modal")
+                        item.setAttribute("data-target", "#showNotification")
                         item.innerText = notification.date + " " + notification.type
                         notification_panel.appendChild(item)
                     });
@@ -620,8 +646,103 @@
                 }
             });
         }
+
+        function show_notification(notification) {
+            $.ajax({
+                url: '/ajax/get_notification_to_show/',
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    'id': notification.id
+                },
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function(data) {
+                    sent_by = document.getElementById("send_by_text_show_notification")
+                    notification_type = document.getElementById("show_notification_type")
+                    notification_desc = document.getElementById("show_notification_description")
+                    set_as_viewed = document.getElementById("set_as_viewed")
+                    sent_by.innerHTML = "Enviado por " + data.sender_name
+                    notification_type.innerHTML = data.type
+                    notification_desc.value = data.desc
+                    set_as_viewed.value = notification.id
+                    document.getElementById("response_to").value = data.sender
+                },
+                error: function() {
+                    console.log("Error al traer las notificationes")
+                }
+            });
+        }
+
         refresh_notifications();
         setInterval(refresh_notifications, 300000);
+
+        $("#make_a_response_notification").click(function() {
+            $("#showNotification").modal("toggle")
+            receiver = document.getElementById("send_to_text_response_notification")
+            receiver.innerHTML = "Enviar respuesta a " + document.getElementById("send_by_text_show_notification").innerHTML.substring(12)
+            $('#responseNotification').modal("toggle")
+        })
+
+        $("#send_response_notification").click(function() {
+            receiver = document.getElementById("send_to_text_response_notification")
+            n = document.getElementById('response_ticket_type')
+            desc = document.getElementById('response_ticket_description')
+            $.ajax({
+                url: '/ajax/notification_ad/',
+                type: 'POST',
+                data: {
+                    "dnis": [receiver.innerHTML.match(/\(([^)]+)\)/)[1]],
+                    "notification_type": n.options[n.selectedIndex].value,
+                    "notification_desc": desc.value
+                },
+                headers: {
+                    'X-CSRFToken': "{{csrf_token}}"
+                },
+                success: function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Enviado, ¡gracias!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        backdrop: 'rgba(80,80,80,0.4)'
+                    })
+                    desc.value = ""
+                    $('#responseNotification').modal("toggle")
+                },
+                error: function() {
+                    alert("Error al enviar la notificación")
+                }
+            });
+        });
+
+        $("#set_as_viewed_notification").click(function() {
+        $.ajax({
+            url: '/ajax/set_notification_as_viewed/',
+            type: 'POST',
+            data: {
+                'id': document.getElementById("set_as_viewed").value
+            },
+            headers: {
+                'X-CSRFToken': "{{csrf_token}}"
+            },
+            success: function(data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Listo, ¡gracias!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: 'rgba(80,80,80,0.4)'
+                })
+                desc.value = ""
+                $('#sendNotification').modal('toggle');
+            },
+            error: function(jqxhr) {
+                alert("Error al enviar la notificación")
+            }
+        });
+    });
 
         function show_notifications() {
             document.getElementById("notifications_dropdown").classList.toggle("show");
