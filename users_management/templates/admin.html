@@ -167,9 +167,9 @@
                                 <div class="col-4 text-center">DNI</div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-4 text-center">{{ userForm.name }}</div>
-                                <div class="col-4 text-center">{{ userForm.surnames }}</div>
-                                <div class="col-4 text-center">{{ userForm.dni }}</div>
+                                <div id="inputName" class="col-4 text-center">{{ userForm.name }}</div>
+                                <div id="inputSurname" class="col-4 text-center">{{ userForm.surnames }}</div>
+                                <div id="inputDNI" class="col-4 text-center">{{ userForm.dni }}</div>
                             </div>
                             <div class="row">
                                 <div class="col-4 text-center">Nº SS</div>
@@ -177,9 +177,9 @@
                                 <div class="col-4 text-center">E-Mail</div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-4 text-center">{{ userForm.ss_number }}</div>
-                                <div class="col-4 text-center">{{ userForm.phone_number }}</div>
-                                <div class="col-4 text-center">{{ userForm.email }}</div>
+                                <div id="inputSS" class="col-4 text-center">{{ userForm.ss_number }}</div>
+                                <div id="inputPhone" class="col-4 text-center">{{ userForm.phone_number }}</div>
+                                <div id="inputEmail" class="col-4 text-center">{{ userForm.email }}</div>
                             </div>
                             <div class="row text-center">
                                 <div class="">FIRMA</div>
@@ -191,8 +191,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Confirmar</button>
+                    <button type="button" id="editButton" class="btn btn-warning" >Editar</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar</button>
                 </div>
                 </form>
             </div>
@@ -267,6 +268,33 @@
 
     {% endblock body %} {% block extra_scripts %}
     <script>
+
+        var inputName = document.getElementById("id_name");
+        var inputSurname = document.getElementById("id_surnames");
+        var inputDNI = document.getElementById("id_dni");
+        var inputSS = document.getElementById("id_ss_number");
+        var inputPhone = document.getElementById("id_phone_number");
+        var inputEmail = document.getElementById("id_email");
+        var editButton = document.getElementById("editButton");
+
+        $("#editButton").click(function(){
+            console.log("hola pepe")
+            if (inputName.disabled == true){
+                inputName.disabled = false;
+                inputSurname.disabled = false;
+                inputDNI.disabled = false;
+                inputSS.disabled = false;
+                inputPhone.disabled = false;
+                inputEmail.disabled = false;
+            }else{
+                inputName.disabled = true;
+                inputSurname.disabled = true;
+                inputDNI.disabled = true;
+                inputSS.disabled = true;
+                inputPhone.disabled = true;
+                inputEmail.disabled = true;
+            }
+        });
 
         $( "#searchDateButton" ).click(function() {
             
@@ -394,11 +422,23 @@
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var dni = button.parents()[0].parentNode.childNodes[3].innerText;
 
+            
+
+
             var data = {
                 "dni": dni
             }
 
             if (recipient === "Crear Usuario") {
+                editButton.style.visibility = "hidden";
+
+                inputName.disabled = false;
+                inputSurname.disabled = false;
+                inputDNI.disabled = false;
+                inputSS.disabled = false;
+                inputPhone.disabled = false;
+                inputEmail.disabled = false;
+
                 document.getElementById("id_name").value = "";
                 document.getElementById("id_surnames").value = "";
                 document.getElementById("id_dni").value = "";
@@ -406,6 +446,14 @@
                 document.getElementById("id_phone_number").value = "";
                 document.getElementById("id_email").value = "";
             } else {
+                editButton.style.visibility = "visible";
+                inputName.disabled = true;
+                inputSurname.disabled = true;
+                inputDNI.disabled = true;
+                inputSS.disabled = true;
+                inputPhone.disabled = true;
+                inputEmail.disabled = true;
+
                 $.ajax({
                     url: '/ajax/get_user/',
                     type: 'GET',
