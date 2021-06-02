@@ -1,0 +1,22 @@
+<div class="modal fade" id="showNotification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notificación enviada por el administrador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="px-3">
+                    <h5 id="show_notification_type" class="mb-3"></h5>
+                    <textarea cols="40" rows="5" class="form-control no-resize" id="show_notification_description" readonly></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input id="set_as_viewed" type="hidden">
+                <button id="set_as_viewed_notification" type="button" class="btn btn-success" data-dismiss="modal">Marcar como leído</button>
+            </div>
+        </div>
+    </div>
+</div>

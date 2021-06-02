@@ -1,0 +1,32 @@
+<div class="modal fade" id="sendNotification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createUserModalLabel">Enviar notificaciones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="dropdown text-center mt-3" style="width:100%;">
+                <button onclick="toggle_dropdown('users_to_notify')" class="btn btn-secondary dropbtn" style="width:92%">Ver destinatario</button>
+                <div id="users_to_notify" class="dropdown-content"></div>
+            </div>
+            <div class="modal-body">
+                <div class="text-center px-3">
+                    <label for="ticket_type">Tipo de notificación:</label>
+                    <select class="form-control text-center" required="" id="ticket_type">
+                            {% for option in notification_types %}
+                            <option value="{{ option.pk }}">{{ option.name }}</option>   
+                            {% endfor %}
+                          </select>
+                    <label for="ticket_description">Descripción:</label>
+                    <textarea cols="40" rows="5" class="form-control no-resize" required="" id="ticket_description"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm_send" class="btn btn-success">Enviar</button>
+                <button id="cancel_send" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
