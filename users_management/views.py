@@ -199,19 +199,45 @@ def get_notifications_from_current_user(request):
         to_return = []
         notifications = Notification.objects.filter(receiver=request.user)
         for notification in notifications:
-            notif_sender = notification.sender.username
+            notif_id = notification.pk
             notif_date = notification.date_time.strftime("%H:%M %d-%m-%Y")
             notif_type = NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name
-            notif_desc = notification.description
             to_return.append({
-                'sender':notif_sender,
+                'id': notif_id,
                 'date': notif_date,
-                'type': notif_type,
-                'description': notif_desc
+                'type': notif_type
             })
         return HttpResponse(json.dumps(to_return), content_type='application/json')
     return None
 
+def get_notification_by_id(request):
+    if request.is_ajax and request.method == "POST":
+        notification = Notification.objects.get(pk=request.POST['id'])
+        employee = Employee.objects.get(pk=notification.receiver.pk)
+        to_return = {
+            "sender": employee.pk,
+            'sender_name': '(' + str(employee.dni) + ') ' + employee.name + ' ' + employee.surnames,
+            'type': NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name,
+            'desc': notification.description    
+        }
+        return HttpResponse(json.dumps(to_return), content_type='application/json')
+
+def get_notification_by_id_user(request):
+    if request.is_ajax and request.method == "POST":
+        notification = Notification.objects.get(pk=request.POST['id'])
+        to_return = {
+            'type': NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name,
+            'desc': notification.description    
+        }
+        return HttpResponse(json.dumps(to_return), content_type='application/json')
+
+def set_notification_as_viewed(request):
+    if request.is_ajax and request.method == "POST":
+        notif = Notification.objects.get(pk=request.POST['id'])
+        notif.viewed = True
+        notif.save()
+        return HttpResponse(status=200)
+    return HttpResponse(status=403)
 
 def modifyInteraction(request):
     if request.is_ajax and request.method == "POST":
