@@ -290,6 +290,7 @@ def get_users_by_name(request):
 
 def delete_user(request):
     if request.is_ajax and request.method == "POST":
+        print(request.POST)
         dni = request.POST['dni']
         employee = Employee.objects.get(dni=dni)
         user = employee.user

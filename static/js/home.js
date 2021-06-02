@@ -1,15 +1,18 @@
 var textToShowInModal = "default"
 var data = {}
+var workingStatus 
 
 function confirmation_modal_event_function(event) {
-    var button = $(event.relatedTarget) // Button that triggered the modal
+    //var button = $(event.relatedTarget) // Button that triggered the modal
     //var recipient = button.data('whatever') // Extract info from data-* attributes
     //document.getElementById("type").value = recipient
-    var modal = $(this)
-    modal.find('.modal-title').text(textToShowInModal)
+    //var modal = $(this)
+    //console.log(modal.find('.modal-title'))
+    $("#modal_title").text(textToShowInModal)
 }
 
 function on_click_work_button_event_function(event) {
+    console.log(workingStatus)
     if (workingStatus == "isntWorking") {
         data = {
             'state': 0,
@@ -45,10 +48,6 @@ function on_click_break_button_event_function(event) {
         }
         textToShowInModal = "¿Salir del descanso?"
     }
-}
-
-function on_success_on_click_confirmation_button_event_function() {
-    show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status);
 }
 
 function on_click_confirmation_button_event_function(event) {
@@ -101,10 +100,8 @@ function on_success_refresh_interactions(data) {
 }
 //GET DE LAS INTERACCIONES
 function refreshInteractions() {
-    ajax_to_get_data("get_employee_job_interactions/", data);
+    ajax_to_get_data("get_employee_job_interactions/", data, success_function = on_success_refresh_interactions);
 }
-
-refreshInteractions()
 
 function on_success_on_click_confirm_send_event_function() {
     desc = document.getElementById("ticket_description");
@@ -153,8 +150,7 @@ function refresh_notifications() {
     ajax_to_get_data("get_notifications/", "", success_function = on_success_refresh_notifications);
 }
 
-refresh_notifications();
-setInterval(refresh_notifications, 300000);
+
 
 function on_success_show_notification(data) {
     notification_type = document.getElementById("show_notification_type")
@@ -183,36 +179,7 @@ function on_click_set_as_viewed_notification() {
     ajax_to_post_data("set_notification_as_viewed/", data, success_function = on_success_on_click_set_as_viewed_notification);
 }
 
-function on_success_get_employee_actual_status(data) {
-    var workingStatus = data.employeeStatus;
-    if (workingStatus == "isntWorking") {
-        $("#break-button").prop('disabled', true)
-        $("#work-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
-        $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
-        $("#work-button").prop('title', "Entrar al trabajo")
-        $("#break-button").prop('title', "No puedes entrar al descanso sin haber entrado al trabajo")
-    } else if (workingStatus == "isWorking") {
-        $("#break-button").prop('disabled', false)
-        $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
-        $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
-        $("#work-button").prop('title', "Salir del trabajo")
-        $("#work-button").prop('disabled', false)
-        $("#break-button").prop('title', "Entrar al descanso")
-    } else if (workingStatus == "breaking") {
-        $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
-        $("#break-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
-        $("#work-button").prop('title', "No puedes salir del trabajo sin haber salido del descanso")
-        $("#break-button").prop('title', "Salir del descanso")
-        $("#work-button").prop('disabled', true)
-        $("#break-button").prop('disabled', false)
-    }
-}
 
-function get_employee_actual_status() {
-    ajax_to_get_data("get_employee_actual_status/",
-    data, 
-    success_function = on_success_get_employee_actual_status,
-    error_function = show_feedback_to_user("error", "Oops...", false, 1500, "rgba(0,0,123,0.4)", text = "¡Algo ha salido mal!", action_on_end = location.reload, footer = "<a href>¿Porque he tenido este problema?</a>"));
-}
-
-get_employee_actual_status()
+refreshInteractions()
+refresh_notifications();
+setInterval(refresh_notifications, 300000);

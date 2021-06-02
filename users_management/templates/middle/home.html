@@ -72,6 +72,49 @@
 {% block extra_scripts %}
 <script src="{% static 'js/home.js' %}"></script>
 <script>
+    function on_success_on_click_confirmation_button_event_function() {
+        show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status);
+    }
+
+    function on_error_get_employee_actual_status(data) {
+        show_feedback_to_user("error", "Oops...", false, 1500, "rgba(0,0,123,0.4)", action_on_end = location.reload, text = "¡Algo ha salido mal!", footer = "<a href>¿Porque he tenido este problema?</a>")
+    }
+
+    function on_success_get_employee_actual_status(data) {
+        workingStatus = data.employeeStatus;
+        if (workingStatus == "isntWorking") {
+            $("#break-button").prop('disabled', true)
+            $("#work-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
+            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
+            $("#work-button").prop('title', "Entrar al trabajo")
+            $("#break-button").prop('title', "No puedes entrar al descanso sin haber entrado al trabajo")
+        } else if (workingStatus == "isWorking") {
+            $("#break-button").prop('disabled', false)
+            $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+            $("#break-button-img").prop('src', "{% static 'media/images/enter_break_button.png' %}")
+            $("#work-button").prop('title', "Salir del trabajo")
+            $("#work-button").prop('disabled', false)
+            $("#break-button").prop('title', "Entrar al descanso")
+        } else if (workingStatus == "breaking") {
+            $("#work-button-img").prop('src', "{% static 'media/images/exit_work_button.png' %}")
+            $("#break-button-img").prop('src', "{% static 'media/images/enter_work_button.png' %}")
+            $("#work-button").prop('title', "No puedes salir del trabajo sin haber salido del descanso")
+            $("#break-button").prop('title', "Salir del descanso")
+            $("#work-button").prop('disabled', true)
+            $("#break-button").prop('disabled', false)
+        }
+        refreshInteractions()
+    }   
+
+    function get_employee_actual_status() {
+        ajax_to_get_data("get_employee_actual_status/",
+        data, 
+        success_function = on_success_get_employee_actual_status,
+        error_function = on_error_get_employee_actual_status);
+    }
+
+    get_employee_actual_status()
+
     bind_event("#confirmationButtonSuccess", "click", location.reload)
     bind_event("#confirmationButtonError", "click", location.reload)
     bind_event("#work-button", "click", on_click_work_button_event_function)

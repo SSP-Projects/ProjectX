@@ -278,6 +278,7 @@ function confirm_delete_modal_event_function(event) {
 }
 
 function on_click_confirmation_button(event) {
+    console.log("adawdadad")
     ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload);
 }
 
@@ -435,6 +436,7 @@ function on_click_make_a_response_notification(event) {
 
 function on_success_on_click_send_response_notification() {
     show_feedback_to_user("success", "Enviado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
+    toggle_modal("#responseNotification")
 }
 
 function on_click_send_response_notification(event) {
