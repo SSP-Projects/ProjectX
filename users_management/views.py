@@ -195,7 +195,7 @@ def admin(request):
     })
 
 def get_notifications_from_current_user(request):
-    if request.is_ajax and request.method == "POST":
+    if request.is_ajax and request.method == "GET":
         to_return = []
         notifications = Notification.objects.filter(receiver=request.user)
         for notification in notifications:
@@ -211,10 +211,11 @@ def get_notifications_from_current_user(request):
     return None
 
 def get_notification_by_id(request):
-    if request.is_ajax and request.method == "POST":
-        notification = Notification.objects.get(pk=request.POST['id'])
+    if request.is_ajax and request.method == "GET":
+        notification = Notification.objects.get(pk=request.GET['id'])
         employee = Employee.objects.get(pk=notification.receiver.pk)
         to_return = {
+            'notification': notification.pk,
             "sender": employee.pk,
             'sender_name': '(' + str(employee.dni) + ') ' + employee.name + ' ' + employee.surnames,
             'type': NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name,
@@ -223,9 +224,10 @@ def get_notification_by_id(request):
         return HttpResponse(json.dumps(to_return), content_type='application/json')
 
 def get_notification_by_id_user(request):
-    if request.is_ajax and request.method == "POST":
-        notification = Notification.objects.get(pk=request.POST['id'])
+    if request.is_ajax and request.method == "GET":
+        notification = Notification.objects.get(pk=request.GET['id'])
         to_return = {
+            'notification': notification.pk,
             'type': NotificationTypesAuxiliar.objects.get(pk=notification.notification_type).name,
             'desc': notification.description    
         }

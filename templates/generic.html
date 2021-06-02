@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <title>{% block title %}Title{% endblock %}</title>
+    <title>{% block title %}Title{% endblock title %}</title>
     {% load static %}
-    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" />
-    <link href="{% static 'css/global.css' %}" rel="stylesheet"> {% block extra_head %}{% endblock %}
+    <link
+      href="{% static 'bootstrap/css/bootstrap.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css"
+    />
+    <link href="{% static 'css/global.css' %}" rel="stylesheet" />
+    {% block extra_head %}{% endblock extra_head %}
+  </head>
 
-
-
-</head>
-
-<body>
-    {% block body %}{% endblock body%}
-
-
+  <body>
+    {% block body %}{% endblock body %}
+    {% block modals %}{% endblock modals %}
     <footer class="fixed-bottom bg-light text-center text-lg-start">
-        <div class="text-end p-1" style="background-color: rgba(0, 0, 0, 0.2);">
-            © 2020 Copyright:
-            <a class="text-dark" href="https://mdbootstrap.com/" style="font-size: 0.8rem;">Powered by wuarrones</a>
-        </div>
+      <div class="text-end p-1" style="background-color: rgba(0, 0, 0, 0.2)">
+        © 2020 Copyright:
+        <a
+          class="text-dark"
+          href="https://mdbootstrap.com/"
+          style="font-size: 0.8rem"
+          >Powered by wuarrones</a
+        >
+      </div>
     </footer>
 
     <script src="{% static 'jquery/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/generic.js' %}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://kit.fontawesome.com/2d3dba4dd0.js" crossorigin="anonymous"></script>
-    <script src="{% static 'js/index.js' %}"></script>
-    {% block extra_scripts %}{% endblock %}
-
-
-</body>
-
+    <script
+      src="https://kit.fontawesome.com/2d3dba4dd0.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>function get_token() {return "{{csrf_token}}"}</script>
+    {% block extra_scripts %}{% endblock extra_scripts %}
+  </body>
 </html>
