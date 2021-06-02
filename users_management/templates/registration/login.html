@@ -31,7 +31,7 @@
         <h2 class="text-center">SIGNET</h2>
         <hr class="mb-4 ">
         <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar sesión</label>
-        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Darse de alta</label>
+        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
 
         <form class="login-form" method="post">
             {% csrf_token %}
@@ -54,36 +54,6 @@
 
                 <div class="foot-lnk">
                     <a href="#forgot">¿Has olvidado la contraseña?</a>
-                </div>
-            </div>
-            <div class="sign-up-htm">
-                <div class="group">
-                    <label for="user" class="label">Nombre y apellidos</label>
-                    <input id="user" type="text" class="input">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">dni</label>
-                    <input id="pass" type="password" class="input" data-type="password">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">email</label>
-                    <input id="email2" type="email" class="input" data-type="password">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">Teléfono</label>
-                    <input id="email3" type="tel" class="input">
-                </div>
-                <div class="group">
-                    <label for="pass" class="label">Número de la seguridad social?</label>
-                    <input id="email4" type="tel" class="input">
-                </div>
-
-                <div class="group">
-                    <label for="pass" class="label">Firma (boton info)</label>
-                    <input type="file" id="img" name="img" accept="image/*">
-                </div>
-                <div class="group">
-                    <input type="submit" class="button" value="Darse de alta">
                 </div>
             </div>
         </form>
