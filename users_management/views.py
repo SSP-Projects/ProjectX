@@ -1,12 +1,18 @@
+from re import template
 from django.http.response import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
+from django.template.loader import get_template
 from . import forms
 import json
 from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, NotificationTypesAuxiliar, User
 from django.core import serializers
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
+from io import BytesIO
+
+
+from xhtml2pdf import pisa
 
 
 last_user = None
@@ -61,6 +67,7 @@ def get_employee_job_interactions_date_range(request):
  
 
 def get_employee_job_interactions_dni(request):
+
     if request.is_ajax:
         dni = request.GET['dni']
         user = Employee.objects.get(dni=dni)
@@ -73,6 +80,9 @@ def get_employee_job_interactions_dni(request):
         interactions_json = serializers.serialize('json',employee_interactions)
         return HttpResponse(interactions_json, content_type="application/json")
     return None
+
+
+
 
 def get_employee_actual_status(request):
     actual_employee = Employee.objects.get(user=request.user)
@@ -108,30 +118,40 @@ def postInteraction(request):
     if request.is_ajax and request.method == "POST":
         actual_employee = Employee.objects.get(user=request.user)
         if actual_employee != None:
-            state = request.POST['state']
-            interaction_type=request.POST['interaction_type']
-            interaction=Interaction.objects.create(
-            state=state,
-            date_time=datetime.now(),
-            interaction_type=interaction_type,
-            employee=actual_employee
-            )
-    
-            state = int(state)    
-            if interaction_type == "work" and state == 0:
-                actual_employee.work_status ="isWorking"
-            if interaction_type == "work" and state == 1:
-                actual_employee.work_status ="isntWorking"
-            if interaction_type == "break" and state == 0:
-                actual_employee.work_status ="breaking"
-            if interaction_type == "break" and state == 1:
-                actual_employee.work_status ="isWorking"
-
-            actual_employee.save()
-            interaction.save()
-            return redirect("/home/")
+            today = datetime.now().date()
+            tomorrow = today + timedelta(1)
+            starting_date = datetime.combine(today, time())
+            end_date =   datetime.combine(tomorrow, time())
+            employee_interactions_count = Interaction.objects.filter(employee = actual_employee, interaction_type ="work",state=0, date_time__range=(starting_date, end_date)).count()
+           
+            if(employee_interactions_count < 2):
+                state = request.POST['state']
+                interaction_type=request.POST['interaction_type']
+                interaction=Interaction.objects.create(
+                state=state,
+                date_time=datetime.now(),
+                interaction_type=interaction_type,
+                employee=actual_employee
+                )
         
-    return redirect("/")
+                state = int(state)    
+                if interaction_type == "work" and state == 0:
+                    actual_employee.work_status ="isWorking"
+                if interaction_type == "work" and state == 1:
+                    actual_employee.work_status ="isntWorking"
+                if interaction_type == "break" and state == 0:
+                    actual_employee.work_status ="breaking"
+                if interaction_type == "break" and state == 1:
+                    actual_employee.work_status ="isWorking"
+
+                actual_employee.save()
+                interaction.save()
+                return HttpResponse({}, content_type="application/json")
+            else:
+                return HttpResponse({"error": "No se puede fichar más de dos veces el mismo dia"},  content_type="application/json")
+
+        
+    return HttpResponse(405,"Ha ocurrido un error")
        
     # some error occured
 
@@ -199,7 +219,7 @@ def admin(request):
     app_tittle = 'SIGNET'
     studycenter_name = 'GMQ TECH'
 
-    
+  
 
     return render(request, 'admin.html', context={
         'employees':employees,
@@ -208,6 +228,49 @@ def admin(request):
         'app_tittle':app_tittle,
         'notification_types': notification_types,
     })
+def get_pdf_from_month(request):
+    def first_day_of_month(date):
+        first_day = datetime(date.year, date.month, 1)
+        return first_day.strftime('%Y-%m-%d')
+    if request.is_ajax and request.method == "GET":
+        #COMPROBAR SI HAY PERMISOS
+        actual_employee = "Employee.objects.get(user=request.user)"
+        if actual_employee != None:
+            employee_to_download_register =Employee.objects.get(dni="45124141F")
+            year =request.GET['month'].split("-")[0]
+            month =request.GET['month'].split("-")[1]
+            starting_date =  first_day_of_month(date(int(year), int(month), 1))
+            end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
+            employee_interactions = Interaction.objects.filter(employee = employee_to_download_register, date_time__range=(starting_date, end_date))
+
+            template = get_template('pdf/pdf_template.html')
+            context_data = {
+            "year":year,
+            "month":month,
+            "employee":employee_to_download_register,
+            "employee_interactions":employee_interactions,
+            }
+            html  = template.render(context_data)
+            result = BytesIO()
+            pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+            result.seek(0)
+            if not pdf.err:
+                response = HttpResponse(result.read(), content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename=' "Registro_jornada"+context_data["month"]+"/"+context_data["year"]+".pdf"
+                return response
+            else:
+                return HttpResponse(500)
+
+
+            
+
+    
+    
+   
+     
+
+
+            
 
 def get_notifications_from_current_user(request):
     if request.is_ajax and request.method == "GET":
@@ -298,8 +361,11 @@ def get_users_by_name(request):
                 employees = Employee.objects.all()
             else:
                 employees = Employee.objects.filter(name__contains = nameToSearch)
-            employees_json = serializers.serialize('json',employees)
-            return HttpResponse(employees_json, content_type="application/json")
+            employees_json = json.loads(serializers.serialize('json',employees))
+            for employees in employees_json:
+               employees["fields"]["is_active"] =User.objects.get(pk = employees["fields"]["user"]).is_active 
+
+            return HttpResponse(json.dumps(employees_json), content_type="application/json")
         else:
             return HttpResponse(405)
 

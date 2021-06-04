@@ -91,7 +91,11 @@ function search_date_button_action(event) {
 function changeAll() {
     state = document.getElementsByClassName("select_all")[0].checked;
     checkboxes = document.getElementsByClassName("select_user");
-    Array.from(checkboxes).forEach((checkbox) => (checkbox.checked = state));
+    Array.from(checkboxes).forEach((checkbox) => {
+        if(checkbox.disabled == false){
+            checkbox.checked = state
+        }
+    });
 }
 
 function changeOne() {
@@ -278,8 +282,10 @@ function confirm_delete_modal_event_function(event) {
 }
 
 function on_click_confirmation_button(event) {
-    console.log("adawdadad")
     ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload);
+}
+function on_click_get_pdf(event) {
+    ajax_to_get_data("get_pdf_from_month/", {"year":2021,"month":6, "dni":"97745810P"});
 }
 
 function on_success_get_employees_by_name(data) {
@@ -287,19 +293,33 @@ function on_success_get_employees_by_name(data) {
     if (data.length == 0) {
         $("#tableContent").append(` <div class="table-data"><h5 class="text-center">No se ha encontrado empleados</h5></div>`);
     }
+   
     data.forEach(function (employee, i) {
         rowColor = `<div class="table-row-2">`;
         if (i % 2 == 0) {
             rowColor = `<div class="table-row-1">`;
         }
-        $("#tableContent").append(
-            rowColor +
-                `
-        <div id="table-data-checkbox" class="table-data">
-            <div class="form-check col-1 justify-content-center align-items-center">
-                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+        buttons = `<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal" disabled ="true"><i
+        class="fas fa-trash"></i></button>`
+        checkbox =` <div id="table-data-checkbox" class="table-data">
+        <div class="form-check col-2 justify-content-center align-items-center">
+            <input disabled ="true" class="select_user form-check-input position-static m-0 p-0" style="background-color:#BF1414;" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+
             </div>
-        </div>
+    </div>`
+        if(employee.fields.is_active == true){
+         buttons=`<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
+            class="fas fa-trash"></i></button>`
+            checkbox =` <div id="table-data-checkbox" class="table-data">
+            <div class="form-check col-2 justify-content-center align-items-center">
+                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+              
+            </div>
+        </div>`
+        }
+        $("#tableContent").append(
+            rowColor + checkbox+
+                `
 
         <div class="table-data">
             <h5 id="DNI{{ forloop.counter }}">` +
@@ -328,8 +348,8 @@ function on_success_get_employees_by_name(data) {
                 class="fas fa-user-edit"></i></button>
             <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
                 class="fas fa-clipboard-list"></i></button>
-            <button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                class="fas fa-trash"></i></button>
+                `+buttons+` 
+
         </div>
         </div> `
         );

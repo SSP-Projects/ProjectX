@@ -75,12 +75,19 @@
 {% block extra_scripts %}
 <script src="{% static 'js/home.js' %}"></script>
 <script>
-    function on_success_on_click_confirmation_button_event_function() {
-        show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status);
+    function on_success_on_click_confirmation_button_event_function(data) {
+        alert(data)
+        if('error' in data) {
+            show_feedback_to_user("error",data["error"], true, 15000, "rgba(0,0,123,0.4)", text = data["error"], footer = "<a href>¿Porque he tenido este problema?</a>")
+        } else {
+            alert("fsfd")
+            show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status); 
+           
+        }
     }
 
     function on_error_get_employee_actual_status(data) {
-        show_feedback_to_user("error", "Oops...", false, 1500, "rgba(0,0,123,0.4)", action_on_end = location.reload, text = "¡Algo ha salido mal!", footer = "<a href>¿Porque he tenido este problema?</a>")
+        show_feedback_to_user("error", "Oops...", true, 1500, "rgba(0,0,123,0.4)", action_on_end = location.reload, text = "¡Algo ha salido mal!", footer = "<a href>¿Porque he tenido este problema?</a>")
     }
 
     function on_success_get_employee_actual_status(data) {

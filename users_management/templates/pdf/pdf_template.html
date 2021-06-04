@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantilla para imprimir</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!--
+
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    -->
+
     <style>
-        body {
-            width: 100% ;
-            margin: 0 auto;
-        }
-        .background-weekend{
-          background-color: rgb(184, 184, 184);
-        }
-        .tg  {border-collapse:collapse;border-spacing:0;}
-        .tg td{border-color:black;border-style:solid;border-width:2px;font-family:Arial, sans-serif;font-size:14px;
-              overflow:hidden;padding:4.5px 5px;word-break:normal;}
-        .tg th{border-color:black;border-style:solid;border-width:2px;font-family:Arial, sans-serif;font-size:14px;
-              font-weight:normal;overflow:hidden;padding:4.5px 5px;word-break:normal;}
-        .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-
-
+      body {
+          width: 100% ;
+          margin: 0 auto;
+      }
+      .background-weekend{
+        background-color: rgb(184, 184, 184);
+      }
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:2px;font-family:Arial, sans-serif;font-size:14px;
+            overflow:hidden;padding:4.5px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:2px;font-family:Arial, sans-serif;font-size:14px;
+            font-weight:normal;overflow:hidden;padding:4.5px 5px;word-break:normal;}
+      .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
 
     </style>
 </head>
@@ -31,7 +31,7 @@
             <table class="tg">
             <thead>
               <tr class="container-fluid">
-                <th class="tg-0pky col-6" colspan="9">Mes/Año: variable &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trabajador:</th>
+                <th class="tg-0pky col-6" colspan="9">Mes/Año: {{month}} {{year}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trabajador:{{employee.name}} {{employee.surnames}}</th>
 
               </tr>
             </thead>
@@ -46,14 +46,31 @@
                 <td class="tg-0pky">Firma de entrada</td>
                 <td class="tg-0pky">Hora de salida</td>
                 <td class="tg-0pky">Firma de salida</td>
+                
               </tr>
+              {% for interaction in employee_interactions %}
+              {% ifchanged interaction.date_time.0|date:'d' %}
+              </tr>
+              <tr>
+                <td class="tg-0pky">{{interaction.date_time|date:'d'}}</td>
+                <td class="tg-0pky">{{interaction.date_time|date:'H:i'}}</td>
+                <td class="tg-0pky">firma</td>
+              {% else %}
+                <td class="tg-0pky">{{interaction.date_time|date:'H:i'}}</td>
+                <td class="tg-0pky">firma</td>
+          {% endifchanged %}
+
+            {% empty %}
+            <h1>No hay interacciones.</h1>
+            {% endfor %}
+          </tr>
             </tbody>
             </table>
     
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        monthDays = 31
+      /*
         var is_weekend =  function(date1){
         var dt = new Date(date1);
         
@@ -62,8 +79,8 @@
             return "weekend";
             } 
     }
-        for(i = 1; i < monthDays+1; i++){
-          if(is_weekend('Jun '+i+', 2021')){
+        for(i = 1; i <32; i++){
+          if(is_weekend('jun '+i+', 2021')){
             $("#pdfContainer").append(
                 `<tr class="background-weekend">
                 <td class="tg-0pky">`+i+`</td>
@@ -99,6 +116,6 @@
           }
           
         }
-
+  */
     </script>
 </html>
