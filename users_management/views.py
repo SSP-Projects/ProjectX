@@ -131,7 +131,7 @@ def postInteraction(request):
 
                 actual_employee.save()
                 interaction.save()
-                return HttpResponse({}, content_type="application/json")
+                return HttpResponse(200)
             else:
                 return HttpResponse({"error": "No se puede fichar más de dos veces el mismo dia"},  content_type="application/json")
 
