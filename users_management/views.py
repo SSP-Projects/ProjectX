@@ -80,11 +80,26 @@ def get_employee_actual_status(request):
     return HttpResponse(json.dumps({"employeeStatus":actual_employee.work_status}), content_type="application/json")
  
 def getEmployeeInteractions(request):
-
     actual_employee = Employee.objects.get(user=request.user)
     if actual_employee != None:
+        to_return = []
+        days = {}
+        #day-total_hours-details
+        #type-hour
+               
         employee_interactions = Interaction.objects.filter(employee = actual_employee).order_by('-date_time')
-        interactions_json = serializers.serialize('json',employee_interactions)
+        #for interaction in employee_interactions:
+        #    days[interaction.date_time.date()] 
+        #get total hours ordered by day
+        for interaction in employee_interactions:
+            print(interaction.interaction_type, interaction.state) 
+            try:
+                days[str(interaction.date_time.date())].append(str(interaction.date_time.time())[:8])
+            except:
+                days[str(interaction.date_time.date())] = [str(interaction.date_time.time())[:8]]
+        print(days)
+        interactions_json = serializers.serialize('json', employee_interactions)
+
         return HttpResponse(interactions_json, content_type="application/json")
     return redirect("/")
     
