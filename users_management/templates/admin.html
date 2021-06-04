@@ -8,6 +8,7 @@
 
         </div>
         <div>
+            <button class="btn notification-button" data-toggle="modal" data-target="#userHours"><i class="fas fa-hourglass-start"></button></i>
             <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
                     class="fas fa-user-plus"></i></button>
@@ -98,6 +99,7 @@
 {% include "modals/user_info.html" %}
 {% include "modals/user_interaction.html" %}
 {% include "modals/confirmation_to_delete.html" %}
+{% include "modals/user_hours.html" %}
 {% endblock modals %}
 {% block extra_scripts %}
 <script src="{% static 'js/admin.js' %}"></script>
@@ -106,7 +108,7 @@
     bind_event("#UserModal", 'show.bs.modal', user_modal_event_function)
     bind_event("#userInteractions", 'show.bs.modal', user_interaction_modal_event_function)
     bind_event("#confirmDeleteModal", 'show.bs.modal', confirm_delete_modal_event_function)
-    bind_event("#confirmationButton", "click", on_click_confirmation_button)
+    bind_event("#confirmationDeleteButton", "click", on_click_confirmation_button)
     bind_event("#searchDateButton", "click", search_date_button_action)
     bind_event("#confirm_send", "click", on_click_confirm_send_event_function)
     bind_event("#make_a_response_notification", "click", on_click_make_a_response_notification)

@@ -9,7 +9,7 @@
             </div>
 
             <div class="modal-body">
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="container-fluid">
                         {{ userForm.form_type }}
@@ -34,7 +34,8 @@
                             <div class="col-4 text-center">{{ userForm.email }}</div>
                         </div>
                         <div class="row text-center">
-                            <div class="">FIRMA</div>
+                            <div class="col-12">FIRMA</div>
+                            <div class="col-12 text-center">{{ userForm.signature }}</div>
                         </div>
                         <div class="row form-group text-center">
 
