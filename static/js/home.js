@@ -50,13 +50,11 @@ function on_click_break_button_event_function(event) {
 }
 
 function on_click_confirmation_button_event_function(event) {
-    
-    ajax_to_post_data("insert_job_interaction/", data, success_function = on_success_on_click_confirmation_button_event_function,error_function= on_error_submit_interaction);
+    console.log("asdgkljerkfgearklgjergbnearjkgbae")
+    ajax_to_post_data("insert_job_interaction/", data, success_function=on_success_on_click_confirmation_button_event_function);
 }
 function on_error_submit_interaction(error){
-
-    show_feedback_to_user("error","No puedes entrar en el trabajo mas de dos veces por dia", true, 15000, "rgba(0,0,123,0.4)", text =error)
-  
+    show_feedback_to_user("error",error, true, 15000, "rgba(0,0,123,0.4)", text =error)
 }
 
 function on_success_refresh_interactions(data) {
