@@ -5,6 +5,7 @@ var inputDNI = document.getElementById("id_dni");
 var inputSS = document.getElementById("id_ss_number");
 var inputPhone = document.getElementById("id_phone_number");
 var inputEmail = document.getElementById("id_email");
+var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
 
 
@@ -136,6 +137,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
+        inputSignature.disabled = false;
 
         document.getElementById("id_name").value = "";
         document.getElementById("id_surnames").value = "";
@@ -151,6 +153,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
+        inputSignature.disabled = true;
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
     document.getElementById("type").value = recipient;
@@ -275,11 +278,12 @@ function confirm_delete_modal_event_function(event) {
     };
     ajax_to_get_data("get_user/", data, success_function = on_success_confirm_delete_modal_event_function);
     dniToDisable = data;
+    console.log("Data: " + JSON.stringify(data))
 }
 
 function on_click_confirmation_button(event) {
-    console.log("adawdadad")
-    ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload);
+    console.log("Dnitodisable: " + JSON.stringify(dniToDisable))
+    ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload());
 }
 
 function on_success_get_employees_by_name(data) {
@@ -470,6 +474,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
+        inputSignature.disabled = false;
     } else {
         inputName.disabled = true;
         inputSurname.disabled = true;
@@ -477,5 +482,6 @@ function on_click_edit_button(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
+        inputSignature.disabled = true;
     }
 }

@@ -59,7 +59,7 @@ class NotificationForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames']
+        fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames', 'signature']
 
     form_type = forms.CharField( widget=forms.HiddenInput(attrs=
         {

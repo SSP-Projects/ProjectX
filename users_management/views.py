@@ -139,6 +139,7 @@ def admin(request):
             ss = form.cleaned_data.get('ss_number')
             phone = form.cleaned_data.get('phone_number')
             email = form.cleaned_data.get('email')
+            signature = request.FILES["signature"]
 
             if formType == "Crear Usuario":
 
@@ -153,6 +154,7 @@ def admin(request):
                 employee.ss_number = ss
                 employee.phone_number = phone
                 employee.email = email
+                employee.signature = signature
                 employee.professional_category = "Profesor"
                 
                 user.save()
@@ -168,7 +170,7 @@ def admin(request):
                 employee.ss_number = ss
                 employee.phone_number = phone
                 employee.email = email
-
+                employee.signature = signature
                 user.username = email
                 user.password = dni
 
