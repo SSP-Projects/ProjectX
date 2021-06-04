@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^ajax/modifyInteraction/',views.modifyInteraction, name='modifyInteraction'),
     url(r'^ajax/get_users_by_name/',views.get_users_by_name, name='get_users_by_name'),
     url(r'^ajax/get_employee_job_interactions_date_range/',views.get_employee_job_interactions_date_range, name='get_employee_job_interactions_date_range'),
+    url(r'^ajax/get_pdf_from_month/',views.get_pdf_from_month, name='get_pdf_from_month'),
 ]

@@ -11,6 +11,15 @@
             <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
                     class="fas fa-user-plus"></i></button>
+            <form method="GET" action="/ajax/get_pdf_from_month/">
+                <input type="month" name="month" required>
+                <input type="submit" value="Descargar pdf del mes">
+            </form>
+            <!--
+                <button id="pdfPrintButton" class="btn alert-button">Imprimir pdf</button>
+            
+            -->
+
         </div>
     </div>
 </nav>
@@ -105,5 +114,6 @@
     bind_event("#set_as_viewed_notification", "click", on_click_set_as_viewed_notification)
     bind_event("#editButton", "click", on_click_edit_button)
     bind_event("#searchInput", "input", on_input_search_input)
+    bind_event("#pdfPrintButton","click",on_click_get_pdf)
 </script>
 {% endblock %}

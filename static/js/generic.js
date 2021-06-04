@@ -7,16 +7,17 @@ function generic_error() {
 }
 
 function ajax_to_post_data(url, data, success_function = generic_success, error_function = generic_error) {
+   
     $.ajax({
         url: "/ajax/" + url,
         type: "POST",
         data: data,
         headers: {"X-CSRFToken": get_token()},
-        success: function() {
-            success_function();
+        success: function(data) {
+            success_function(data);
         },
-        error: function() {
-            error_function();
+        error: function(error) {
+            error_function(error);
         }
     });
 }
