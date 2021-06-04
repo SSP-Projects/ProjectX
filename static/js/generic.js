@@ -2,12 +2,11 @@ function generic_success() {
     console.log("SUCCESS");
 }
 
-function generic_error() {
-    console.log("ERROR");
+function generic_error(text) {
+    console.log(text);
 }
 
 function ajax_to_post_data(url, data, success_function = generic_success, error_function = generic_error) {
-   
     $.ajax({
         url: "/ajax/" + url,
         type: "POST",
@@ -16,8 +15,8 @@ function ajax_to_post_data(url, data, success_function = generic_success, error_
         success: function(data) {
             success_function(data);
         },
-        error: function(error) {
-            error_function(error);
+        error: function(data) {
+            error_function(data);
         }
     });
 }

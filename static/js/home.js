@@ -1,6 +1,6 @@
-var textToShowInModal = "default"
-var data = {}
-var workingStatus 
+var textToShowInModal = "default";
+var data = {};
+var workingStatus;
 
 function confirmation_modal_event_function(event) {
     //var button = $(event.relatedTarget) // Button that triggered the modal
@@ -8,56 +8,53 @@ function confirmation_modal_event_function(event) {
     //document.getElementById("type").value = recipient
     //var modal = $(this)
     //console.log(modal.find('.modal-title'))
-    $("#modal_title").text(textToShowInModal)
+    $("#modal_title").text(textToShowInModal);
 }
 
 function on_click_work_button_event_function(event) {
-    console.log(workingStatus)
+    console.log(workingStatus);
     if (workingStatus == "isntWorking") {
         data = {
-            'state': 0,
-            'interaction_type': "work",
-        }
-        textToShowInModal = "¿Entrar al trabajo?"
+            state: 0,
+            interaction_type: "work",
+        };
+        textToShowInModal = "¿Entrar al trabajo?";
     } else if (workingStatus == "isWorking") {
         data = {
-            'state': 1,
-            'interaction_type': "work",
-        }
-        textToShowInModal = "¿Salir del trabajo?"
-        $("#break-button").prop('disabled', false)
+            state: 1,
+            interaction_type: "work",
+        };
+        textToShowInModal = "¿Salir del trabajo?";
+        $("#break-button").prop("disabled", false);
     } else if (workingStatus == "breaking") {
-        alert("No puedes salir del trabajo sin haber salido del descanso")
+        alert("No puedes salir del trabajo sin haber salido del descanso");
     }
 }
 
 function on_click_break_button_event_function(event) {
     if (workingStatus == "isntWorking") {
-        alert("No puedes entrar al descanso si no estas trabajando")
+        alert("No puedes entrar al descanso si no estas trabajando");
     } else if (workingStatus == "isWorking") {
         data = {
-            'state': 0,
-            'interaction_type': "break",
-        }
-        textToShowInModal = "¿Entrar al descanso?"
-
+            state: 0,
+            interaction_type: "break",
+        };
+        textToShowInModal = "¿Entrar al descanso?";
     } else if (workingStatus == "breaking") {
         data = {
-            'state': 1,
-            'interaction_type': "break",
-        }
-        textToShowInModal = "¿Salir del descanso?"
+            state: 1,
+            interaction_type: "break",
+        };
+        textToShowInModal = "¿Salir del descanso?";
     }
 }
 
 function on_click_confirmation_button_event_function(event) {
-    
-    ajax_to_post_data("insert_job_interaction/", data, success_function = on_success_on_click_confirmation_button_event_function,error_function= on_error_submit_interaction);
+    console.log("asdgkljerkfgearklgjergbnearjkgbae")
+    ajax_to_post_data("insert_job_interaction/", data, success_function=on_success_on_click_confirmation_button_event_function);
 }
 function on_error_submit_interaction(error){
-
-    show_feedback_to_user("error","No puedes entrar en el trabajo mas de dos veces por dia", true, 15000, "rgba(0,0,123,0.4)", text =error)
-  
+    show_feedback_to_user("error",error, true, 15000, "rgba(0,0,123,0.4)", text =error)
 }
 
 function on_success_refresh_interactions(data) {
@@ -71,42 +68,47 @@ function on_success_refresh_interactions(data) {
         dt = date.getDate();
 
         if (dt < 10) {
-            dt = '0' + dt;
+            dt = "0" + dt;
         }
         if (month < 10) {
-            month = '0' + month;
+            month = "0" + month;
         }
-        dateResolved = year + '-' + month + '-' + dt
-        timeResolved = date.toLocaleTimeString('es-ES')
+        dateResolved = dt + "-" + month + "-" + year;
+        timeResolved = date.toLocaleTimeString("es-ES");
 
-        interactionTypeResolved = ""
+        interactionTypeResolved = "";
         if (interaction.fields.interaction_type == "work") {
-            interactionTypeResolved = "Trabajo"
+            interactionTypeResolved = "Trabajo";
         } else {
-            interactionTypeResolved = "Descanso"
+            interactionTypeResolved = "Descanso";
         }
 
-        stateResolved = ""
+        stateResolved = "";
         if (interaction.fields.state == 0) {
-            stateResolved = "Entrada"
+            stateResolved = "Entrada";
         } else {
-            stateResolved = "Salida"
+            stateResolved = "Salida";
         }
 
-        $("#register_container").append(` 
-        <div  class="container-fluid background-grey font-black row m-1  py-1">
-            <h5 class="col-3">` + interactionTypeResolved + `</h5> 
-            <h5 class="col-3">` + stateResolved + `</h5>
-            <h5 class="col-3">` + timeResolved + `</h5>
-            <div class="col-3 container-fluid row">
-            <h5 class="col-10">` + dateResolved + `</h5>
-            </div>
-        </div>`);
+        $("#register_container").append(
+            ` 
+        <div class="container-fluid background-grey font-black row m-1  py-1">
+            <h5 class="col-4">` +
+                dateResolved +
+                `</h5> 
+            <h5 class="col-4">` +
+                stateResolved +
+                `</h5>
+            <h5 class="col-4">` +
+                timeResolved +
+                `</h5>
+        </div>`
+        );
     });
 }
 //GET DE LAS INTERACCIONES
 function refreshInteractions() {
-    ajax_to_get_data("get_employee_job_interactions/", data, success_function = on_success_refresh_interactions);
+    ajax_to_get_data("get_employee_job_interactions/", data, (success_function = on_success_refresh_interactions));
 }
 
 function on_success_on_click_confirm_send_event_function() {
@@ -132,7 +134,7 @@ function on_click_confirm_send_event_function(event) {
         notification_type: n.options[n.selectedIndex].value,
         notification_desc: desc.value,
     };
-    ajax_to_post_data("notification_ad/", data, success_function = on_success_on_click_confirm_send_event_function);
+    ajax_to_post_data("notification_ad/", data, (success_function = on_success_on_click_confirm_send_event_function));
 }
 
 function on_success_refresh_notifications(data) {
@@ -153,25 +155,23 @@ function on_success_refresh_notifications(data) {
 }
 
 function refresh_notifications() {
-    ajax_to_get_data("get_notifications/", "", success_function = on_success_refresh_notifications);
+    ajax_to_get_data("get_notifications/", "", (success_function = on_success_refresh_notifications));
 }
 
-
-
 function on_success_show_notification(data) {
-    notification_type = document.getElementById("show_notification_type")
-    notification_desc = document.getElementById("show_notification_description")
-    set_as_viewed = document.getElementById("set_as_viewed")
-    notification_type.innerHTML = data.type
-    notification_desc.value = data.desc
-    set_as_viewed.value = data.notification
+    notification_type = document.getElementById("show_notification_type");
+    notification_desc = document.getElementById("show_notification_description");
+    set_as_viewed = document.getElementById("set_as_viewed");
+    notification_type.innerHTML = data.type;
+    notification_desc.value = data.desc;
+    set_as_viewed.value = data.notification;
 }
 
 function show_notification(notification) {
     data = {
         id: notification.id,
     };
-    ajax_to_get_data("get_notification_to_show_/", data, success_function = on_success_show_notification);
+    ajax_to_get_data("get_notification_to_show_/", data, (success_function = on_success_show_notification));
 }
 
 function on_success_on_click_set_as_viewed_notification() {
@@ -182,10 +182,9 @@ function on_click_set_as_viewed_notification() {
     data = {
         id: document.getElementById("set_as_viewed").value,
     };
-    ajax_to_post_data("set_notification_as_viewed/", data, success_function = on_success_on_click_set_as_viewed_notification);
+    ajax_to_post_data("set_notification_as_viewed/", data, (success_function = on_success_on_click_set_as_viewed_notification));
 }
 
-
-refreshInteractions()
+refreshInteractions();
 refresh_notifications();
 setInterval(refresh_notifications, 300000);

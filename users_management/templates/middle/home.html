@@ -28,29 +28,32 @@
         </div>
     </section>
 </section>
-<section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4 ">
-    <div class="container-fluid background-blue  border">
+<section class="container-fluid d-flex flex-wrap justify-content-center text-center font-white mt-4">
+    <div class="container-fluid background-blue border">
         <div class="container-fluid row mx-1  py-2 ">
-            <h4 class="col-3 my-0">Tipo</h4>
-            <h4 class="col-3 my-0">Acción</h4>
-            <h4 class="col-3 my-0">Hora</h4>
+            <h4 class="col-4 my-0">Día</h4>
+            <h4 class="col-4 my-0">Horas trabajadas</h4>
+            <h4 class="col-4 my-0">Detalles</h4>
+            <!--
             <div class="col-3 container-fluid row">
+                
                 <h4 class="col-10 my-0">Fecha</h4>
-                <!--
+                
             <img class="col-2" id="refreshButton" src="{% static 'media/images/refresh_button.png' %}"  alt="refresh">
             
-          -->
+          
                 <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
                 <a class="col-2" href="#" id="#refreshButton">
                     <lord-icon src="https://cdn.lordicon.com/krmfspeu.json" trigger="click" colors="primary:#16a9c7,secondary:#86c716" stroke="68" scale="60" axis-x="49" style="width:60px;height:40px">
                     </lord-icon>
                 </a>
+                -->
             </div>
 
         </div>
         <hr>
-        <div id="register_container">
-
+        <div id="register_container" class="container-fluid row">
+            
         </div>
         <br>
     </div>
@@ -73,13 +76,13 @@
 <script src="{% static 'js/home.js' %}"></script>
 <script>
     function on_success_on_click_confirmation_button_event_function(data) {
+        console.log("OADADADWAKDAWKDNAKDNAWKLDNAWKNDAWKNDAWND")
         alert(data)
         if('error' in data) {
             show_feedback_to_user("error",data["error"], true, 15000, "rgba(0,0,123,0.4)", text = data["error"], footer = "<a href>¿Porque he tenido este problema?</a>")
         } else {
             alert("fsfd")
             show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status); 
-           
         }
     }
 
