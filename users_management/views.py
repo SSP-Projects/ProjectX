@@ -195,7 +195,7 @@ def admin(request):
         form = forms.UserForm(request.POST)
         
         if form.is_valid():
-
+            
             formType = form.cleaned_data.get("form_type")
             name = form.cleaned_data.get('name')
             surname = form.cleaned_data.get('surnames')
@@ -203,7 +203,7 @@ def admin(request):
             ss = form.cleaned_data.get('ss_number')
             phone = form.cleaned_data.get('phone_number')
             email = form.cleaned_data.get('email')
-            signature = request.FILES["signature"]
+            signature = request.FILES['signature'] if 'signature' in request.FILES else False
 
             if formType == "Crear Usuario":
 
