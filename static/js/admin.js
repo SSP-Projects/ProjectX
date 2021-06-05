@@ -5,6 +5,7 @@ var inputDNI = document.getElementById("id_dni");
 var inputSS = document.getElementById("id_ss_number");
 var inputPhone = document.getElementById("id_phone_number");
 var inputEmail = document.getElementById("id_email");
+var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
 
 
@@ -146,6 +147,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
+        inputSignature.disabled = false;
 
         document.getElementById("id_name").value = "";
         document.getElementById("id_surnames").value = "";
@@ -161,6 +163,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
+        inputSignature.disabled = true;
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
     document.getElementById("type").value = recipient;
@@ -285,6 +288,7 @@ function confirm_delete_modal_event_function(event) {
     };
     ajax_to_get_data("get_user/", data, success_function = on_success_confirm_delete_modal_event_function);
     dniToDisable = data;
+    console.log("Data: " + JSON.stringify(data))
 }
 
 function on_click_confirmation_button(event) {
@@ -383,6 +387,44 @@ function send_notification_modal_event_function(event) {
             dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText;
             a.appendChild(document.createTextNode("(" + dni + ") " + name));
             users_div.appendChild(a);
+        }
+    });
+}
+
+function on_watch_hours_model(event){
+    checkboxes = document.getElementsByClassName("select_user");
+    users_div = document.getElementById("users_to_notify");
+    month_date = document.getElementById("monthDate");
+    console.log("asd", month_date.value)
+    if (month_date.value == ""){
+        month_date.valueAsDate = new Date();
+    }
+    
+    $("#user_hours_container").empty();
+    Array.from(checkboxes).forEach((checkbox) => {
+        if (checkbox.checked) {
+            document.getElementById("user_hours_container").innerHTML += "";
+            var name = checkbox.parentNode.parentNode.parentNode.childNodes[5].innerText;
+            dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText;
+            
+            var data = {
+                "dni" : dni,
+                "month_to_search" : month_date.value
+            }
+            console.log(data);
+            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
+                console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAA", data)
+                $("#user_hours_container").append(`
+                    <div class="table-row-2">
+                        <div class="table-data">
+                            <h5>` + name + `</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>` + data.hours + `</h5>
+                        </div>
+                    </div>`);
+            });
+            
         }
     });
 }
@@ -496,6 +538,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
+        inputSignature.disabled = false;
     } else {
         inputName.disabled = true;
         inputSurname.disabled = true;
@@ -503,5 +546,6 @@ function on_click_edit_button(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
+        inputSignature.disabled = true;
     }
 }

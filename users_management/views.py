@@ -80,7 +80,38 @@ def get_employee_job_interactions_dni(request):
         return HttpResponse(interactions_json, content_type="application/json")
     return None
 
+def get_hours_from_range(request):
 
+    if request.is_ajax:
+        dni = request.GET['dni']
+        date = request.GET['month_to_search']
+        user = Employee.objects.get(dni=dni)
+        date_month = datetime.strptime(date, "%Y-%m")
+        next_month = (date_month + timedelta(days=32)).replace(day=1)
+
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(date_month, next_month)).order_by('date_time')
+
+        firstTime = None
+        secondTime = None
+        totalTime = 0
+        for interaction in employee_interactions:
+            print(interaction.interaction_type, " ", interaction.state, "-> ", interaction.date_time)
+            if ((interaction.interaction_type == "work" and interaction.state == 0) or (interaction.interaction_type == "break" and interaction.state == 1)):
+                firstTime = interaction.date_time
+            elif ((interaction.interaction_type == "work" and interaction.state == 1) or (interaction.interaction_type == "break" and interaction.state == 0)):
+                secondTime = interaction.date_time
+            
+            if (firstTime is not None and secondTime is not None):
+                difference = secondTime - firstTime
+                days, seconds = difference.days, difference.seconds
+                hours = days * 24 + seconds // 3600
+                minutes = minutes = (seconds % 3600) // 60
+                hours += minutes / 60
+                totalTime += hours
+                firstTime = None
+                secondTime = None
+    formatted_hour = "{:.2f}".format(totalTime)
+    return HttpResponse(json.dumps({"hours" : formatted_hour}), content_type="application/json")
 
 
 def get_employee_actual_status(request):
@@ -172,6 +203,7 @@ def admin(request):
             ss = form.cleaned_data.get('ss_number')
             phone = form.cleaned_data.get('phone_number')
             email = form.cleaned_data.get('email')
+            signature = request.FILES["signature"]
 
             if formType == "Crear Usuario":
 
@@ -186,6 +218,7 @@ def admin(request):
                 employee.ss_number = ss
                 employee.phone_number = phone
                 employee.email = email
+                employee.signature = signature
                 employee.professional_category = "Profesor"
                 
                 user.save()
@@ -201,7 +234,7 @@ def admin(request):
                 employee.ss_number = ss
                 employee.phone_number = phone
                 employee.email = email
-
+                employee.signature = signature
                 user.username = email
                 user.password = dni
 
@@ -226,6 +259,7 @@ def admin(request):
         'app_tittle':app_tittle,
         'notification_types': notification_types,
     })
+   
 def get_pdf_from_month(request):
     def first_day_of_month(date):
         first_day = datetime(date.year, date.month, 1)
@@ -260,17 +294,6 @@ def get_pdf_from_month(request):
                 return response
             else:
                 return HttpResponse(500)
-
-
-            
-
-    
-    
-   
-     
-
-
-            
 
 def get_notifications_from_current_user(request):
     if request.is_ajax and request.method == "GET":

@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^ajax/get_employee_actual_status/',views.get_employee_actual_status, name='get_employee_actual_status'),
     #admin
     url(r'^ajax/get_user/',views.getUser, name='getUser'),
+    url(r'^ajax/get_hours_from_range/',views.get_hours_from_range, name='get_hours_from_range'),
     url(r'^ajax/notification_ad/', views.staff_send_notification, name='sendNotificationAd'),
     url(r'^ajax/notification/', views.send_notification, name='sendNotification'),
     url(r'^ajax/delete_user/',views.delete_user, name='delete_user'),
