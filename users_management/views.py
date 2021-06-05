@@ -32,8 +32,6 @@ def home(request):
     if actual_employee != None:
         username = ""
         workingStatus = actual_employee.work_status
-        if workingStatus == "new":
-            workingStatus = "isntWorking" 
         app_tittle = "SIGNET"
         studycenter_name = "GMQ TECH"
 
@@ -90,11 +88,26 @@ def get_employee_actual_status(request):
     return HttpResponse(json.dumps({"employeeStatus":actual_employee.work_status}), content_type="application/json")
  
 def getEmployeeInteractions(request):
-
     actual_employee = Employee.objects.get(user=request.user)
     if actual_employee != None:
+        to_return = []
+        days = {}
+        #day-total_hours-details
+        #type-hour
+               
         employee_interactions = Interaction.objects.filter(employee = actual_employee).order_by('-date_time')
-        interactions_json = serializers.serialize('json',employee_interactions)
+        #for interaction in employee_interactions:
+        #    days[interaction.date_time.date()] 
+        #get total hours ordered by day
+        for interaction in employee_interactions:
+            print(interaction.interaction_type, interaction.state) 
+            try:
+                days[str(interaction.date_time.date())].append(str(interaction.date_time.time())[:8])
+            except:
+                days[str(interaction.date_time.date())] = [str(interaction.date_time.time())[:8]]
+        print(days)
+        interactions_json = serializers.serialize('json', employee_interactions)
+
         return HttpResponse(interactions_json, content_type="application/json")
     return redirect("/")
     
@@ -108,10 +121,10 @@ def postInteraction(request):
             starting_date = datetime.combine(today, time())
             end_date =   datetime.combine(tomorrow, time())
             employee_interactions_count = Interaction.objects.filter(employee = actual_employee, interaction_type ="work",state=0, date_time__range=(starting_date, end_date)).count()
-           
-            if(employee_interactions_count < 2):
-                state = request.POST['state']
-                interaction_type=request.POST['interaction_type']
+            interaction_type=request.POST['interaction_type']
+            state = int(request.POST['state'])
+            if (employee_interactions_count < 2 and interaction_type == "work" and state == 0) or state == 1 or interaction_type =="break":
+               
                 interaction=Interaction.objects.create(
                 state=state,
                 date_time=datetime.now(),
@@ -119,9 +132,8 @@ def postInteraction(request):
                 employee=actual_employee
                 )
         
-                state = int(state)    
                 if interaction_type == "work" and state == 0:
-                    actual_employee.work_status ="isWorking"
+                    actual_employee.work_status ="isWorking"                                        
                 if interaction_type == "work" and state == 1:
                     actual_employee.work_status ="isntWorking"
                 if interaction_type == "break" and state == 0:
@@ -131,9 +143,9 @@ def postInteraction(request):
 
                 actual_employee.save()
                 interaction.save()
-                return HttpResponse({}, content_type="application/json")
+                return HttpResponse(json.dumps({"a": "Penesito"}),  content_type="application/json")
             else:
-                return HttpResponse({"error": "No se puede fichar más de dos veces el mismo dia"},  content_type="application/json")
+                return HttpResponse(json.dumps({"error": "No se puede entrar al trabajo más de 2 veces al día"}),  content_type="application/json")
 
         
     return HttpResponse(405,"Ha ocurrido un error")
