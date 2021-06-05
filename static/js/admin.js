@@ -385,6 +385,44 @@ function send_notification_modal_event_function(event) {
     });
 }
 
+function on_watch_hours_model(event){
+    checkboxes = document.getElementsByClassName("select_user");
+    users_div = document.getElementById("users_to_notify");
+    month_date = document.getElementById("monthDate");
+    console.log("asd", month_date.value)
+    if (month_date.value == ""){
+        month_date.valueAsDate = new Date();
+    }
+    
+    $("#user_hours_container").empty();
+    Array.from(checkboxes).forEach((checkbox) => {
+        if (checkbox.checked) {
+            document.getElementById("user_hours_container").innerHTML += "";
+            var name = checkbox.parentNode.parentNode.parentNode.childNodes[5].innerText;
+            dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText;
+            
+            var data = {
+                "dni" : dni,
+                "month_to_search" : month_date.value
+            }
+            console.log(data);
+            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
+                console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAA", data)
+                $("#user_hours_container").append(`
+                    <div class="table-row-2">
+                        <div class="table-data">
+                            <h5>` + name + `</h5>
+                        </div>
+                        <div class="table-data">
+                            <h5>` + data.hours + `</h5>
+                        </div>
+                    </div>`);
+            });
+            
+        }
+    });
+}
+
 function on_success_on_click_confirm_send_event_function() {
     desc = document.getElementById("ticket_description");
     show_feedback_to_user("success", "Enviado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
