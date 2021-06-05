@@ -118,9 +118,15 @@ function on_success_user_modal_event_function(data) {
     document.getElementById("id_name").value = data[0].fields.name;
     document.getElementById("id_surnames").value = data[0].fields.surnames;
     document.getElementById("id_dni").value = data[0].fields.dni;
+    document.getElementById("input_dni").value = data[0].fields.dni;
     document.getElementById("id_ss_number").value = data[0].fields.ss_number;
     document.getElementById("id_phone_number").value = data[0].fields.phone_number;
     document.getElementById("id_email").value = data[0].fields.email;
+
+    if(!data[0].fields.is_active){
+        $("#editButton").prop( "disabled", true )
+        
+    }
 }
 
 function user_modal_event_function(event) {
