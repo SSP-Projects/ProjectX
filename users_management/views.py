@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, NotificationTypesAuxiliar, User
 from django.core import serializers
 from datetime import datetime, timedelta, date, time
+from calendar import monthrange
 from io import BytesIO
 
 
@@ -233,9 +234,10 @@ def get_pdf_from_month(request):
         #COMPROBAR SI HAY PERMISOS
         actual_employee = "Employee.objects.get(user=request.user)"
         if actual_employee != None:
-            employee_to_download_register =Employee.objects.get(dni="45124141F")
+            dni=request.GET['employee_dni']
             year =request.GET['month'].split("-")[0]
             month =request.GET['month'].split("-")[1]
+            employee_to_download_register =Employee.objects.get(dni=dni)
             starting_date =  first_day_of_month(date(int(year), int(month), 1))
             end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
             employee_interactions = Interaction.objects.filter(employee = employee_to_download_register, date_time__range=(starting_date, end_date))
@@ -246,6 +248,7 @@ def get_pdf_from_month(request):
             "month":month,
             "employee":employee_to_download_register,
             "employee_interactions":employee_interactions,
+            "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1)
             }
             html  = template.render(context_data)
             result = BytesIO()
@@ -344,10 +347,13 @@ def modifyInteraction(request):
 def getUser(request):
     if request.is_ajax and request.method == "GET":
         dni = request.GET['dni']
-        user = Employee.objects.get(dni=dni)
-        globals()['last_user'] = user
-        userJson = serializers.serialize('json', [ user, ])
-        return HttpResponse(userJson, content_type="application/json")
+        employee = Employee.objects.get(dni=dni)
+        globals()['last_user'] = employee
+        employees_json = json.loads(serializers.serialize('json', [ employee, ]))
+        for employees in employees_json:
+            employees["fields"]["is_active"] =User.objects.get(pk = employees["fields"]["user"]).is_active
+
+        return HttpResponse(json.dumps(employees_json), content_type="application/json")
     return None
 def get_users_by_name(request):
      if request.is_ajax and request.method == "GET":
