@@ -32,8 +32,6 @@ def home(request):
     if actual_employee != None:
         username = ""
         workingStatus = actual_employee.work_status
-        if workingStatus == "new":
-            workingStatus = "isntWorking" 
         app_tittle = "SIGNET"
         studycenter_name = "GMQ TECH"
 
@@ -123,10 +121,10 @@ def postInteraction(request):
             starting_date = datetime.combine(today, time())
             end_date =   datetime.combine(tomorrow, time())
             employee_interactions_count = Interaction.objects.filter(employee = actual_employee, interaction_type ="work",state=0, date_time__range=(starting_date, end_date)).count()
-           
-            if(employee_interactions_count < 2):
-                state = request.POST['state']
-                interaction_type=request.POST['interaction_type']
+            interaction_type=request.POST['interaction_type']
+            state = int(request.POST['state'])
+            if (employee_interactions_count < 2 and interaction_type == "work" and state == 0) or state == 1 or interaction_type =="break":
+               
                 interaction=Interaction.objects.create(
                 state=state,
                 date_time=datetime.now(),
@@ -134,9 +132,8 @@ def postInteraction(request):
                 employee=actual_employee
                 )
         
-                state = int(state)    
                 if interaction_type == "work" and state == 0:
-                    actual_employee.work_status ="isWorking"
+                    actual_employee.work_status ="isWorking"                                        
                 if interaction_type == "work" and state == 1:
                     actual_employee.work_status ="isntWorking"
                 if interaction_type == "break" and state == 0:

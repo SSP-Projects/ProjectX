@@ -43,7 +43,7 @@ class Employee(models.Model):
     email                 = models.EmailField()
     name                  = models.CharField(max_length=30)
     surnames              = models.CharField(max_length=120)
-    work_status           = models.CharField(max_length=20, default="new")
+    work_status           = models.CharField(max_length=20, default="isntWorking")
 
 class Notification(models.Model):
     sender                = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
