@@ -2,40 +2,74 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createUserModalLabel">Nuevo usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+               
+                <h4 class="modal-title" id="createUserModalLabel">Crear empleado
+                    <button  type="button" id="editButton" class="btn"> 
+                        <i class="fas fa-pen" aria-hidden="true"></i>
+                    </button>
+
+                </h4>
+               
+                <button type="button"class="btn"  data-dismiss="modal">
+                    <i class="far fa-times-circle fa-2x"></i>
                 </button>
             </div>
+            
+            <div class="modal-body background-lightblue font-white">
+                <div id="only-edit-form">
+                    <form method="GET" action="/ajax/get_pdf_from_month/">
+                        <input id="input_dni" type="text" style="display: none;" name="employee_dni">
+                        <input class="py-1" type="month" name="month" required>
+                        <button type="submit" class=" btn-secondary py-1" >Descargar registros <i class="fas fa-arrow-circle-down"></i></button>
+                        
+                       
+                    </form>
+                    <div class="row py-4">
+                        <div class="col-3">Horas trabajadas:</div>
+                        <div class="col-1 background-grey font-black">50:43</div>
+                        
+                    </div>
+                    <hr class="background-grey">
 
-            <div class="modal-body">
+                </div>
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="container-fluid">
                         {{ userForm.form_type }}
-                        <div class="row">
-                            <div class="col-4 text-center">Nombre</div>
-                            <div class="col-4 text-center">Apellidos</div>
-                            <div class="col-4 text-center">DNI</div>
+                        <div class="row py-2">
+                            <div class="col-6 text-center">Nombre</div>
+                            <div class="col-6 text-center">Apellidos</div>
+                            
                         </div>
-                        <div class="row form-group">
-                            <div class="col-4 text-center">{{ userForm.name }}</div>
-                            <div class="col-4 text-center">{{ userForm.surnames }}</div>
-                            <div class="col-4 text-center">{{ userForm.dni }}</div>
+                        <div class="row form-group py-2">
+                            <div class="col-6 text-center">{{ userForm.name }}</div>
+                            <div class="col-6 text-center">{{ userForm.surnames }}</div>
+                           
                         </div>
-                        <div class="row">
-                            <div class="col-4 text-center">Nº SS</div>
-                            <div class="col-4 text-center">Teléfono</div>
-                            <div class="col-4 text-center">E-Mail</div>
+                        <div class="row py-2">
+                            <div class="col-6 text-center">DNI</div>
+                            <div class="col-6 text-center">Nº SS</div>
+                            
                         </div>
-                        <div class="row form-group">
-                            <div class="col-4 text-center">{{ userForm.ss_number }}</div>
-                            <div class="col-4 text-center">{{ userForm.phone_number }}</div>
-                            <div class="col-4 text-center">{{ userForm.email }}</div>
+                        <div class="row form-group py-2">
+                            <div class="col-6 text-center">{{ userForm.dni }}</div>
+                            <div class="col-6 text-center">{{ userForm.ss_number }}</div>
+                           
                         </div>
-                        <div class="row text-center">
-                            <div class="col-12">FIRMA</div>
-                            <div class="col-12 text-center">{{ userForm.signature }}</div>
+                        <div class="row py-2">
+                            <div class="col-6 text-center">Teléfono</div>
+                            <div class="col-6 text-center">E-Mail</div>
+                        </div>
+                        <div class="row form-group py-2">
+                            <div class="col-6 text-center">{{ userForm.phone_number }}</div>
+                            <div class="col-6 text-center">{{ userForm.email }}</div>
+                        </div>
+                        <div class="row text-center py-2">
+                            <div class="col-6">FIRMA</div>
+                            
+                        </div>
+                        <div class="row form-group py-2">
+                            <div class="col-6 text-center ">{{ userForm.signature }}</div>
                         </div>
 
                         <div class="row form-group text-center">
@@ -45,16 +79,12 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" id="editButton" class="btn btn-warning" >Editar</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-success">Confirmar</button>
+                
+                <button type="button" class="btn btn-cancel background-grey-dark font-white" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary ">Confirmar</button>
             </div>
             </form>
-            <form method="GET" action="/ajax/get_pdf_from_month/">
-                <input id="input_dni" type="text" style="display: none;" name="employee_dni">
-                <input type="month" name="month" required>
-                <input type="submit" value="Descargar pdf">
-            </form>
+
         </div>
     </div>
 </div>

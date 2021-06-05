@@ -81,7 +81,15 @@ a {
     margin-top:0.8%;
 
 }
+/* estilos dle modal
+
+*/
 
 
 
-
+hr {
+    margin-top: 0rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.972);
+}

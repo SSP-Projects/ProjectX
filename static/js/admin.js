@@ -7,6 +7,7 @@ var inputPhone = document.getElementById("id_phone_number");
 var inputEmail = document.getElementById("id_email");
 var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
+var onlyModalEdit = document.getElementById("only-edit-form");
 
 
 refresh_notifications();
@@ -139,8 +140,9 @@ function user_modal_event_function(event) {
     };
 
     if (recipient === "Crear Usuario") {
+       // document.getElementsByClassName("only-edit-form").style.visibility = "hidden";
         editButton.style.visibility = "hidden";
-
+        onlyModalEdit.style.display = "none";
         inputName.disabled = false;
         inputSurname.disabled = false;
         inputDNI.disabled = false;
@@ -155,8 +157,11 @@ function user_modal_event_function(event) {
         document.getElementById("id_ss_number").value = "";
         document.getElementById("id_phone_number").value = "";
         document.getElementById("id_email").value = "";
+     
     } else {
         editButton.style.visibility = "visible";
+        onlyModalEdit.style.display = "block";
+        //document.getElementsByClassName("only-edit-form").style.visibility = "visible";        
         inputName.disabled = true;
         inputSurname.disabled = true;
         inputDNI.disabled = true;
@@ -166,6 +171,7 @@ function user_modal_event_function(event) {
         inputSignature.disabled = true;
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
+    
     document.getElementById("type").value = recipient;
     var modal = $(this);
     modal.find(".modal-title").text(recipient);

@@ -32,6 +32,9 @@ body{
 .background-grey {
   background-color:rgb(250, 244, 244) !important;
 }
+.background-grey-dark {
+  background-color:rgb(160, 158, 158) !important;
+}
 .font-white {
   color: white;
 }
@@ -85,4 +88,8 @@ img{
 .dropdown a:hover {background-color: #ddd;}
 
 .show {display: block;}
+
+.fa-times-circle:hover {
+  color: red;
+}
 
