@@ -10,10 +10,8 @@ from .models import Employee, Interaction, Notification, Center, NotificationTyp
 from django.core import serializers
 from datetime import datetime, timedelta, date, time
 from io import BytesIO
-
-
 from xhtml2pdf import pisa
-
+import smtplib
 
 last_user = None
 
@@ -80,7 +78,6 @@ def get_employee_job_interactions_dni(request):
     return None
 
 def get_hours_from_range(request):
-
     if request.is_ajax:
         dni = request.GET['dni']
         date = request.GET['month_to_search']
@@ -112,6 +109,34 @@ def get_hours_from_range(request):
     formatted_hour = "{:.2f}".format(totalTime)
     return HttpResponse(json.dumps({"hours" : formatted_hour}), content_type="application/json")
 
+def send_email():
+    gmail_user = 'help.ssp.projects@gmail.com'
+    gmail_password = 'Pelirrojo64'
+
+    sent_from = gmail_user
+    to = ['garciamayosergio@gmail.com', 'sergio.munoz.lillo@gmail.com']
+    subject = 'OMG Super Important Message'
+    body = 'Hey, whats up?\n\n- You'
+    email_text = """\
+        From: %s
+        To: %s
+        Subject: %s
+
+        %s
+        """ % (sent_from, ", ".join(to), subject, body)
+
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+
+        print('Email sent!')
+    except:
+        print('Something went wrong...')
+      
+    print("Mensajes enviados!")
 
 def get_employee_actual_status(request):
     actual_employee = Employee.objects.get(user=request.user)
