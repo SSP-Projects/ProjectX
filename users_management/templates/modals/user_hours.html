@@ -8,30 +8,43 @@
                         <i class="far fa-times-circle fa-2x"></i>
                     </button>
                 </div>
-                <div class="modal-body text-center">
+                <div class="modal-body ">
                     <input type="hidden" id="hidden-dni">
-                    <div class="container-fluid row m-1">
+                    <div class="container-fluid row m-1 text-center py-3">
                         <div class="col-10">
-                            <label class="col-4" for="monthDate">Seleccione un mes:</label>
+                            <label class="col-3" for="monthDate"><h5>Seleccione un mes:</h5></label>
                             <input class="col-6" type="month" name="startDate" id="monthDate" class="form-control">
                         </div>
-                        <div class="col-2">
-                            <button id="searchDateButtonHours" class="btn btn-info">Buscar <i class="fas fa-search"></i></button>
+                    </div>
+      
+                    <div class="table-wrapper">
+                        <table class="fl-table font-white">
+                            <thead>
+                            <tr class="text-center">
+                                <th>Empleado</th>
+                                <th>Horas</th>
+                            </tr>
+                            </thead>
+                            <tbody  id="user_hours_container" class="font-black">
+
+                            </table>
+                            </table>
+                    </div>
+                    <!--
+
+                        <div class="container-fluid background-blue border">
+                            <div class="container-fluid row g-0">
+                                <h4 class="col-8 font-white">Empleado</h4>
+                                <h4 class="col-4 font-white">Horas</h4>
+                            </div>
+                            <div id="user_hours_container" class="table-content">
+                            </div>
                         </div>
                     </div>
-                    <div class="container-fluid background-blue border">
-                        <div class="container-fluid row g-0">
-                            <h4 class="col-8 font-white">Empleado</h4>
-                            <h4 class="col-4 font-white">Horas</h4>
-                        </div>
-                        <div id="user_hours_container" class="table-content">
-                        </div>
+                    -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel" data-dismiss="modal">Salir</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmHoursModal" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
-                </div>
             </div>
         </div>
     </div>

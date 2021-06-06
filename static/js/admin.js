@@ -396,6 +396,27 @@ function send_notification_modal_event_function(event) {
         }
     });
 }
+function check_if_employees_are_selected(event){
+    checkboxes = document.getElementsByClassName("select_user");
+    isAnyCheckboxChecked = false
+    Array.from(checkboxes).forEach((checkbox) => {
+        if (checkbox.checked) {
+            isAnyCheckboxChecked = true
+        }
+    })
+    if(isAnyCheckboxChecked){
+        $('#userHours').modal('show')
+        on_watch_hours_model(event)
+      
+    }else{
+        Swal.fire({
+            title: 'Aviso',
+            text: "Selecciona al menos un empleado para ver sus horas",
+            icon: 'warning',
+            showCancelButton: false,
+        })
+    }
+}
 
 function on_watch_hours_model(event){
     checkboxes = document.getElementsByClassName("select_user");
@@ -421,14 +442,11 @@ function on_watch_hours_model(event){
             ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
                 console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAA", data)
                 $("#user_hours_container").append(`
-                    <div class="table-row-2">
-                        <div class="table-data">
-                            <h5>` + name + `</h5>
-                        </div>
-                        <div class="table-data">
-                            <h5>` + data.hours + `</h5>
-                        </div>
-                    </div>`);
+                <tr>
+                    <td><h5>` + name + `</h5></td>
+                    <td><h5>` + data.hours + `</h5></td>
+                </tr>
+                `);
             });
             
         }

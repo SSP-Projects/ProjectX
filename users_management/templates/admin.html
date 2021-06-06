@@ -8,7 +8,7 @@
 
         </div>
         <div>
-            <button class="btn notification-button" data-toggle="modal" data-target="#userHours"><i class="fas fa-hourglass-start"></button></i>
+            <button id="employee-hours-button" class="btn notification-button"><i class="fas fa-hourglass-start"></button></i>
             <button class="btn notification-button" data-toggle="modal" data-target="#sendNotification"><i class="fas fa-paper-plane"></i></button>
             <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i
                     class="fas fa-user-plus"></i></button>
@@ -101,8 +101,8 @@
 <script src="{% static 'js/admin.js' %}"></script>
 <script>
     bind_event("#sendNotification", "show.bs.modal", send_notification_modal_event_function)
-    bind_event("#userHours", "show.bs.modal", on_watch_hours_model)
-    bind_event("#searchDateButtonHours", "click", on_watch_hours_model)
+    bind_event("#employee-hours-button", "click", check_if_employees_are_selected)
+    bind_event("#monthDate", "input", on_watch_hours_model)
     bind_event("#UserModal", 'show.bs.modal', user_modal_event_function)
     bind_event("#userInteractions", 'show.bs.modal', user_interaction_modal_event_function)
     bind_event("#confirmDeleteModal", 'show.bs.modal', confirm_delete_modal_event_function)
