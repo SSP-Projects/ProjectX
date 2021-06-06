@@ -110,6 +110,14 @@ def get_hours_from_range(request):
     formatted_hour = "{:.2f}".format(totalTime)
     return HttpResponse(json.dumps({"hours" : formatted_hour}), content_type="application/json")
 
+def get_hours_from_current_month(request):
+    if request.is_ajax:
+        dni = request.GET['dni']
+        current_date = datetime.today()
+        user = Employee.objects.get(dni=dni)
+        #employee_interactions = Interaction.objects.filter(employee = user,
+
+
 def send_email():
     gmail_user = 'help.ssp.projects@gmail.com'
     gmail_password = 'Pelirrojo64'

@@ -21,10 +21,7 @@ textarea {
     box-sizing: border-box;
 }
 
-#register_container {
-    height: 350px;
-    overflow-x: hidden;
-}
+
 
 
 /*Estilos scroll*/
@@ -115,4 +112,19 @@ button.big-button:active::before {
 
 #refreshButton {
     max-width: 60px !important;
+}
+
+.table-bg {
+    background-color: #212529;
+}
+
+#register_container::-webkit-scrollbar {
+    display: none;
+}
+ 
+#register_container {
+    height: 350px;
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+    overflow-y: scroll;
 }

@@ -92,16 +92,16 @@ function on_success_refresh_interactions(data) {
 
         $("#register_container").append(
             ` 
-        <div class="container-fluid background-grey font-black row m-1  py-1">
-            <h5 class="col-4">` +
+        <div class="container-fluid text-dark row">
+            <p class="col-4">` +
                 dateResolved +
-                `</h5> 
-            <h5 class="col-4">` +
+                `</p> 
+            <p class="col-4">` +
                 stateResolved +
-                `</h5>
-            <h5 class="col-4">` +
+                `</p>
+            <p class="col-4">` +
                 timeResolved +
-                `</h5>
+                `</p>
         </div>`
         );
     });
