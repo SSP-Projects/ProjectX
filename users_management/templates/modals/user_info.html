@@ -17,18 +17,12 @@
             
             <div class="modal-body background-lightblue font-white">
                 <div id="only-edit-form">
-                    <form method="GET" action="/ajax/get_pdf_from_month/">
+                    <div>
                         <input id="input_dni" type="text" style="display: none;" name="employee_dni">
-                        <input class="py-1" type="month" name="month" required>
-                        <button type="submit" class=" btn-secondary py-1" >Descargar registros <i class="fas fa-arrow-circle-down"></i></button>
-                        
-                       
-                    </form>
-                    <div class="row py-4">
-                        <div class="col-3">Horas trabajadas:</div>
-                        <div class="col-1 background-grey font-black">50:43</div>
-                        
+                        <input class="py-1" type="month" name="month" id="monthDatePDF" required>
+                        <button id="download-registers-button" type="submit" class=" btn-secondary py-1" >Descargar registros <i class="fas fa-arrow-circle-down"></i></button>
                     </div>
+                    <br>
                     <hr class="background-grey">
 
                 </div>

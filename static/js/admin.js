@@ -76,6 +76,30 @@ function on_success_search_date_button_action(data) {
     });
     show_feedback_to_user("success", "¡Búsqueda realizada con éxito!", 750, "rgba(80,80,80,0.4)");
 }
+function on_click_check_if_employee_have_interactions(event){
+
+    var data = {
+        employee_dni: $("#input_dni").val(),
+        month: $("#monthDatePDF").val(),
+    };
+    ajax_to_get_data("get_pdf_from_month/", data,success_function = on_success_get_month_employee_interactions, error_function = on_error_get_month_employee_interactions);
+
+}
+function on_success_get_month_employee_interactions(data){
+    var binaryData = [];
+    binaryData.push(data);
+    var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = "Registro_jornada.pdf";
+    document.body.append(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+}
+function on_error_get_month_employee_interactions(error){
+    show_feedback_to_user("error","No existen interacciones en este mes", true, 15000, "rgba(70,70,70,0.4)")
+}
 
 function search_date_button_action(event) {
     var startDate = document.getElementById("startDate").value;
@@ -161,6 +185,11 @@ function user_modal_event_function(event) {
     } else {
         editButton.style.visibility = "visible";
         onlyModalEdit.style.display = "block";
+        month_date = document.getElementById("monthDatePDF");
+        
+        if (month_date.value == ""){
+            month_date.valueAsDate = new Date();
+        }
         //document.getElementsByClassName("only-edit-form").style.visibility = "visible";        
         inputName.disabled = true;
         inputSurname.disabled = true;
@@ -300,9 +329,7 @@ function confirm_delete_modal_event_function(event) {
 function on_click_confirmation_button(event) {
     ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload);
 }
-function on_click_get_pdf(event) {
-    ajax_to_get_data("get_pdf_from_month/", {"year":2021,"month":6, "dni":"97745810P"});
-}
+
 
 function on_success_get_employees_by_name(data) {
     $("#tableContent").empty();
@@ -405,8 +432,11 @@ function check_if_employees_are_selected(event){
         }
     })
     if(isAnyCheckboxChecked){
+       
         $('#userHours').modal('show')
         on_watch_hours_model(event)
+
+
       
     }else{
         Swal.fire({
@@ -419,14 +449,15 @@ function check_if_employees_are_selected(event){
 }
 
 function on_watch_hours_model(event){
+
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
-    month_date = document.getElementById("monthDate");
-    console.log("asd", month_date.value)
+    month_date = document.getElementById("monthDateHours");
     if (month_date.value == ""){
         month_date.valueAsDate = new Date();
     }
-    
+    console.log("asd", month_date.value)
+
     $("#user_hours_container").empty();
     Array.from(checkboxes).forEach((checkbox) => {
         if (checkbox.checked) {
@@ -451,6 +482,8 @@ function on_watch_hours_model(event){
             
         }
     });
+   
+   
 }
 
 function on_success_on_click_confirm_send_event_function() {

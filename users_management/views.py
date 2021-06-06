@@ -61,7 +61,7 @@ def get_employee_job_interactions_date_range(request):
         interactions_json = serializers.serialize('json',employee_interactions)
         return HttpResponse(interactions_json, content_type="application/json")
     return None
- 
+
 
 def get_employee_job_interactions_dni(request):
 
@@ -293,6 +293,7 @@ def get_pdf_from_month(request):
         #COMPROBAR SI HAY PERMISOS
         actual_employee = "Employee.objects.get(user=request.user)"
         if actual_employee != None:
+            print("VCALOR QUE ME INTERESA-z>" +str(request.GET['month']))
             dni=request.GET['employee_dni']
             year =request.GET['month'].split("-")[0]
             month =request.GET['month'].split("-")[1]
@@ -300,25 +301,28 @@ def get_pdf_from_month(request):
             starting_date =  first_day_of_month(date(int(year), int(month), 1))
             end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
             employee_interactions = Interaction.objects.filter(employee = employee_to_download_register, date_time__range=(starting_date, end_date))
-
-            template = get_template('pdf/pdf_template.html')
-            context_data = {
-            "year":year,
-            "month":month,
-            "employee":employee_to_download_register,
-            "employee_interactions":employee_interactions,
-            "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1)
-            }
-            html  = template.render(context_data)
-            result = BytesIO()
-            pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
-            result.seek(0)
-            if not pdf.err:
-                response = HttpResponse(result.read(), content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename=' "Registro_jornada"+context_data["month"]+"/"+context_data["year"]+".pdf"
-                return response
+            
+            if len(employee_interactions) != 0:
+                template = get_template('pdf/pdf_template.html')
+                context_data = {
+                "year":year,
+                "month":month,
+                "employee":employee_to_download_register,
+                "employee_interactions":employee_interactions,
+                "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1)
+                }
+                html  = template.render(context_data)
+                result = BytesIO()
+                pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+                result.seek(0)
+                if not pdf.err:
+                    response = HttpResponse(result.read(), content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename=' "Registro_jornada"+context_data["month"]+"/"+context_data["year"]+".pdf"
+                    return response
             else:
-                return HttpResponse(500)
+                return HttpResponse({"error":"No interactions"}, content_type='application/json')
+        else:
+             return HttpResponse({"error":"illegal user"}, content_type='application/json')
 
 def get_notifications_from_current_user(request):
     if request.is_ajax and request.method == "GET":
