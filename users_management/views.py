@@ -13,7 +13,7 @@ from calendar import monthrange
 from io import BytesIO
 from xhtml2pdf import pisa
 import smtplib
-
+import base64
 last_user = None
 
 def register(request):
@@ -300,8 +300,11 @@ def get_pdf_from_month(request):
             employee_to_download_register =Employee.objects.get(dni=dni)
             starting_date =  first_day_of_month(date(int(year), int(month), 1))
             end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
+
             employee_interactions = Interaction.objects.filter(employee = employee_to_download_register, date_time__range=(starting_date, end_date))
-            
+            encoded_string =None 
+            with open( "./"+employee_to_download_register.signature.url, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
             if len(employee_interactions) != 0:
                 template = get_template('pdf/pdf_template.html')
                 context_data = {
@@ -309,7 +312,8 @@ def get_pdf_from_month(request):
                 "month":month,
                 "employee":employee_to_download_register,
                 "employee_interactions":employee_interactions,
-                "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1)
+                "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1),
+                "signature":encoded_string
                 }
                 html  = template.render(context_data)
                 result = BytesIO()
@@ -323,6 +327,32 @@ def get_pdf_from_month(request):
                 return HttpResponse({"error":"No interactions"}, content_type='application/json')
         else:
              return HttpResponse({"error":"illegal user"}, content_type='application/json')
+
+def pdf_wuarron_testeo(request):
+    def first_day_of_month(date):
+        first_day = datetime(date.year, date.month, 1)
+        return first_day.strftime('%Y-%m-%d')
+    year = 2021
+    month = 6
+    starting_date =  first_day_of_month(date(int(year), int(month), 1))
+    end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
+    employee_interactions = Interaction.objects.filter(employee = Employee.objects.get(name="Manue"), date_time__range=(starting_date, end_date))
+  
+    encoded_string =None 
+    with open( "./"+Employee.objects.get(name="Manue").signature.url, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    context_data = {
+    "year":year,
+    "month":month,
+    "employee": Employee.objects.get(name="Manue"),
+    "employee_interactions":employee_interactions,
+    "monthDays":range((date(int(year), int(month)+1, 1) - date(int(year), int(month), 1)).days+1),
+    "signature":encoded_string
+    }
+    return render(request, 'pdf/pdf_template.html', context=context_data)
+
+
+
 
 def get_notifications_from_current_user(request):
     if request.is_ajax and request.method == "GET":
