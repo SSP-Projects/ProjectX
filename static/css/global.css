@@ -92,6 +92,14 @@ img{
 .fa-times-circle:hover {
   color: red;
 }
+.fa-user-circle {
+  color: black !important;
+
+}
+.fa-user-circle:hover {
+  color: white !important;
+
+}
 .btn-cancel{
   background-color:rgb(160, 158, 158) !important;
   color: white !important;

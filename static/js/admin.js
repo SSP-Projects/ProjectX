@@ -15,7 +15,7 @@ setInterval(refresh_notifications, 300000);
 get_employees_by_name("");
 
 function on_success_search_date_button_action(data) {
-    console.log("gola");
+    
     document.getElementById("register_container").innerHTML = "";
     $("#register_container").empty();
     data.forEach((interaction) => {
@@ -147,6 +147,9 @@ function on_success_user_modal_event_function(data) {
     document.getElementById("id_ss_number").value = data[0].fields.ss_number;
     document.getElementById("id_phone_number").value = data[0].fields.phone_number;
     document.getElementById("id_email").value = data[0].fields.email;
+    
+    //document.getElementById("id_signature").value = data[0].fields.signature;
+    
 
     if(!data[0].fields.is_active){
         $("#editButton").prop( "disabled", true )
@@ -198,6 +201,7 @@ function user_modal_event_function(event) {
         inputPhone.disabled = true;
         inputEmail.disabled = true;
         inputSignature.disabled = true;
+        
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
     
