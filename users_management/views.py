@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
+from django.contrib.auth import authenticate, login
 from . import forms
 import json
 from django.http import HttpResponse
@@ -15,6 +16,30 @@ from xhtml2pdf import pisa
 import smtplib
 
 last_user = None
+
+def login_view(request):
+    app_tittle = "SIGNET"
+    studycenter_name = "GMQ TECH"
+    form = forms.LoginForm()
+
+    if request.method == "POST":
+        print(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+        print(user.password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect("/admin/")
+        else:
+            print("Hola caracola")
+    return render(request, 'login.html', context={
+        'studycenter_name':studycenter_name,
+        'app_tittle':app_tittle,
+        'form': form
+    })
 
 def register(request):
     form = forms.RegisterForm()
@@ -41,7 +66,6 @@ def home(request):
             "username":username,
             'form': form,
             "workingStatus": workingStatus
-            
             })
     return redirect("/")
 
@@ -233,7 +257,7 @@ def admin(request):
             if formType == "Crear Usuario":
 
                 center = Center.objects.get(CIF='A3424F23424')
-                user = User.objects.create_user(email, email, dni)
+                user = User.objects.create_user(username=email, password=dni)
                 employee = Employee()
                 employee.name = name
                 employee.user = user
