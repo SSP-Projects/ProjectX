@@ -28,15 +28,24 @@
         </div>
     </section>
 </section>
-<section class="row text-center text-dark mx-3">
-    <div class="row table-bg text-white">
-        <div class="row">
-            <p class="col-4">Día del mes</p>
-            <p class="col-4">Horas trabajadas</p>
-            <p class="col-4">Detalles del día</p>
+<section>
+    <div class="row align-items-center justify-content-center">
+        <div style="width: 97.4%;">
+            <div class="table-wrap">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="blue-0 text-center col-4">Día del mes</th>
+                            <th class="blue-0 text-center col-4">Horas trabajadas</th>
+                            <th class="blue-0 text-center col-4">Detalles del día</th>
+                        </tr>
+                    </thead>
+                    <tbody id="register_container"></tbody>
+                    </table>
+            </div>
         </div>
     </div>
-    <div id="register_container" class="row"></div>
+    <div class="row"></div>
 </section>
 
 <!--
@@ -64,6 +73,7 @@
 </section>
 {% endblock body %}
 {% block modals %}
+{% include "modals/show_details_home.html" %}
 {% include "modals/confirmation_message.html" %}
 {% include "modals/show_home_notification.html" %}
 {% endblock modals %}
