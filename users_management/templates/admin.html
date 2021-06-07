@@ -97,7 +97,8 @@
 {% include "modals/send_notification.html" %}
 {% include "modals/user_info.html" %}
 {% include "modals/user_interaction.html" %}
-{% include "modals/confirmation_to_delete.html" %}
+{% include "modals/confirmation_to_desactivate_user.html" %}
+{% include "modals/confirmation_to_activate_user.html" %}
 {% include "modals/user_hours.html" %}
 {% endblock modals %}
 {% block extra_scripts %}
@@ -108,8 +109,10 @@
     bind_event("#monthDateHours", "input", on_watch_hours_model)
     bind_event("#UserModal", 'show.bs.modal', user_modal_event_function)
     bind_event("#userInteractions", 'show.bs.modal', user_interaction_modal_event_function)
-    bind_event("#confirmDeleteModal", 'show.bs.modal', confirm_delete_modal_event_function)
-    bind_event("#confirmationDeleteButton", "click", on_click_confirmation_button)
+    bind_event("#confirmDesactivateModal", 'show.bs.modal', confirm_desactivate_modal_event_function)
+    bind_event("#confirmActivateUserModal",'show.bs.modal', confirm_activate_user_modal_event_function)
+    bind_event("#confirmationDesactivateUserButton", "click", on_click_desactivate_user_confirmation_button)
+    bind_event("#confirmationActivateUserButton", "click", on_click_activate_user_confirmation_button)    
     bind_event("#searchDateButton", "click", search_date_button_action)
     bind_event("#confirm_send", "click", on_click_confirm_send_event_function)
     bind_event("#make_a_response_notification", "click", on_click_make_a_response_notification)

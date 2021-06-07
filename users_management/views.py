@@ -454,7 +454,7 @@ def get_users_by_name(request):
         else:
             return HttpResponse(405)
 
-def delete_user(request):
+def desactivate_user(request):
     if request.is_ajax and request.method == "POST":
         print(request.POST)
         dni = request.POST['dni']
@@ -463,7 +463,15 @@ def delete_user(request):
         user.is_active = False
         user.save()
     return redirect('/admin/')
-
+def activate_user(request):
+    if request.is_ajax and request.method == "POST":
+        print(request.POST)
+        dni = request.POST['dni']
+        employee = Employee.objects.get(dni=dni)
+        user = employee.user
+        user.is_active = True
+        user.save()
+    return redirect('/admin/')
 
 def staff_send_notification(request):
     if request.is_ajax and request.method == "POST":

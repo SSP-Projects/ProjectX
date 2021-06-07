@@ -17,7 +17,9 @@ urlpatterns = [
     url(r'^ajax/get_hours_from_range/',views.get_hours_from_range, name='get_hours_from_range'),
     url(r'^ajax/notification_ad/', views.staff_send_notification, name='sendNotificationAd'),
     url(r'^ajax/notification/', views.send_notification, name='sendNotification'),
-    url(r'^ajax/delete_user/',views.delete_user, name='delete_user'),
+    url(r'^ajax/desactivate_user/',views.desactivate_user, name='desactivate_user'),
+    url(r'^ajax/activate_user/',views.activate_user, name='activate_user'),
+    
     url(r'^ajax/get_notifications/', views.get_notifications_from_current_user, name='getNotifications'),
     url(r'^ajax/get_notification_to_show/', views.get_notification_by_id, name='getNotificationFromId'),
     url(r'^ajax/get_notification_to_show_/', views.get_notification_by_id_user, name='getNotificationFromIdUser'),

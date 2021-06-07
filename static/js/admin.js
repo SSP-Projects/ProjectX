@@ -1,4 +1,4 @@
-var dniToDisable = {};
+var dniToEdit = {};
 var inputName = document.getElementById("id_name");
 var inputSurname = document.getElementById("id_surnames");
 var inputDNI = document.getElementById("id_dni");
@@ -311,23 +311,37 @@ function changeInteraction(newInput) {
     ajax_to_post_data("modifyInteraction/", newInput, on_success_change_interaction, on_error_change_interaction);
 }
 
-function on_success_confirm_delete_modal_event_function(data) {
-    $("#userToDelete").text(data[0].fields.name + " " + data[0].fields.surnames);
+function on_success_confirm_desactivate_modal_event_function(data) {
+    $("#userToDesactivate").text(data[0].fields.name + " " + data[0].fields.surnames);
 }
-
-function confirm_delete_modal_event_function(event) {
+function on_success_confirm_activate_user_modal_event_function(data){
+    $("#userToActivate").text(data[0].fields.name + " " + data[0].fields.surnames);
+}
+function confirm_desactivate_modal_event_function(event) {
     var button = $(event.relatedTarget);
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
     var data = {
         dni: dni,
     };
-    ajax_to_get_data("get_user/", data, success_function = on_success_confirm_delete_modal_event_function);
-    dniToDisable = data;
+    ajax_to_get_data("get_user/", data, success_function = on_success_confirm_desactivate_modal_event_function);
+    dniToEdit = data;
     console.log("Data: " + JSON.stringify(data))
 }
+function confirm_activate_user_modal_event_function(event){
+    var button = $(event.relatedTarget);
+    var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+    var data = {
+        dni: dni,
+    };
+    ajax_to_get_data("get_user/", data, success_function = on_success_confirm_activate_user_modal_event_function);
+    dniToEdit = data;
+}
 
-function on_click_confirmation_button(event) {
-    ajax_to_post_data("delete_user/", dniToDisable, success_function = document.location.reload);
+function on_click_desactivate_user_confirmation_button(event) {
+    ajax_to_post_data("desactivate_user/", dniToEdit, success_function = document.location.reload());
+}
+function on_click_activate_user_confirmation_button(event) {
+    ajax_to_post_data("activate_user/", dniToEdit, success_function = document.location.reload());
 }
 
 
@@ -342,8 +356,7 @@ function on_success_get_employees_by_name(data) {
         if (i % 2 == 0) {
             rowColor = `<div class="table-row-1">`;
         }
-        buttons = `<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal" disabled ="true"><i
-        class="fas fa-trash"></i></button>`
+        buttons = `<button class="btn delete-button" data-toggle="modal" data-target="#confirmActivateUserModal"><i class="fas fa-user-check"></i></i></button>`
         checkbox =` <div id="table-data-checkbox" class="table-data">
         <div class="form-check col-2 justify-content-center align-items-center">
             <input disabled ="true" class="select_user form-check-input position-static m-0 p-0" style="background-color:#BF1414;" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
@@ -351,8 +364,7 @@ function on_success_get_employees_by_name(data) {
             </div>
     </div>`
         if(employee.fields.is_active == true){
-         buttons=`<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-            class="fas fa-trash"></i></button>`
+         buttons=`<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDesactivateModal"><i class="fas fa-user-slash"></i></button>`
             checkbox =` <div id="table-data-checkbox" class="table-data">
             <div class="form-check col-2 justify-content-center align-items-center">
                 <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
