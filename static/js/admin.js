@@ -468,7 +468,7 @@ function on_watch_hours_model(event){
 
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
-    month_date = document.getElementById("monthDate");
+    month_date = document.getElementById("monthDateHours");
     if (month_date.value == ""){
         month_date.valueAsDate = new Date();
     }

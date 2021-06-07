@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39b1d8a4-9e71-4b13-b2a4-18b1160eed47" name="Default Changelist" comment="" />
+    <list default="true" id="39b1d8a4-9e71-4b13-b2a4-18b1160eed47" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/static/js/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/admin.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,9 +47,9 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="636" y="342" key="com.intellij.ide.util.TipDialog" timestamp="1622299157584">
+    <state x="636" y="342" key="com.intellij.ide.util.TipDialog" timestamp="1623091383114">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="636" y="342" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1622299157584" />
+    <state x="636" y="342" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1623091383114" />
   </component>
 </project>

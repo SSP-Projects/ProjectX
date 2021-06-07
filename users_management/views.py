@@ -28,13 +28,11 @@ def login_view(request):
         password = request.POST['password']
 
         user = authenticate(request, username=username, password=password)
-        print(user.password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return redirect("/admin/")
+        if user is not None and user.is_active:
+            login(request, user)
+            return redirect("/admin/")
         else:
-            print("Hola caracola")
+            print("Usuario incorrecto")
     return render(request, 'login.html', context={
         'studycenter_name':studycenter_name,
         'app_tittle':app_tittle,
