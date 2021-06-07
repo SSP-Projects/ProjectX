@@ -11,6 +11,7 @@
     {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
         <div class="dropdown">
+
             <img onclick="toggle_dropdown('notifications_dropdown')" src="{% static 'media/images/notifications_icon.png' %}" class="dropbtn img-fluid" alt="menu_icon">
             <div id="notifications_dropdown" class="dropdown-menu" style="right: 0; left: auto;">
             </div>
@@ -26,8 +27,12 @@
             </a>
         </div>-->
         <h5 class="mx-4 my-2">{{ user.username }}</h5>
+   
         <div class="dropdown col-1">
-            <img onclick="toggle_dropdown('myDropdown')" src="{% static 'media/images/menu_icon.PNG' %}" class="dropbtn img-fluid" alt="menu_icon">
+
+                <i onclick="toggle_dropdown('myDropdown')" class="fas fa-user-circle fa-3x dropbtn" title="Cerrar sesin"></i>
+
+            
             <div id="myDropdown" class="dropdown-content">
                 <a href="{% url 'logout' %}">Cerrar sesión</a>
             </div>
