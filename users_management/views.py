@@ -9,6 +9,7 @@ import json
 from django.http import HttpResponse
 from .models import Employee, Interaction, Notification, Center, NotificationTypesAuxiliar, User
 from django.core import serializers
+from django.contrib import messages 
 from datetime import datetime, timedelta, date, time
 from calendar import monthrange
 from io import BytesIO
@@ -26,8 +27,9 @@ def login_view(request):
         print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
+        
+        
+        user = authenticate(request, username=username.lower(), password=password)
         if user is not None and user.is_active:
             login(request, user)
             return redirect("/admin/")
@@ -43,7 +45,7 @@ def register(request):
     form = forms.RegisterForm()
     return render(request, 'register.html', context={'form': form})
 ##HOME
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/login/')
 def home(request):
     if request.user.is_staff:
         return redirect("/admin/")
@@ -273,23 +275,22 @@ def postInteraction(request):
 
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/login/')
 def admin(request):
     if not request.user.is_staff:
         return redirect("/home/")
-
+    form = forms.UserForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
-        form = forms.UserForm(request.POST)
         
         if form.is_valid():
             
             formType = form.cleaned_data.get("form_type")
-            name = form.cleaned_data.get('name')
-            surname = form.cleaned_data.get('surnames')
+            name = form.cleaned_data.get('name').capitalize()
+            surname = form.cleaned_data.get('surnames').capitalize()
             dni = form.cleaned_data.get('dni')
             ss = form.cleaned_data.get('ss_number')
             phone = form.cleaned_data.get('phone_number')
-            email = form.cleaned_data.get('email')
+            email = form.cleaned_data.get('email').lower()
             signature = request.FILES['signature'] if 'signature' in request.FILES else False
 
             if formType == "Crear Usuario":
@@ -327,22 +328,19 @@ def admin(request):
 
                 employee.save()
                 user.save()
-
-
             return redirect('admin')
+        else:
+            print("INVALIDOOOOOOOOOOOOOOOOOO")
     
     employees = Employee.objects.filter(user__is_active = True)
-    userForm = forms.UserForm()
     notification_types = NotificationTypesAuxiliar.objects.all()
     app_tittle = 'SIGNET'
     studycenter_name = 'GMQ TECH'
 
-  
-
     return render(request, 'admin.html', context={
         'employees':employees,
         'studycenter_name':studycenter_name,
-        'userForm' : userForm,
+        'userForm' : form,
         'app_tittle':app_tittle,
         'notification_types': notification_types,
     })

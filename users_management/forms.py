@@ -71,6 +71,7 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['signature'].widget.attrs['required'] = True
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             
