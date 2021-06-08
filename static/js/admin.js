@@ -549,6 +549,10 @@ function on_click_confirm_send_event_function(event) {
         }
     });
     n = document.getElementById("ticket_type");
+    if(n.options[n.selectedIndex].value == "Tipo de Notificación") {
+        show_feedback_to_user("error", "Selecciona un tipo de notificación", false, 1500, "rgba(0,0,123,0.4)");
+        return
+    }
     desc = document.getElementById("ticket_description");
     data = {
         dnis: dnis,
