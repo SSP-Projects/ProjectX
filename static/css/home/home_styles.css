@@ -55,8 +55,16 @@ button {
 #break-button img {
     border-radius: 75%;
     box-shadow: 0 6px 25px 0 rgba(0, 0, 0, 0.39);
+    outline: none;
     border: 2px solid #38839e;
 }
+#work-button:focus,#break-button:focus{
+
+    visibility: hidden;
+    
+}
+
+
 #work-button-img,#break-button-img{
     transition: all .2s ease-in-out; 
 }
