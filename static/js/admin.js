@@ -435,6 +435,31 @@ function on_input_search_input(event) {
     get_employees_by_name(nameToSearch);
 }
 
+function check_if_employees_are_selected_to_send_notifications(event){
+    checkboxes = document.getElementsByClassName("select_user");
+    isAnyCheckboxChecked = false
+    Array.from(checkboxes).forEach((checkbox) => {
+        if (checkbox.checked) {
+            isAnyCheckboxChecked = true
+        }
+    })
+    if(isAnyCheckboxChecked){
+       
+        $('#sendNotification').modal('show')
+        send_notification_modal_event_function(event)
+
+
+      
+    }else{
+        Swal.fire({
+            title: 'Aviso',
+            text: "Selecciona al menos un empleado para ver mandar notificaciones",
+            icon: 'warning',
+            showCancelButton: false,
+        })
+    }
+}
+
 function send_notification_modal_event_function(event) {
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
@@ -474,6 +499,7 @@ function check_if_employees_are_selected(event){
     }
 }
 
+
 function on_watch_hours_model(event){
 
     checkboxes = document.getElementsByClassName("select_user");
@@ -511,6 +537,7 @@ function on_watch_hours_model(event){
    
    
 }
+
 
 function on_success_on_click_confirm_send_event_function() {
     desc = document.getElementById("ticket_description");

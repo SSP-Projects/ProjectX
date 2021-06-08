@@ -483,9 +483,10 @@ def get_users_by_name(request):
         if actual_employee != None:
             nameToSearch = request.GET['name']
             if nameToSearch == "":
-                employees = Employee.objects.all()
+                employees = Employee.objects.all().order_by('name')
             else:
-                employees = Employee.objects.filter(name__contains = nameToSearch)
+                employees = Employee.objects.filter(name__contains = nameToSearch).order_by('name')
+
             employees_json = json.loads(serializers.serialize('json',employees))
             for employees in employees_json:
                employees["fields"]["is_active"] =User.objects.get(pk = employees["fields"]["user"]).is_active 
