@@ -52,6 +52,21 @@
         </div>
         </div>
     </div>
+    {% if userForm.errors %}
+        <h1>HOLA CABRONEEEEEEESSSS</h1>
+        {% for field in userForm %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}</strong><span>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in userForm.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
     <!--
 
     <div class="container-fluid">

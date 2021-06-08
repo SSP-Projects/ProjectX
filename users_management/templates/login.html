@@ -1,30 +1,6 @@
 {% extends "generic.html" %} {% block title %}Login{% endblock %} {% load static %} {% block extra_head %}
 <link href="{% static 'css/login.css' %}" rel="stylesheet"> {% endblock %} {% block body %}
-<!--
 
-    <section class="login_background_image row d-flex justify-content-center text-center center">
-        <div class=" align-middle">
-            <div class="login-box text-center border-gray p-4 rounded w-120 ">
-                <h6 class="text-left f-white pb-1">INICIA SESIÓN</h6>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    <div class="mb-3 form-group">
-     
-                        {{ form.username }}
-                    </div>
-                    <div class="mb-3 form-group">
-                       
-                        {{ form.password }}
-                    </div>
-                    <button type="submit" class="btn blue-background">Iniciar Sesión</button>
-                </form><br>
-                <h6 >o darme de alta</h6>
-                
-                </div>
-            </div>
-        </div>
-    </section>
--->
 <section class="login-wrap d-flex">
 
     <div class="login-html">
