@@ -451,6 +451,9 @@ function check_if_employees_are_selected_to_send_notifications(event){
 }
 
 function send_notification_modal_event_function(event) {
+    n = document.getElementById("ticket_type")
+    n.options[0].selected = true
+    check_select_option()
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
     users_div.innerHTML = "";
@@ -552,6 +555,8 @@ function on_click_confirm_send_event_function(event) {
         notification_type: n.options[n.selectedIndex].value,
         notification_desc: desc.value,
     };
+    n.options[0].selected = true
+    check_select_option()
     ajax_to_post_data("notification_ad/", data, success_function = on_success_on_click_confirm_send_event_function);
 }
 
@@ -596,6 +601,9 @@ function show_notification(notification) {
 }
 
 function on_click_make_a_response_notification(event) {
+    n = document.getElementById("response_ticket_type");
+    n.options[0].selected = true
+    check_select_option()
     toggle_modal("#showNotification");
     receiver = document.getElementById("send_to_text_response_notification");
     receiver.innerHTML = "Enviar respuesta a " + document.getElementById("send_by_text_show_notification").innerHTML.substring(12);
@@ -611,6 +619,10 @@ function on_click_send_response_notification(event) {
     receiver = document.getElementById("send_to_text_response_notification");
     n = document.getElementById("response_ticket_type");
     desc = document.getElementById("response_ticket_description");
+    if(n.options[n.selectedIndex].value == "Tipo de Notificación") {
+        show_feedback_to_user("error", "Selecciona un tipo de notificación", false, 1500, "rgba(0,0,123,0.4)");
+        return
+    }
     data = {
         dnis: [receiver.innerHTML.match(/\(([^)]+)\)/)[1]],
         notification_type: n.options[n.selectedIndex].value,
@@ -649,3 +661,56 @@ function on_click_edit_button(event) {
         inputSignature.disabled = true;
     }
 }
+
+function check_select_option() {
+    select = document.getElementById("response_ticket_type")
+    selected_text = select.options[select.selectedIndex].text
+    if(selected_text == "Tipo de Notificación") {
+        select.style.color = "grey";
+    } else {
+        select.style.color = "black";
+    }
+    Array.from(select.options).forEach(option => {
+        if(option.text=="Tipo de Notificación") {
+            select.style.color = "grey";
+        } else {
+            option.style.color = "black"
+        }
+    })
+    select = document.getElementById("ticket_type")
+    selected_text = select.options[select.selectedIndex].text
+    if(selected_text == "Tipo de Notificación") {
+        select.style.color = "grey";
+    } else {
+        select.style.color = "black";
+    }
+    Array.from(select.options).forEach(option => {
+        if(option.text=="Tipo de Notificación") {
+            select.style.color = "grey";
+        } else {
+            option.style.color = "black"
+        }
+    })
+}
+
+function first_load() {
+    select = document.getElementById("response_ticket_type")
+    option = document.createElement("option")
+    option.innerHTML = "Tipo de Notificación";
+    option.setAttribute("selected", true)
+    inner = select.innerHTML;
+    select.innerHTML = ""
+    select.appendChild(option)
+    select.innerHTML += inner
+    select = document.getElementById("ticket_type")
+    option = document.createElement("option")
+    option.innerHTML = "Tipo de Notificación";
+    option.setAttribute("selected", true)
+    inner = select.innerHTML;
+    select.innerHTML = ""
+    select.appendChild(option)
+    select.innerHTML += inner
+}
+
+first_load()
+check_select_option()
