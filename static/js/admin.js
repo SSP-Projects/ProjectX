@@ -360,7 +360,7 @@ function on_success_get_employees_by_name(data) {
         if (i % 2 == 0) {
             rowColor = `<div class="table-row-1">`;
         }
-        buttons = `<button class="btn delete-button" data-toggle="modal" data-target="#confirmActivateUserModal"><i class="fas fa-user-check"></i></i></button>`
+        buttons = `<button class="btn delete-button" data-toggle="modal" data-target="#confirmActivateUserModal"><i class="fas fa-unlock-alt"></i></button>`
         checkbox =` <div id="table-data-checkbox" class="table-data">
         <div class="form-check col-2 justify-content-center align-items-center">
             <input disabled ="true" class="select_user form-check-input position-static m-0 p-0" style="background-color:#BF1414;" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">

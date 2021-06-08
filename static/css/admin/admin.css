@@ -135,3 +135,16 @@ hr {
 .fl-table tr:nth-child(even) {
     background: #F8F8F8;
 }
+
+.fa-user-clock:hover,
+.fa-paper-plane:hover,
+.fa-user-plus:hover,
+.fa-user-edit:hover,
+.fa-user-slash:hover,
+.fa-unlock-alt:hover,
+.fa-clipboard-list:hover{
+    color: cornflowerblue;
+}
+#blankCheckbox:hover{
+border: 2px solid cornflowerblue;
+}
