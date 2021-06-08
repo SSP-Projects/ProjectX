@@ -133,3 +133,20 @@ img{
 .fa-info-circle:hover {
   color: cornflowerblue;
 }
+
+.fa-bell:hover {
+  color: white !important;
+  cursor: pointer !important;
+}
+
+* ::placeholder {
+  color:grey !important;
+}
+
+* ::-moz-placeholder {
+  color:grey !important;
+}
+
+* ::-webkit-input-placeholder {
+  color:grey !important;
+}

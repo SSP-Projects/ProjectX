@@ -10,9 +10,7 @@ class LoginForm(forms.Form):
             'id': 'user',
             'type': 'text',
             'placeholder':"Nombre de usuario",
-           
         }
-
     ))
     password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs=
         {
@@ -42,19 +40,22 @@ class NotificationForm(forms.ModelForm):
         self.fields['notification_type'].widget = forms.Select(
             choices=notification_types_titles, 
             attrs= {
-                'class': 'form-control text-center',
+                'class': 'form-control text-center my-3',
                 'required': True,
-                'id': 'ticket_type'
+                'id': 'ticket_type',
+                'onchange': 'check_select_option()'
             }
         )
         self.fields['notification_type'].label = 'Tipo de notificación'
         self.fields['description'].widget=forms.Textarea(attrs={
-            'class': 'form-control no-resize',
+            'class': 'form-control no-resize mb-3',
             'required': False,
             'rows':"5",
-            'id': 'ticket_description'
+            'id': 'ticket_description',
+            'placeholder': 'Breve descripción para facilitar la tarea al administrador'
         })     
-        self.fields['description'].label = 'Descripción'
+        self.fields['description'].label = ''
+        self.fields['notification_type'].label = ''
 
 class UserForm(forms.ModelForm):
     class Meta:
