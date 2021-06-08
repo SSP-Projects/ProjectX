@@ -173,3 +173,7 @@ border: 2px solid cornflowerblue;
     background-color: rgb(244, 244, 244) !important;
     border-radius: 10px !important;
 }
+
+.table {
+    overflow: hidden;
+}
