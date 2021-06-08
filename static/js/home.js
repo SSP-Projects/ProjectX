@@ -47,10 +47,6 @@ check_select_option()
 function on_success_get_interactions_by_day(data) {
     container = document.getElementById("showDetailsContainer");
     container.innerHTML = "";
-    number = Array.from(data).length;
-    if(number == 0) {
-        //TODO: NO HAY NOTIFICCIONES
-    }
 
     Array.from(data).forEach((interaction) => {
         state = interaction.fields.state;
@@ -134,6 +130,12 @@ function on_error_submit_interaction(error) {
 
 function on_success_refresh_interactions(data) {
     $("#register_container").empty();
+    interactions = Object.entries(data);
+    if(interactions.length == 0) {
+        $("#register_container").append(
+            '<tr class"table-home-row"><td></td><td class="text-center">No hay registros</td><td></td></tr>'
+        );
+    }
     for (const [key, value] of Object.entries(data)) {
         $("#register_container").append(
             '<tr class"table-home-row"><td class="text-center p-0 m-0 align-middle">' +
