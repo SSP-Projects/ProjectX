@@ -2,6 +2,43 @@ var textToShowInModal = "default";
 var data = {};
 var workingStatus;
 
+function on_click_show_details(trigger) {
+    day = trigger.parentNode.parentNode.childNodes[0].innerHTML;
+    data = { day: day };
+    ajax_to_get_data("get_hours_from_desired_day/", data, (success_function = on_success_get_interactions_by_day));
+    title = document.getElementById("showDetailsTitle");
+    title.innerHTML = "Registros del día " + day;
+    toggle_modal("#showDetailsTable");
+}
+
+function on_success_get_interactions_by_day(data) {
+    container = document.getElementById("showDetailsContainer");
+    container.innerHTML = "";
+    Array.from(data).forEach((interaction) => {
+        state = interaction.fields.state;
+        type = interaction.fields.interaction_type;
+        hour = interaction.fields.date_time.substring(11, 16);
+        symbol = '<i class="exit-arrow fas fa-arrow-circle-up"></i>';
+        text_state = "Descanso";
+        if (state == 0) {
+            symbol = '<i class="entrance-arrow fas fa-arrow-circle-down"></i>';
+        }
+        if (type == "work") {
+            text_state = "Trabajo";
+        }
+        container.innerHTML +=
+            '<tr class"table-home-row"><td class="symbol-table text-center p-0 m-0 align-middle"><p class="p-0 m-0">' +
+            symbol +
+            '</p></td><td class="details-text text-center p-0 m-0 align-middle">' +
+            text_state +
+            '</td><td class="details-text text-center p-0 m-0 align-middle">' +
+            hour +
+            '</td><td class="symbol-table text-center p-0 m-0 align-middle"><p class="p-0 m-0">' +
+            symbol +
+            '</p>';
+    });
+}
+
 function confirmation_modal_event_function(event) {
     //var button = $(event.relatedTarget) // Button that triggered the modal
     //var recipient = button.data('whatever') // Extract info from data-* attributes
@@ -50,65 +87,30 @@ function on_click_break_button_event_function(event) {
 }
 
 function on_click_confirmation_button_event_function(event) {
-    console.log("asdgkljerkfgearklgjergbnearjkgbae")
-    ajax_to_post_data("insert_job_interaction/", data, success_function=on_success_on_click_confirmation_button_event_function);
+    console.log("asdgkljerkfgearklgjergbnearjkgbae");
+    ajax_to_post_data("insert_job_interaction/", data, (success_function = on_success_on_click_confirmation_button_event_function));
 }
-function on_error_submit_interaction(error){
-    show_feedback_to_user("error",error, true, 15000, "rgba(0,0,123,0.4)", text =error)
+function on_error_submit_interaction(error) {
+    show_feedback_to_user("error", error, true, 15000, "rgba(0,0,123,0.4)", (text = error));
 }
 
 function on_success_refresh_interactions(data) {
-    $("#register_container").empty()                                            
-    data.forEach(interaction => {
-        //RESOLV FIELDS
-
-        date = new Date(interaction.fields.date_time);
-        year = date.getFullYear();
-        month = date.getMonth() + 1;
-        dt = date.getDate();
-
-        if (dt < 10) {
-            dt = "0" + dt;
-        }
-        if (month < 10) {
-            month = "0" + month;
-        }
-        dateResolved = dt + "-" + month + "-" + year;
-        timeResolved = date.toLocaleTimeString("es-ES");
-
-        interactionTypeResolved = "";
-        if (interaction.fields.interaction_type == "work") {
-            interactionTypeResolved = "Trabajo";
-        } else {
-            interactionTypeResolved = "Descanso";
-        }
-
-        stateResolved = "";
-        if (interaction.fields.state == 0) {
-            stateResolved = "Entrada";
-        } else {
-            stateResolved = "Salida";
-        }
-
+    $("#register_container").empty();
+    for (const [key, value] of Object.entries(data)) {
         $("#register_container").append(
-            ` 
-        <div class="container-fluid background-grey font-black row m-1  py-1">
-            <h5 class="col-4">` +
-                dateResolved +
-                `</h5> 
-            <h5 class="col-4">` +
-                stateResolved +
-                `</h5>
-            <h5 class="col-4">` +
-                timeResolved +
-                `</h5>
-        </div>`
+            '<tr class"table-home-row"><td class="text-center p-0 m-0 align-middle">' +
+                key +
+                '</td><td class="text-center p-0 m-0 align-middle">' +
+                value +
+                '</td><td class="text-center p-0 m-0 align-middle"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
+                '<i class="details-button fas fa-info-circle"></i></button></td></tr>'
         );
-    });
+    }
 }
+
 //GET DE LAS INTERACCIONES
 function refreshInteractions() {
-    ajax_to_get_data("get_employee_job_interactions/", data, (success_function = on_success_refresh_interactions));
+    ajax_to_get_data("get_hours_from_current_month/", data, (success_function = on_success_refresh_interactions));
 }
 
 function on_success_on_click_confirm_send_event_function() {

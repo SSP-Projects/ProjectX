@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from django.urls import path, include
 from django.views.generic import RedirectView
 from . import views
 
@@ -30,5 +29,7 @@ urlpatterns = [
     url(r'^ajax/get_users_by_name/',views.get_users_by_name, name='get_users_by_name'),
     url(r'^ajax/get_employee_job_interactions_date_range/',views.get_employee_job_interactions_date_range, name='get_employee_job_interactions_date_range'),
     url(r'^ajax/get_pdf_from_month/',views.get_pdf_from_month, name='get_pdf_from_month'),
-    url(r'^wuarrona',views.pdf_wuarron_testeo)
+    url(r'^wuarrona',views.pdf_wuarron_testeo),
+    url(r'^ajax/get_hours_from_current_month/',views.get_hours_from_current_month, name='get_hours_from_current_month'),
+    url(r'^ajax/get_hours_from_desired_day/',views.get_interactions_from_day, name='get_interactions_from_day'),
 ]

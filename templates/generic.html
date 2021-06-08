@@ -22,18 +22,10 @@
 
   <body>
     {% block body %}{% endblock body %}
+    {% block footer %}{% endblock footer %}
     {% block modals %}{% endblock modals %}
-    <footer class="fixed-bottom bg-light text-center text-lg-start">
-      <div class="text-end p-1" style="background-color: rgba(0, 0, 0, 0.2)">
-        © 2020 Copyright:
-        <a
-          class="text-dark"
-          href="https://mdbootstrap.com/"
-          style="font-size: 0.8rem"
-          >Powered by wuarrones</a
-        >
-      </div>
-    </footer>
+
+
 
     <script src="{% static 'jquery/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>

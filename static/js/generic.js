@@ -56,6 +56,8 @@ function show_feedback_to_user(icon, title, confirmation, timer, backdrop, actio
         backdrop: backdrop
     }
 
+    
+
     if(text != undefined) {
         options["text"] = text
     }
