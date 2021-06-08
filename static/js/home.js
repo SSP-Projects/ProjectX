@@ -11,12 +11,45 @@ function on_click_show_details(trigger) {
     toggle_modal("#showDetailsTable");
 }
 
+
+function check_select_option() {
+    select = document.getElementById("ticket_type")
+    console.log(select.options)
+    selected_text = select.options[select.selectedIndex].text
+    if(selected_text == "Tipo de Notificación") {
+        select.style.color = "grey";
+    } else {
+        select.style.color = "black";
+    }
+    Array.from(select.options).forEach(option => {
+        if(option.text=="Tipo de Notificación") {
+            select.style.color = "grey";
+        } else {
+            option.style.color = "black"
+        }
+    })
+}
+
+function first_load() {
+    select = document.getElementById("ticket_type")
+    option = document.createElement("option")
+    option.innerHTML = "Tipo de Notificación";
+    option.setAttribute("selected", true)
+    inner = select.innerHTML;
+    select.innerHTML = ""
+    select.appendChild(option)
+    select.innerHTML += inner
+}
+
+first_load()
+check_select_option()
+
 function on_success_get_interactions_by_day(data) {
     container = document.getElementById("showDetailsContainer");
     container.innerHTML = "";
     number = Array.from(data).length;
     if(number == 0) {
-
+        //TODO: NO HAY NOTIFICCIONES
     }
 
     Array.from(data).forEach((interaction) => {
