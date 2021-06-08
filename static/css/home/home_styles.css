@@ -135,7 +135,6 @@ button.big-button:active::before {
 }
 
 #register_container {
-    height: 350px;
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow-y: scroll;
@@ -195,4 +194,30 @@ tr {
 
 .details-text {
     font-size: 120% !important;
+}
+
+#notification_div {
+    border-radius: 20px;
+    box-shadow: 0 6px 25px 0 rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+#notification_div_title {
+    color: white;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 0px;
+    background: linear-gradient(0deg, rgba(0, 149, 226, 1) 0%, rgba(2, 110, 231, 1) 100%, rgba(0, 149, 226, 1) 100%);
+}
+
+select, textarea {
+    margin: 0 auto;
+    width: 95% !important;
+    border: 1px solid rgb(247, 247, 247) !important;
+    background-color: rgb(244, 244, 244) !important;
+    border-radius: 10px !important;
+}
+
+#confirm_send {
+    color: white !important;
+    background: linear-gradient(0deg, rgba(0, 149, 226, 1) 0%, rgba(2, 110, 231, 1) 100%, rgba(0, 149, 226, 1) 100%);
 }
