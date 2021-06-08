@@ -110,3 +110,11 @@ img{
   color: white !important;
   
 }
+
+.fa-info-circle {
+  font-size: 300% !important;
+}
+
+.fa-info-circle:hover {
+  color: cornflowerblue;
+}
