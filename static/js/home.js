@@ -14,6 +14,11 @@ function on_click_show_details(trigger) {
 function on_success_get_interactions_by_day(data) {
     container = document.getElementById("showDetailsContainer");
     container.innerHTML = "";
+    number = Array.from(data).length;
+    if(number == 0) {
+
+    }
+
     Array.from(data).forEach((interaction) => {
         state = interaction.fields.state;
         type = interaction.fields.interaction_type;
@@ -102,7 +107,7 @@ function on_success_refresh_interactions(data) {
                 key +
                 '</td><td class="text-center p-0 m-0 align-middle">' +
                 value +
-                '</td><td class="text-center p-0 m-0"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
+                '</td><td class="text-center p-0 m-0 align-middle"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
                 '<i class="details-button fas fa-info-circle"></i></button></td></tr>'
         );
     }
