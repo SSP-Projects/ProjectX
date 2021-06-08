@@ -91,6 +91,9 @@
         </div>
 -->
 {% endblock body %}
+{% block footer %}
+{% include "bottom/footer.html" %}
+{% endblock footer %}
 {% block modals %}
 {% include "modals/response_notification.html" %}
 {% include "modals/show_admin_notification.html" %}
@@ -101,6 +104,7 @@
 {% include "modals/confirmation_to_activate_user.html" %}
 {% include "modals/user_hours.html" %}
 {% endblock modals %}
+
 {% block extra_scripts %}
 <script src="{% static 'js/admin.js' %}"></script>
 <script>

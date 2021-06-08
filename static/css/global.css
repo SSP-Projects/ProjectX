@@ -118,6 +118,13 @@ img{
   color: white !important;
   
 }
+.link{
+  text-decoration: none;
+  color: white;
+}
+.link:hover {
+  color: black;
+}
 
 .fa-info-circle {
   font-size: 300% !important;

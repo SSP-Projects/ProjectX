@@ -2,11 +2,12 @@
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center ">
 
         {% load static %}
-        <img src="{% static 'media/images/studycenter_logo.PNG' %}" alt="studycenter_icon">
-        <h3 class="mx-4 my-2">{{studycenter_name}}</h3>
+        <a class="link" href="."><img src="{% static 'media/images/studycenter_logo.PNG' %}" alt="studycenter_icon"></a>
+        
+        <h3 class="mx-4 my-2"><a class="link" href=".">{{studycenter_name}}</a></h3>
     </div>
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-center">
-        <h3>{{app_tittle}}</h3>
+        <h3><a class="link" href=".">{{app_tittle}}</a></h3>
     </div>
     {% if user.is_authenticated %}
     <div class="col-sm-12 col-md-4 d-flex flex-wrap align-items-center justify-content-end container-fluid">
@@ -28,7 +29,7 @@
         </div>-->
         <h5 class="mx-4 my-2">{{ user.username }}</h5>
    
-        <div class="dropdown col-1">
+        <button class="btn dropdown col-1">
 
                 <i onclick="toggle_dropdown('myDropdown')" class="fas fa-user-circle fa-3x dropbtn" title="Cerrar sesin"></i>
 
@@ -36,7 +37,7 @@
             <div id="myDropdown" class="dropdown-content">
                 <a href="{% url 'logout' %}">Cerrar sesión</a>
             </div>
-        </div>
+        </button>
         {% endif %}
 
 </nav>
