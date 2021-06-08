@@ -124,7 +124,9 @@ button.big-button:active::before {
     scrollbar-width: none;
     overflow-y: scroll;
 }
-
+table {
+    box-shadow: 0px 20px 50px rgba( 0, 0, 0, 0.2 );
+}
 table,
 tbody,
 thead,
@@ -132,6 +134,11 @@ th,
 tr,
 td {
     border: none;
+    
+}
+tr {
+    border-top: 0.5px solid rgb(133, 132, 132);
+
 }
 
 .blue-0 {

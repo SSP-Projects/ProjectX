@@ -102,7 +102,7 @@ function on_success_refresh_interactions(data) {
                 key +
                 '</td><td class="text-center p-0 m-0 align-middle">' +
                 value +
-                '</td><td class="text-center p-0 m-0"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
+                '</td><td class="text-center p-0 m-0 align-middle"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
                 '<i class="details-button fas fa-info-circle"></i></button></td></tr>'
         );
     }
