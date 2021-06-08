@@ -261,6 +261,7 @@ def postInteraction(request):
                     actual_employee.work_status ="breaking"
                 if interaction_type == "break" and state == 1:
                     actual_employee.work_status ="isWorking"
+                print("INSERCION-> "+str(state)+str(interaction_type)+"/n"+"/n"+"/n"+"/n"+"/n")
 
                 actual_employee.save()
                 interaction.save()

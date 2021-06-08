@@ -86,14 +86,14 @@
     function on_success_on_click_confirmation_button_event_function(data) {
 
         if('error' in data) {
-            show_feedback_to_user("error",data["error"], true, 15000, "rgba(0,0,123,0.4)", text = data["error"], footer = "<a href>¿Porque he tenido este problema?</a>")
+            show_feedback_to_user("error",data["error"], true, 15000, "rgba(70,70,70,0.4)", text = data["error"])
         } else {
             show_feedback_to_user("success", "Guardado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)", action_on_end = get_employee_actual_status); 
         }
     }
 
     function on_error_get_employee_actual_status(data) {
-        show_feedback_to_user("error", "Oops...", true, 1500, "rgba(0,0,123,0.4)", action_on_end = location.reload, text = "¡Algo ha salido mal!", footer = "<a href>¿Porque he tenido este problema?</a>")
+        show_feedback_to_user("error", "Oops...", true, 1500, "rgba(70,70,70,0.4)", action_on_end = location.reload, text = "¡Algo ha salido mal!")
     }
 
     function on_success_get_employee_actual_status(data) {
@@ -140,5 +140,6 @@
     bind_event("#set_as_viewed_notification", "click", on_click_set_as_viewed_notification)
     bind_event("#refreshButton", "click", refreshInteractions)
     bind_event("#confirmationModal", 'show.bs.modal', confirmation_modal_event_function)
+    bind_event(".helpButton", "click", on_click_show_help_alert)
 </script>
 {% endblock %}
