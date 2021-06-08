@@ -46,6 +46,17 @@ function bind_event(trigger_id, event_to_bind, action_to_dispatch) {
 function set_prop(element_id, prop, value) {
     $(element_id).prop(prop, value)
 }
+function on_click_show_help_alert(event){
+
+    //ESTA HARDCODEADO EL SWAL PORQUE NO FINCIONA LA VARIABLE TEXT EN EL METODO SHOE FEEDBACK TOL USER :)
+    Swal.fire({
+        icon: "info",
+        title: "Ayuda",
+        text:  $("#helpText").text(),
+       
+      })
+    //show_feedback_to_user("info","Ayuda",text = $("#helpText").text())
+}
 
 function show_feedback_to_user(icon, title, confirmation, timer, backdrop, action_on_end = generic_success, text = undefined, footer = undefined) {
     options = {
