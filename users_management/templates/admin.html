@@ -1,9 +1,9 @@
 {% extends "generic.html" %} {% block title %}Admin Panel{% endblock %} {% block extra_head %} {% load static %}
 <link href="{% static 'css/admin/admin.css' %}" rel="stylesheet"> {% endblock %} {% block body %} {% include "top/header.html" %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+    <div class="container-fluid py-2">
         <div class="d-flex align-items-center"></form>
-            <input id="searchInput" class="form-control me-2" type="search" placeholder="Buscar por nombre" aria-label="Search">
+            <input id="searchInput" class="form-control me-2 p-2" type="search" placeholder="Buscar por nombre" aria-label="Search">
             <i class="fas fa-search  me-2"></i>
 
         </div>
@@ -121,6 +121,9 @@
     bind_event("#editButton", "click", on_click_edit_button)
     bind_event("#searchInput", "input", on_input_search_input)
     bind_event("#download-registers-button", "click", on_click_check_if_employee_have_interactions)
-   
+    bind_event(".helpButton", "click", on_click_show_help_alert)
+
+
+    
 </script>
 {% endblock %}

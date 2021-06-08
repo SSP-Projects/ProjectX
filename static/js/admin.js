@@ -347,7 +347,17 @@ function on_click_desactivate_user_confirmation_button(event) {
 function on_click_activate_user_confirmation_button(event) {
     ajax_to_post_data("activate_user/", dniToEdit, success_function = document.location.reload());
 }
+function on_click_show_help_alert(event){
 
+    //ESTA HARDCODEADO EL SWAL PORQUE NO FINCIONA LA VARIABLE TEXT EN EL METODO SHOE FEEDBACK TOL USER :)
+    Swal.fire({
+        icon: "info",
+        title: "Ayuda",
+        text:  $("#helpText").text(),
+       
+      })
+    //show_feedback_to_user("info","Ayuda",text = $("#helpText").text())
+}
 
 function on_success_get_employees_by_name(data) {
     $("#tableContent").empty();

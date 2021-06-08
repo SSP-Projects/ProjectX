@@ -92,6 +92,14 @@ img{
 .fa-times-circle:hover {
   color: red;
 }
+.fa-times-circle:hover {
+  color: red;
+}
+.fa-question-circle:hover,
+.fa-pen:hover {
+  color: cornflowerblue ;
+
+}
 .fa-user-circle {
   color: black !important;
 
