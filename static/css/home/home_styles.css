@@ -119,7 +119,6 @@ button.big-button:active::before {
 }
 
 #register_container {
-    height: 350px;
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow-y: scroll;
