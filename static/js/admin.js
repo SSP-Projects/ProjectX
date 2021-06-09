@@ -420,6 +420,11 @@ function get_employees_by_name(name) {
 function on_input_search_input(event) {
     var nameToSearch = $("#searchInput").val();
     get_employees_by_name(nameToSearch);
+    document.getElementsByClassName("select_all")[0].checked = false;
+    checkboxes = document.getElementsByClassName("select_user");
+    Array.from(checkboxes).forEach((checkbox) => {
+        checkbox.checked = false;
+    })
 }
 
 function check_if_employees_are_selected_to_send_notifications(event){
