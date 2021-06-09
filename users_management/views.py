@@ -22,23 +22,25 @@ def login_view(request):
     app_tittle = "SIGNET"
     studycenter_name = "GMQ TECH"
     form = forms.LoginForm()
+    correct_login = True
 
     if request.method == "POST":
         print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         
-        
         user = authenticate(request, username=username.lower(), password=password)
         if user is not None and user.is_active:
             login(request, user)
             return redirect("/admin/")
         else:
-            print("Usuario incorrecto")
+            correct_login = False
+
     return render(request, 'login.html', context={
         'studycenter_name':studycenter_name,
         'app_tittle':app_tittle,
-        'form': form
+        'form': form,
+        'correct_login':correct_login
     })
 
 def register(request):
@@ -103,6 +105,7 @@ def get_employee_job_interactions_dni(request):
     return None
 
 def get_hours_from_range(request):
+    
     if request.is_ajax:
         dni = request.GET['dni']
         date = request.GET['month_to_search']
@@ -240,6 +243,9 @@ def admin(request):
     if not request.user.is_staff:
         return redirect("/home/")
     form = forms.UserForm(request.POST or None, request.FILES or None)
+    form_type = ''
+    form_success = 'empty'
+
     if request.method == 'POST':
         
         if form.is_valid():
@@ -271,6 +277,7 @@ def admin(request):
                 
                 user.save()
                 employee.save()
+                form_type = 'Usuario creado con éxito'
             else:
                 employee = Employee.objects.get(dni=last_user.dni)
                 user = User.objects.get(username=last_user.email)
@@ -288,9 +295,10 @@ def admin(request):
 
                 employee.save()
                 user.save()
-            return redirect('admin')
+            form_type = 'Usuario editado con éxito'
+            form_success = 'success'
         else:
-            print("INVALIDOOOOOOOOOOOOOOOOOO")
+            form_success = 'fail'
     
     employees = Employee.objects.filter(user__is_active = True)
     notification_types = NotificationTypesAuxiliar.objects.all()
@@ -303,6 +311,8 @@ def admin(request):
         'userForm' : form,
         'app_tittle':app_tittle,
         'notification_types': notification_types,
+        'form_success': form_success,
+        'form_type': form_type
     })
    
 def get_pdf_from_month(request):

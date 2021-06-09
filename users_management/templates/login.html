@@ -2,19 +2,22 @@
 <link href="{% static 'css/login.css' %}" rel="stylesheet"> {% endblock %} {% block body %}
 
 <section class="login-wrap d-flex">
-
+    
     <div class="login-html">
+        {% if not correct_login %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>¡Login Incorrecto!</strong>
+        </div>
+        {% endif %}
         <h2 class="text-center">SIGNET</h2>
         <hr class="mb-4 ">
         <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Iniciar sesión</label>
         <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
-
         <form class="login-form" method="post">
             {% csrf_token %}
             <div class="sign-in-htm">
                 <div class="group">
                     <label for="user" class="label">Usuario</label> {{ form.username }}
-
                 </div>
                 <div class="group">
                     <label for="pass" class="label">Contraseña</label> {{ form.password }}
@@ -33,7 +36,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 </section>
 {% endblock body%} {% block extra_scripts %}
