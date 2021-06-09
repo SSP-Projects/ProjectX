@@ -9,9 +9,6 @@ var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
 var onlyModalEdit = document.getElementById("only-edit-form");
 
-
-refresh_notifications();
-setInterval(refresh_notifications, 300000);
 get_employees_by_name("");
 
 
@@ -434,12 +431,9 @@ function check_if_employees_are_selected_to_send_notifications(event){
         }
     })
     if(isAnyCheckboxChecked){
-       
         $('#sendNotification').modal('show')
+        document.getElementById('ticket_description').value = ""
         send_notification_modal_event_function(event)
-
-
-      
     }else{
         Swal.fire({
             title: 'Aviso',
@@ -544,8 +538,8 @@ function fill_hours_sorted(hours){
 function on_success_on_click_confirm_send_event_function() {
     desc = document.getElementById("ticket_description");
     show_feedback_to_user("success", "Enviado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
-    desc.value = "";
     toggle_modal("#sendNotification");
+    desc.value = "";
 }
 
 function on_click_confirm_send_event_function(event) {
@@ -645,13 +639,16 @@ function on_click_send_response_notification(event) {
 }
 
 function on_success_on_click_set_as_viewed_notification() {
+    toggle_dropdown('notifications_dropdown')
     show_feedback_to_user("success", "Listo, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
+    refresh_notifications()
 }
 
 function on_click_set_as_viewed_notification() {
     data = {
         id: document.getElementById("set_as_viewed").value,
     };
+    refresh_notifications()
     ajax_to_post_data("set_notification_as_viewed/", data, success_function = on_success_on_click_set_as_viewed_notification);
 }
 
@@ -685,7 +682,7 @@ function check_select_option() {
     }
     Array.from(select.options).forEach(option => {
         if(option.text=="Tipo de Notificación") {
-            select.style.color = "grey";
+            option.style.color = "grey";
         } else {
             option.style.color = "black"
         }
@@ -699,7 +696,7 @@ function check_select_option() {
     }
     Array.from(select.options).forEach(option => {
         if(option.text=="Tipo de Notificación") {
-            select.style.color = "grey";
+            option.style.color = "grey";
         } else {
             option.style.color = "black"
         }
@@ -727,3 +724,5 @@ function first_load() {
 
 first_load()
 check_select_option()
+refresh_notifications();
+setInterval(refresh_notifications, 300000);

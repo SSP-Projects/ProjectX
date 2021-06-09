@@ -470,9 +470,7 @@ def get_notification_by_id_user(request):
 
 def set_notification_as_viewed(request):
     if request.is_ajax and request.method == "POST":
-        notif = Notification.objects.get(pk=request.POST['id'])
-        notif.viewed = True
-        notif.save()
+        Notification.objects.get(pk=request.POST['id']).delete()
         return HttpResponse(status=200)
     return HttpResponse(status=403)
 
