@@ -290,7 +290,7 @@ def admin(request):
     if request.method == 'POST':
         
         if form.is_valid():
-            
+
             formType = form.cleaned_data.get("form_type")
             name = form.cleaned_data.get('name').capitalize()
             surname = form.cleaned_data.get('surnames').capitalize()
@@ -301,24 +301,27 @@ def admin(request):
             signature = request.FILES['signature'] if 'signature' in request.FILES else False
 
             if formType == "Crear Usuario":
+                if Employee.objects.filter(dni=dni).exists():
+                    form_success = 'fail'
+                    form_type = 'El DNI introducido ya existe'
+                else:
+                    center = Center.objects.get(CIF='A3424F23424')
+                    user = User.objects.create_user(username=email, password=dni)
+                    employee = Employee()
+                    employee.name = name
+                    employee.user = user
+                    employee.dni = dni
+                    employee.center = center
+                    employee.surnames = surname
+                    employee.ss_number = ss
+                    employee.phone_number = phone
+                    employee.email = email
+                    employee.signature = signature
+                    employee.professional_category = "Profesor"
 
-                center = Center.objects.get(CIF='A3424F23424')
-                user = User.objects.create_user(username=email, password=dni)
-                employee = Employee()
-                employee.name = name
-                employee.user = user
-                employee.dni = dni
-                employee.center = center
-                employee.surnames = surname
-                employee.ss_number = ss
-                employee.phone_number = phone
-                employee.email = email
-                employee.signature = signature
-                employee.professional_category = "Profesor"
-                
-                user.save()
-                employee.save()
-                form_type = 'Usuario creado con éxito'
+                    user.save()
+                    employee.save()
+                    form_type = 'Usuario creado con éxito'
             else:
                 employee = Employee.objects.get(dni=last_user.dni)
                 user = User.objects.get(username=last_user.email)
@@ -336,7 +339,7 @@ def admin(request):
 
                 employee.save()
                 user.save()
-            form_type = 'Usuario editado con éxito'
+                form_type = 'Usuario editado con éxito'
             form_success = 'success'
         else:
             form_success = 'fail'

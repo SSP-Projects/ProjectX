@@ -150,8 +150,6 @@ function on_success_user_modal_event_function(data) {
     document.getElementById("id_email").value = data[0].fields.email;
     
     //document.getElementById("id_signature").value = data[0].fields.signature;
-    
-
     if(!data[0].fields.is_active){
         $("#editButton").prop( "disabled", true )
         
@@ -162,7 +160,6 @@ function user_modal_event_function(event) {
     var button = $(event.relatedTarget); // Button that triggered the modal
     var recipient = button.data("whatever"); // Extract info from data-* attributes
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-
     var data = {
         dni: dni,
     };
@@ -178,6 +175,7 @@ function user_modal_event_function(event) {
         inputPhone.disabled = false;
         inputEmail.disabled = false;
         inputSignature.disabled = false;
+        inputSignature.required = true;
 
         document.getElementById("id_name").value = "";
         document.getElementById("id_surnames").value = "";
@@ -202,6 +200,7 @@ function user_modal_event_function(event) {
         inputPhone.disabled = true;
         inputEmail.disabled = true;
         inputSignature.disabled = true;
+        inputSignature.required = false;
         
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
