@@ -434,7 +434,8 @@ def get_notifications_from_current_user(request):
 def get_notification_by_id(request):
     if request.is_ajax and request.method == "GET":
         notification = Notification.objects.get(pk=request.GET['id'])
-        employee = Employee.objects.get(pk=notification.receiver.pk)
+        print()
+        employee = Employee.objects.get(email=User.objects.get(pk=notification.sender.pk))
         to_return = {
             'notification': notification.pk,
             "sender": employee.pk,
@@ -525,6 +526,7 @@ def desactivate_user(request):
         user.is_active = False
         user.save()
     return redirect('/admin/')
+
 def activate_user(request):
     if request.is_ajax and request.method == "POST":
         print(request.POST)

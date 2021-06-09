@@ -12,23 +12,21 @@
                     </button>
                 </div>
             </div>
-            <div class="dropdown text-center mt-3" style="width:100%;">
-                <button onclick="toggle_dropdown('users_to_notify')" class="btn btn-secondary dropbtn" style="width:92%">Ver destinatario</button>
-                <div id="users_to_notify" class="dropdown-content"></div>
-            </div>
-            <div class="modal-body">
+            <div class="modal-body pt-0">
                 <div class="text-center px-3">
-                    <label for="ticket_type">Tipo de notificación:</label>
-                    <select class="form-control text-center" required="" id="ticket_type">
+                    <select class="form-control text-center my-3" required="" id="ticket_type">
                             {% for option in notification_types %}
                             <option value="{{ option.pk }}">{{ option.name }}</option>   
                             {% endfor %}
                           </select>
-                    <label for="ticket_description">Descripción:</label>
-                    <textarea cols="40" rows="5" class="form-control no-resize" required="" id="ticket_description"></textarea>
+                    <textarea cols="40" rows="5" class="form-control no-resize mb-3" required="" id="ticket_description" placeholder="Breve descripción para el usuario"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
+                <div class="dropstart">
+                    <button onclick="toggle_dropdown('users_to_notify')" class="btn btn-secondary dropbtn">Destinatarios</button>
+                    <div id="users_to_notify" class="dropdown-content" style="width: 400%;"></div>
+                </div>
                 <button id="confirm_send" class="btn btn-success">Enviar</button>
                 <button id="cancel_send" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
             </div>

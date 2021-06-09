@@ -165,3 +165,26 @@ border: 2px solid cornflowerblue;
 
     color:  cornflowerblue;
 }
+
+#response_ticket_type, #response_ticket_description, #ticket_type, #ticket_description {
+    margin: 0 auto;
+    width: 95% !important;
+    border: 1px solid rgb(247, 247, 247) !important;
+    background-color: rgb(244, 244, 244) !important;
+    border-radius: 10px !important;
+}
+
+.table-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+}
+
+.table::-webkit-scrollbar {
+    display: none;
+}
+
+.table {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

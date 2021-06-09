@@ -14,7 +14,6 @@ function on_click_show_details(trigger) {
 
 function check_select_option() {
     select = document.getElementById("ticket_type")
-    console.log(select.options)
     selected_text = select.options[select.selectedIndex].text
     if(selected_text == "Tipo de Notificación") {
         select.style.color = "grey";
@@ -47,10 +46,6 @@ check_select_option()
 function on_success_get_interactions_by_day(data) {
     container = document.getElementById("showDetailsContainer");
     container.innerHTML = "";
-    number = Array.from(data).length;
-    if(number == 0) {
-        //TODO: NO HAY NOTIFICCIONES
-    }
 
     Array.from(data).forEach((interaction) => {
         state = interaction.fields.state;
@@ -134,6 +129,12 @@ function on_error_submit_interaction(error) {
 
 function on_success_refresh_interactions(data) {
     $("#register_container").empty();
+    interactions = Object.entries(data);
+    if(interactions.length == 0) {
+        $("#register_container").append(
+            '<tr class"table-home-row"><td></td><td class="text-center">No hay registros</td><td></td></tr>'
+        );
+    }
     for (const [key, value] of Object.entries(data)) {
         $("#register_container").append(
             '<tr class"table-home-row"><td class="text-center p-0 m-0 align-middle">' +
@@ -159,22 +160,19 @@ function on_success_on_click_confirm_send_event_function() {
 }
 
 function on_click_confirm_send_event_function(event) {
-    dnis = [];
-    checkboxes = document.getElementsByClassName("select_user");
-    Array.from(checkboxes).forEach((checkbox) => {
-        if (checkbox.checked) {
-            dni = checkbox.parentNode.parentNode.parentNode.childNodes[3].innerText;
-            dnis.push(dni);
-        }
-    });
     n = document.getElementById("ticket_type");
     desc = document.getElementById("ticket_description");
+    if(n.options[n.selectedIndex].value == "Tipo de Notificación") {
+        show_feedback_to_user("error", "Selecciona un tipo de notificación", false, 1500, "rgba(0,0,123,0.4)");
+        return
+    }
     data = {
-        dnis: dnis,
         notification_type: n.options[n.selectedIndex].value,
         notification_desc: desc.value,
     };
-    ajax_to_post_data("notification_ad/", data, (success_function = on_success_on_click_confirm_send_event_function));
+    n.options[0].selected = true
+    check_select_option()
+    ajax_to_post_data("notification/", data, (success_function = on_success_on_click_confirm_send_event_function));
 }
 
 function on_success_refresh_notifications(data) {

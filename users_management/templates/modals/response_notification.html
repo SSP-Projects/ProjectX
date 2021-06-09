@@ -14,14 +14,12 @@
             </div>
             <div class="modal-body">
                 <div class="text-center px-3">
-                    <label for="response_ticket_type">Tipo de notificación:</label>
-                    <select class="form-control text-center" required="" id="response_ticket_type">
+                    <select class="form-control text-center my-3" required="" id="response_ticket_type">
                             {% for option in notification_types %}
                             <option value="{{ option.pk }}">{{ option.name }}</option>   
                             {% endfor %}
                           </select>
-                    <label for="response_ticket_description">Descripción:</label>
-                    <textarea cols="40" rows="5" class="form-control no-resize" required="" id="response_ticket_description"></textarea>
+                    <textarea cols="40" rows="5" class="form-control no-resize mb-3" required="" id="response_ticket_description" placeholder="Breve descripción para el usuario"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
