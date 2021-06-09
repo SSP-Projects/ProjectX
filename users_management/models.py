@@ -36,7 +36,7 @@ class Employee(models.Model):
     user                  = models.OneToOneField(User, on_delete=models.CASCADE)
     center                = models.ForeignKey(Center, on_delete=models.CASCADE)
     dni                   = models.CharField(max_length=9)
-    ss_number             = models.CharField(max_length=12)
+    ss_number             = models.CharField(max_length=12, validators=[RegexValidator(r'^\d{1,10}$')])
     professional_category = models.CharField(max_length=20)
     signature             = models.ImageField(blank=True, upload_to='./static/media/signs')
     phone_number          = models.CharField(max_length=9, validators=[RegexValidator(r'^\d{1,10}$')])

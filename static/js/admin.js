@@ -14,6 +14,7 @@ refresh_notifications();
 setInterval(refresh_notifications, 300000);
 get_employees_by_name("");
 
+
 function on_success_search_date_button_action(data) {
     
     document.getElementById("register_container").innerHTML = "";
@@ -492,8 +493,7 @@ function check_if_employees_are_selected(event){
     }
 }
 
-
-function on_watch_hours_model(event){
+function on_watch_hours_model(){
 
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
@@ -501,8 +501,8 @@ function on_watch_hours_model(event){
     if (month_date.value == ""){
         month_date.valueAsDate = new Date();
     }
-    console.log("asd", month_date.value)
 
+    var info = [];
     $("#user_hours_container").empty();
     Array.from(checkboxes).forEach((checkbox) => {
         if (checkbox.checked) {
@@ -514,21 +514,31 @@ function on_watch_hours_model(event){
                 "dni" : dni,
                 "month_to_search" : month_date.value
             }
-            console.log(data);
-            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
-                console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAA", data)
-                $("#user_hours_container").append(`
-                <tr>
-                    <td><h5>` + name + `</h5></td>
-                    <td><h5>` + data.hours + `</h5></td>
-                </tr>
-                `);
-            });
             
+            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
+                info.push({"name": name, "hours" : data.hours});
+                fill_hours_sorted(info);
+            });
         }
     });
-   
-   
+};
+
+function fill_hours_sorted(hours){
+    $("#user_hours_container").empty();
+    
+    hours.sort(function(a, b){
+        return b.hours - a.hours;
+    });
+
+    jQuery.each(hours, function(i, val) {
+        $("#user_hours_container").append(`
+            <tr>
+                <td><h5>` + val.name + `</h5></td>
+                <td class="text-center"><h5>` + val.hours + `</h5></td>
+            </tr>
+        `);
+    });
+
 }
 
 
