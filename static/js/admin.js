@@ -5,9 +5,9 @@ var inputDNI = document.getElementById("id_dni");
 var inputSS = document.getElementById("id_ss_number");
 var inputPhone = document.getElementById("id_phone_number");
 var inputEmail = document.getElementById("id_email");
-var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
 var onlyModalEdit = document.getElementById("only-edit-form");
+var last_sign = ""
 
 get_employees_by_name("");
 
@@ -137,30 +137,16 @@ function changeOne() {
     }
 }
 
-function on_success_user_modal_event_function(data) {
-    document.getElementById("id_name").value = data[0].fields.name;
-    document.getElementById("id_surnames").value = data[0].fields.surnames;
-    document.getElementById("id_dni").value = data[0].fields.dni;
-    document.getElementById("input_dni").value = data[0].fields.dni;
-    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
-    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
-    document.getElementById("id_email").value = data[0].fields.email;
-    
-    //document.getElementById("id_signature").value = data[0].fields.signature;
-    if(!data[0].fields.is_active){
-        $("#editButton").prop( "disabled", true )
-        
-    }
-}
+
 
 function user_modal_event_function(event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var recipient = button.data("whatever"); // Extract info from data-* attributes
+    var button = $(event.relatedTarget); 
+    var recipient = button.data("whatever"); 
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
     var data = {
         dni: dni,
     };
-
+    
     if (recipient === "Crear Usuario") {
        // document.getElementsByClassName("only-edit-form").style.visibility = "hidden";
         editButton.style.visibility = "hidden";
@@ -171,8 +157,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
-        inputSignature.disabled = false;
-        inputSignature.required = true;
+        document.getElementById("user_signature").innerHTML = '<input style="width: 60%;" type="file" name="signature" accept="image/*" class="form-control" id="id_signature" required></input>'
 
         document.getElementById("id_name").value = "";
         document.getElementById("id_surnames").value = "";
@@ -196,15 +181,11 @@ function user_modal_event_function(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
-        inputSignature.disabled = true;
-        inputSignature.required = false;
         
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
-    
-    document.getElementById("type").value = recipient;
-    var modal = $(this);
-    modal.find(".modal-title").text(recipient);
+    document.getElementById("type").value = recipient
+    document.getElementById("createUserModalLabel").innerHTML = recipient
 }
 
 function on_success_user_interaction_modal_event_function(data) {
@@ -657,6 +638,25 @@ function on_click_set_as_viewed_notification() {
     ajax_to_post_data("set_notification_as_viewed/", data, success_function = on_success_on_click_set_as_viewed_notification);
 }
 
+function on_success_user_modal_event_function(data) {
+    document.getElementById("id_name").value = data[0].fields.name;
+    document.getElementById("id_surnames").value = data[0].fields.surnames;
+    document.getElementById("id_dni").value = data[0].fields.dni;
+    document.getElementById("input_dni").value = data[0].fields.dni;
+    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
+    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
+    document.getElementById("id_email").value = data[0].fields.email;
+    url = window.location.protocol + "//" + window.location.hostname + ":"  + window.location.port + "/media/"
+    image_path = "<img style=\"max-width: 40%;\" src=\"" + url + data[0].fields.signature + "\">"
+    document.getElementById("user_signature").innerHTML = image_path;
+    last_sign = image_path
+    if(!data[0].fields.is_active){
+        $("#editButton").prop( "disabled", true )
+    }
+}
+
+
+
 function on_click_edit_button(event) {
     if (inputName.disabled == true){
         inputName.disabled = false;
@@ -665,7 +665,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
-        inputSignature.disabled = false;
+        document.getElementById("user_signature").innerHTML = '<input style="width: 60%;" type="file" name="signature" accept="image/*" class="form-control" id="id_signature"></input>'
     } else {
         inputName.disabled = true;
         inputSurname.disabled = true;
@@ -673,7 +673,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
-        inputSignature.disabled = true;
+        document.getElementById("user_signature").innerHTML = last_sign
     }
 }
 

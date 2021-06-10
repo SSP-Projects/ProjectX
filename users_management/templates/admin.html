@@ -20,8 +20,8 @@
 
         </div>
     </div>
+    
 </nav>
-
 <div class="container">
     <div class="table">
         <div class="table-header">
@@ -87,7 +87,7 @@
     bind_event("#download-registers-button", "click", on_click_check_if_employee_have_interactions)
     bind_event(".helpButton", "click", on_click_show_help_alert)
     bind_event("#employeeNotificationsButton", "click", check_if_employees_are_selected_to_send_notifications)
-    
+
     {% if form_success == 'success' %}
         show_feedback_to_user("success", "{{form_type}}", false, 1500, "rgba(80,80,80,0.4)");
     {% elif form_success == 'fail' %}

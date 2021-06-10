@@ -286,11 +286,10 @@ def admin(request):
     form = forms.UserForm(request.POST or None, request.FILES or None)
     form_type = ''
     form_success = 'empty'
-
     if request.method == 'POST':
         
         if form.is_valid():
-
+            print("IS VALID ADSSADAD")
             formType = form.cleaned_data.get("form_type")
             name = form.cleaned_data.get('name').capitalize()
             surname = form.cleaned_data.get('surnames').capitalize()
@@ -301,6 +300,7 @@ def admin(request):
             signature = request.FILES['signature'] if 'signature' in request.FILES else False
 
             if formType == "Crear Usuario":
+                print(signature)
                 if Employee.objects.filter(dni=dni).exists():
                     form_success = 'fail'
                     form_type = 'El DNI introducido ya existe'
@@ -318,10 +318,10 @@ def admin(request):
                     employee.email = email
                     employee.signature = signature
                     employee.professional_category = "Profesor"
-
                     user.save()
                     employee.save()
                     form_type = 'Usuario creado con éxito'
+                    form_success = 'success'
             else:
                 employee = Employee.objects.get(dni=last_user.dni)
                 user = User.objects.get(username=last_user.email)
@@ -340,7 +340,7 @@ def admin(request):
                 employee.save()
                 user.save()
                 form_type = 'Usuario editado con éxito'
-            form_success = 'success'
+                form_success = 'success'
         else:
             form_success = 'fail'
     
@@ -504,12 +504,12 @@ def getUser(request):
         dni = request.GET['dni']
         employee = Employee.objects.get(dni=dni)
         globals()['last_user'] = employee
-        employees_json = json.loads(serializers.serialize('json', [ employee, ]))
-        for employees in employees_json:
-            employees["fields"]["is_active"] =User.objects.get(pk = employees["fields"]["user"]).is_active
-
-        return HttpResponse(json.dumps(employees_json), content_type="application/json")
+        employee_json = json.loads(serializers.serialize('json', [ employee, ]))
+        for employee_j in employee_json:
+            employee_j["fields"]["is_active"] = User.objects.get(pk = employee_j["fields"]["user"]).is_active
+        return HttpResponse(json.dumps(employee_json), content_type="application/json")        
     return None
+
 def get_users_by_name(request):
      if request.is_ajax and request.method == "GET":
         actual_employee =" Employee.objects.get(user=request.user)"
