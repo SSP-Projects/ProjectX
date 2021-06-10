@@ -193,3 +193,69 @@ border: 2px solid cornflowerblue;
     max-height: 700%;
     overflow-y: auto;
 }
+
+#register_container::-webkit-scrollbar {
+    display: none;
+}
+
+#register_container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+table {
+    box-shadow: 0px 20px 50px rgba( 0, 0, 0, 0.2 );
+}
+table,
+tbody,
+thead,
+th,
+tr,
+td {
+    border: none;
+    
+}
+tr {
+    border-top: 0.5px solid rgb(133, 132, 132);
+
+}
+
+.blue-0 {
+    font-size: 150%;
+    font-weight: normal;
+    color: white;
+    background: linear-gradient(0deg, rgba(0, 149, 226, 1) 0%, rgba(2, 110, 231, 1) 100%, rgba(0, 149, 226, 1) 100%);
+}
+
+#register_container > tr > td {
+    padding: 1% 0 !important;
+    font-size: 140% !important;
+}
+
+.details-button {
+    font-size: 190% !important;
+}
+
+.symbol-table {
+    font-size: 190% !important;
+}
+
+.symbol-table > p > i {
+    margin: auto 0;
+}
+
+.exit-arrow {
+    color: rgb(216, 72, 72);
+}
+
+.entrance-arrow {
+    color: rgb(88, 216, 95);
+}
+
+.footer-info {
+    font-size: 160% !important;
+}
+
+.details-text {
+    font-size: 120% !important;
+}

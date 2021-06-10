@@ -1,49 +1,55 @@
-<div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
+<div class="modal fade" id="userInteractions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Registros del usuario</h5>
 
-                    <div>
-                        <button type="button"class=" helpButton btn">
-                            <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">Aquí pone la ayuda</span></i>
-                        </button>
-                        <button type="button"class="btn"  data-dismiss="modal">
-                            <i class="far fa-times-circle fa-2x"></i>
-                        </button>
+                <div>
+                    <button type="button" class="helpButton btn">
+                        <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none">Aquí pone la ayuda</span></i>
+                    </button>
+                    <button type="button" class="btn" data-dismiss="modal">
+                        <i class="far fa-times-circle fa-2x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+                <input type="hidden" id="hidden-dni" />
+                <div class="container-fluid row m-1">
+                    <div class="col-5">
+                        <label class="col-4" for="startDate">Primera Fecha:</label>
+                        <input class="col-6" type="date" name="startDate" id="startDate" class="form-control" />
+                    </div>
+                    <div class="col-5">
+                        <label class="col-4" for="startDate">Segunda Fecha:</label>
+                        <input class="col-6" type="date" name="startDate" id="endDate" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <button id="searchDateButton" class="btn btn-info">Buscar <i class="fas fa-search"></i></button>
                     </div>
                 </div>
-                <div class="modal-body text-center">
-                    <input type="hidden" id="hidden-dni">
-                    <div class="container-fluid row m-1">
-                        <div class="col-5">
-                            <label class="col-4" for="startDate">Primera Fecha:</label>
-                            <input class="col-6" type="date" name="startDate" id="startDate" class="form-control">
-                        </div>
-                        <div class="col-5">
-                            <label class="col-4" for="startDate">Segunda Fecha:</label>
-                            <input class="col-6" type="date" name="startDate" id="endDate" class="form-control">
-                        </div>
-                        <div class="col-2">
-                            <button id="searchDateButton" class="btn btn-info">Buscar <i class="fas fa-search"></i></button>
-                        </div>
-                    </div>
-                    <div class="container-fluid background-blue border">
-                        <div class="container-fluid row g-0">
-                            <h4 class="col-3 font-white">Tipo</h4>
-                            <h4 class="col-3 font-white">Acción</h4>
-                            <h4 class="col-3 font-white">Hora</h4>
-                            <h4 class="col-3 font-white">Fecha</h4>
-                        </div>
-                        <div id="register_container">
+                <div class="row align-items-center justify-content-center">
+                    <div style="width: 97.4%">
+                        <div class="table-wrap">
+                            <table class="table table-bordered table-hover">
+                                <p id="user_interaction_dni_to_send" style="display: none;"></p>
+                                <thead>
+                                    <tr>
+                                        <th class="blue-0 text-center col-4">Día del mes</th>
+                                        <th class="blue-0 text-center col-4">Horas trabajadas</th>
+                                        <th class="blue-0 text-center col-4">Detalles del día</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="register_container"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button id="confirmationButton" type="button" class="btn btn-success" data-dismiss="modal">Confirmar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
             </div>
         </div>
     </div>
+</div>

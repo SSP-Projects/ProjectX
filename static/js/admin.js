@@ -99,6 +99,47 @@ function on_error_get_month_employee_interactions(error){
     show_feedback_to_user("error","No existen interacciones en este mes", true, 15000, "rgba(70,70,70,0.4)")
 }
 
+function on_click_show_details(trigger) {
+    day = trigger.parentNode.parentNode.childNodes[0].innerHTML;
+    dni = document.getElementById("hidden-dni").value;
+    console.log(dni)
+    data = { day: day, "dni": dni};
+    ajax_to_get_data("get_hours_from_desired_day_and_user/", data, (success_function = on_success_get_interactions_by_day));
+    title = document.getElementById("showDetailsTitle");
+    title.innerHTML = "Registros del día " + day;
+    toggle_modal("#showDetailsTable");
+}
+
+function on_success_get_interactions_by_day(data) {
+    container = document.getElementById("showDetailsContainer");
+    container.innerHTML = "";
+    Array.from(data).forEach((interaction) => {
+        pk = interaction.pk
+        state = interaction.fields.state;
+        type = interaction.fields.interaction_type;
+        hour = interaction.fields.date_time.substring(11, 16);
+        day = interaction.fields.date_time.substring(0, 10);
+        symbol = '<i class="exit-arrow fas fa-arrow-circle-up"></i>';
+        text_state = "Descanso";
+        if (state == 0) {
+            symbol = '<i class="entrance-arrow fas fa-arrow-circle-down"></i>';
+        }
+        if (type == "work") {
+            text_state = "Trabajo";
+        }
+        container.innerHTML +=
+            '<tr class"table-home-row"><td class="symbol-table text-center p-0 m-0 align-middle"><p style="display:none;">' + pk + '</p><p class="p-0 m-0">' +
+            symbol +
+            '</p></td><td class="details-text text-center p-0 m-0 align-middle">' +
+            text_state +
+            '</td><td class="details-text text-center p-0 m-0 align-middle"><input type="date" class="text-center" value=' + day + ' onblur="updateInteractionDetailsDay(this)"><input type="time" class="text-center" value=' +
+            hour +
+            ' onblur="updateInteractionDetailsTime(this)"></td><td class="symbol-table text-center p-0 m-0 align-middle"><p class="p-0 m-0">' +
+            symbol +
+            '</p>';
+    });
+}
+
 function search_date_button_action(event) {
     var startDate = document.getElementById("startDate").value;
     var endDate = document.getElementById("endDate").value;
@@ -190,74 +231,34 @@ function user_modal_event_function(event) {
 
 function on_success_user_interaction_modal_event_function(data) {
     $("#register_container").empty();
-    data.forEach((interaction) => {
-        //RESOLV FIELDS
-
-        date = new Date(interaction.fields.date_time);
-        year = date.getFullYear();
-        month = date.getMonth() + 1;
-        dt = date.getDate();
-
-        if (dt < 10) {
-            dt = "0" + dt;
-        }
-        if (month < 10) {
-            month = "0" + month;
-        }
-        dateResolved = year + "-" + month + "-" + dt;
-        timeResolved = date.toLocaleTimeString("es-ES");
-        if (timeResolved.length < 8) {
-            timeResolved = "0" + timeResolved;
-        }
-
-        interactionTypeResolved = "";
-        if (interaction.fields.interaction_type == "work") {
-            interactionTypeResolved = "Trabajo";
-        } else {
-            interactionTypeResolved = "Descanso";
-        }
-
-        stateResolved = "";
-        if (interaction.fields.state == 0) {
-            stateResolved = "Entrada";
-        } else {
-            stateResolved = "Salida";
-        }
-
+    interactions = Object.entries(data);
+    if(interactions.length == 0) {
         $("#register_container").append(
-            ` 
-        <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
-        <h5 class="col-3">` +
-                interactionTypeResolved +
-                `</h5> 
-        <h5 class="col-3">` +
-                stateResolved +
-                `</h5>
-        
-        <input type="time" class="col-3 text-center " onblur="updateInteraction(` +
-                interaction.pk +
-                `, this.value, 'time' )" value="` +
-                timeResolved +
-                `" />
-        <input type="date" class="col-3 text-center " onblur="updateInteraction(` +
-                interaction.pk +
-                `, this.value, 'date' )" value="` +
-                dateResolved +
-                `" />
-        </div>`
+            '<tr class"table-home-row"><td></td><td class="text-center">No hay registros</td><td></td></tr>'
         );
-    });
+    }
+    for (const [key, value] of Object.entries(data)) {
+        $("#register_container").append(
+            '<tr class"table-home-row"><td class="text-center p-0 m-0 align-middle">' +
+                key +
+                '</td><td class="text-center p-0 m-0 align-middle">' +
+                value +
+                '</td><td class="text-center p-0 m-0 align-middle"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
+                '<i class="details-button fas fa-info-circle"></i></button></td></tr>'
+        );
+    }
 }
 
 function user_interaction_modal_event_function(event) {
     var button = $(event.relatedTarget); // Button that triggered the modal
-    var recipient = button.data("whatever"); // Extract info from data-* attributes
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
+    console.log(dni)
     document.getElementById("hidden-dni").value = dni;
-
+    console.log(document.getElementById("hidden-dni").value)
     var data = {
-        dni: dni,
+        'dni': dni,
     };
+    console.log(data)
     ajax_to_get_data("get_employee_job_interactions_dni/", data, success_function = on_success_user_interaction_modal_event_function);
 }
 
@@ -271,6 +272,18 @@ function updateInteraction(key, value, type) {
     };
 
     changeInteraction(newInput);
+}
+
+function updateInteractionDetailsTime(trigger) {
+    hour = trigger.value;
+    pk = trigger.parentNode.parentNode.childNodes[0].childNodes[0].innerHTML;
+    ajax_to_post_data("change_interaction_time/", {'pk':pk, 'hour':hour}, success_function = on_success_change_interaction)
+}
+
+function updateInteractionDetailsDay(trigger) {
+    day = trigger.value;
+    pk = trigger.parentNode.parentNode.childNodes[0].childNodes[0].innerHTML;
+    ajax_to_post_data("change_interaction_day/", {'pk':pk, 'day':day}, success_function = on_success_change_interaction)
 }
 
 function on_success_change_interaction() {
