@@ -22,7 +22,7 @@ function check_select_option() {
     }
     Array.from(select.options).forEach(option => {
         if(option.text=="Tipo de Notificación") {
-            select.style.color = "grey";
+            option.style.color = "grey";
         } else {
             option.style.color = "black"
         }
@@ -213,7 +213,9 @@ function show_notification(notification) {
 }
 
 function on_success_on_click_set_as_viewed_notification() {
+    toggle_dropdown('notifications_dropdown')
     show_feedback_to_user("success", "Listo, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
+    refresh_notifications()
 }
 
 function on_click_set_as_viewed_notification() {

@@ -60,7 +60,7 @@ class NotificationForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames', 'signature']
+        fields = ['dni', 'ss_number', 'phone_number', 'email', 'name', 'surnames']
 
     form_type = forms.CharField( widget=forms.HiddenInput(attrs=
         {
@@ -72,7 +72,6 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        self.fields['signature'].widget.attrs['required'] = True
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             

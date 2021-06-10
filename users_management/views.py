@@ -22,23 +22,25 @@ def login_view(request):
     app_tittle = "SIGNET"
     studycenter_name = "GMQ TECH"
     form = forms.LoginForm()
+    correct_login = True
 
     if request.method == "POST":
         print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         
-        
         user = authenticate(request, username=username.lower(), password=password)
         if user is not None and user.is_active:
             login(request, user)
             return redirect("/admin/")
         else:
-            print("Usuario incorrecto")
+            correct_login = False
+
     return render(request, 'login.html', context={
         'studycenter_name':studycenter_name,
         'app_tittle':app_tittle,
-        'form': form
+        'form': form,
+        'correct_login':correct_login
     })
 
 def register(request):
@@ -103,6 +105,7 @@ def get_employee_job_interactions_dni(request):
     return None
 
 def get_hours_from_range(request):
+    
     if request.is_ajax:
         dni = request.GET['dni']
         date = request.GET['month_to_search']
@@ -281,10 +284,12 @@ def admin(request):
     if not request.user.is_staff:
         return redirect("/home/")
     form = forms.UserForm(request.POST or None, request.FILES or None)
+    form_type = ''
+    form_success = 'empty'
     if request.method == 'POST':
         
         if form.is_valid():
-            
+            print("IS VALID ADSSADAD")
             formType = form.cleaned_data.get("form_type")
             name = form.cleaned_data.get('name').capitalize()
             surname = form.cleaned_data.get('surnames').capitalize()
@@ -295,23 +300,28 @@ def admin(request):
             signature = request.FILES['signature'] if 'signature' in request.FILES else False
 
             if formType == "Crear Usuario":
-
-                center = Center.objects.get(CIF='A3424F23424')
-                user = User.objects.create_user(username=email, password=dni)
-                employee = Employee()
-                employee.name = name
-                employee.user = user
-                employee.dni = dni
-                employee.center = center
-                employee.surnames = surname
-                employee.ss_number = ss
-                employee.phone_number = phone
-                employee.email = email
-                employee.signature = signature
-                employee.professional_category = "Profesor"
-                
-                user.save()
-                employee.save()
+                print(signature)
+                if Employee.objects.filter(dni=dni).exists():
+                    form_success = 'fail'
+                    form_type = 'El DNI introducido ya existe'
+                else:
+                    center = Center.objects.get(CIF='A3424F23424')
+                    user = User.objects.create_user(username=email, password=dni)
+                    employee = Employee()
+                    employee.name = name
+                    employee.user = user
+                    employee.dni = dni
+                    employee.center = center
+                    employee.surnames = surname
+                    employee.ss_number = ss
+                    employee.phone_number = phone
+                    employee.email = email
+                    employee.signature = signature
+                    employee.professional_category = "Profesor"
+                    user.save()
+                    employee.save()
+                    form_type = 'Usuario creado con éxito'
+                    form_success = 'success'
             else:
                 employee = Employee.objects.get(dni=last_user.dni)
                 user = User.objects.get(username=last_user.email)
@@ -329,9 +339,10 @@ def admin(request):
 
                 employee.save()
                 user.save()
-            return redirect('admin')
+                form_type = 'Usuario editado con éxito'
+                form_success = 'success'
         else:
-            print("INVALIDOOOOOOOOOOOOOOOOOO")
+            form_success = 'fail'
     
     employees = Employee.objects.filter(user__is_active = True)
     notification_types = NotificationTypesAuxiliar.objects.all()
@@ -344,6 +355,8 @@ def admin(request):
         'userForm' : form,
         'app_tittle':app_tittle,
         'notification_types': notification_types,
+        'form_success': form_success,
+        'form_type': form_type
     })
    
 def get_pdf_from_month(request):
@@ -457,9 +470,7 @@ def get_notification_by_id_user(request):
 
 def set_notification_as_viewed(request):
     if request.is_ajax and request.method == "POST":
-        notif = Notification.objects.get(pk=request.POST['id'])
-        notif.viewed = True
-        notif.save()
+        Notification.objects.get(pk=request.POST['id']).delete()
         return HttpResponse(status=200)
     return HttpResponse(status=403)
 
@@ -493,12 +504,12 @@ def getUser(request):
         dni = request.GET['dni']
         employee = Employee.objects.get(dni=dni)
         globals()['last_user'] = employee
-        employees_json = json.loads(serializers.serialize('json', [ employee, ]))
-        for employees in employees_json:
-            employees["fields"]["is_active"] =User.objects.get(pk = employees["fields"]["user"]).is_active
-
-        return HttpResponse(json.dumps(employees_json), content_type="application/json")
+        employee_json = json.loads(serializers.serialize('json', [ employee, ]))
+        for employee_j in employee_json:
+            employee_j["fields"]["is_active"] = User.objects.get(pk = employee_j["fields"]["user"]).is_active
+        return HttpResponse(json.dumps(employee_json), content_type="application/json")        
     return None
+
 def get_users_by_name(request):
      if request.is_ajax and request.method == "GET":
         actual_employee =" Employee.objects.get(user=request.user)"

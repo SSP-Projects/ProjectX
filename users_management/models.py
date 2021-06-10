@@ -38,7 +38,7 @@ class Employee(models.Model):
     dni                   = models.CharField(max_length=9)
     ss_number             = models.CharField(max_length=12)
     professional_category = models.CharField(max_length=20)
-    signature             = models.ImageField(blank=True, upload_to='./static/media/signs')
+    signature             = models.ImageField(blank=True, upload_to='./signs')
     phone_number          = models.CharField(max_length=9, validators=[RegexValidator(r'^\d{1,10}$')])
     email                 = models.EmailField()
     name                  = models.CharField(max_length=30)

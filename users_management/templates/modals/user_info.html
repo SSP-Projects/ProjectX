@@ -3,12 +3,12 @@
         <div class="modal-content">
             <div class="modal-header">
                
-                <h4 class="modal-title" id="createUserModalLabel">Crear empleado
+                <div class="row">
+                    <h4 class="modal-title" id="createUserModalLabel">Crear empleado</h4>
                     <button  type="button" id="editButton" class="btn"> 
                         <i class="fas fa-pen" aria-hidden="true"></i>
                     </button>
-
-                </h4>
+                </div>
                
                 <div>
                     <button id="helpButton" type="button"class=" helpButton btn">
@@ -64,12 +64,10 @@
                             <div class="col-6 text-center">{{ userForm.email }}</div>
                         </div>
                         <div class="row text-center py-2">
-                            <div class="col-6">FIRMA</div>
-                            
+                            <p class="col-12">FIRMA</p>
                         </div>
-                        <div class="row form-group py-2">
-                            
-                            <div class="col-6 text-center ">{{ userForm.signature }}</div>
+                        <div id="user_signature" class="row form-group justify-content-center align-items-center py-2">
+
                         </div>
 
                         <div class="row form-group text-center">

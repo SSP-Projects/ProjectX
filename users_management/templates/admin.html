@@ -20,11 +20,9 @@
 
         </div>
     </div>
+    
 </nav>
-
-
 <div class="container">
-
     <div class="table">
         <div class="table-header">
             <div id="header__item__checkbox" class="header__item">
@@ -51,60 +49,7 @@
 
         </div>
     </div>
-</div>
-    {% if userForm.errors %}
-        <h1>HOLA CABRONEEEEEEESSSS</h1>
-        {% for field in userForm %}
-            {% for error in field.errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ field.label }}</strong><span>{{ error|escape }}</strong>
-                </div>
-            {% endfor %}
-        {% endfor %}
-        {% for error in userForm.non_field_errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-    {% endif %}
-    <!--
-
-    <div class="container-fluid">
-        <div class="container-fluid w-100 row justify-content-center align-items-center py-2">
-            <div class="form-check col-1 justify-content-center align-items-center">
-                <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="..." onclick="changeOne()">
-            </div>
-            <h3 class="col-2">DNI</h3>
-            <h3 class="col-9">NOMBRE Y APELLIDOS</h3>
-        </div>
-        {% for employee in employees %}
-        {% if employee.user.is_active == True %}
-        {% if forloop.counter|divisibleby:2 %}
-        <div class="container-fluid row bg-white">
-            {% else %}
-            <div class="container-fluid row bg-light">
-                {% endif %}
-                <div class="form-check col-1 justify-content-center align-items-center">
-                    <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox"
-                        value="option1" aria-label="...">
-                </div>
-                <h3 id="DNI{{ forloop.counter }}" class="col-2">{{ employee.dni }}</h3>
-                <h3 class="col-8">{{ employee.name }} {{ employee.surnames }}</h3>
-                <div class="container-fluid col-1" name="prueba">
-                    <button class="btn col-3" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
-                            class="fas fa-user-edit"></i></button>
-                    <button data-toggle="modal" data-target="#userInteractions" class="btn col-3"><i
-                            class="fas fa-clipboard-list"></i></button>
-                    <button class="btn col-3 delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i
-                            class="fas fa-trash"></i></button>
-                </div>
-            </div>
-            {% endif %}
-            {% empty %}
-            <h1>No hay empleados.</h1>
-            {% endfor %}
-        </div>
--->
+    
 {% endblock body %}
 {% block footer %}
 {% include "bottom/footer.html" %}
@@ -122,8 +67,8 @@
 
 {% block extra_scripts %}
 <script src="{% static 'js/admin.js' %}"></script>
-<script>
-    bind_event("#employeeNotificationsButton", "click", check_if_employees_are_selected_to_send_notifications)
+<script type="text/javascript">
+    bind_event("#sendNotification", "show.bs.modal", send_notification_modal_event_function)
     bind_event("#employee-hours-button", "click", check_if_employees_are_selected)
     bind_event("#monthDateHours", "input", on_watch_hours_model)
     bind_event("#UserModal", 'show.bs.modal', user_modal_event_function)
@@ -141,8 +86,12 @@
     bind_event("#searchInput", "input", on_input_search_input)
     bind_event("#download-registers-button", "click", on_click_check_if_employee_have_interactions)
     bind_event(".helpButton", "click", on_click_show_help_alert)
+    bind_event("#employeeNotificationsButton", "click", check_if_employees_are_selected_to_send_notifications)
 
-
-    
+    {% if form_success == 'success' %}
+        show_feedback_to_user("success", "{{form_type}}", false, 1500, "rgba(80,80,80,0.4)");
+    {% elif form_success == 'fail' %}
+        show_feedback_to_user("error","{{form_type}}", true, 15000, "rgba(70,70,70,0.4)")
+    {% endif %}
 </script>
 {% endblock %}

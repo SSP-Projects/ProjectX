@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body">
                 <div class="text-center px-3">
-                    <select class="form-control text-center my-3" required="" id="response_ticket_type">
+                    <select class="form-control text-center my-3" required="" id="response_ticket_type" onchange="check_select_option()">
                             {% for option in notification_types %}
                             <option value="{{ option.pk }}">{{ option.name }}</option>   
                             {% endfor %}

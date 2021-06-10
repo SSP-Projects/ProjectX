@@ -5,14 +5,12 @@ var inputDNI = document.getElementById("id_dni");
 var inputSS = document.getElementById("id_ss_number");
 var inputPhone = document.getElementById("id_phone_number");
 var inputEmail = document.getElementById("id_email");
-var inputSignature = document.getElementById("id_signature");
 var editButton = document.getElementById("editButton");
 var onlyModalEdit = document.getElementById("only-edit-form");
+var last_sign = ""
 
-
-refresh_notifications();
-setInterval(refresh_notifications, 300000);
 get_employees_by_name("");
+
 
 function on_success_search_date_button_action(data) {
     
@@ -139,33 +137,16 @@ function changeOne() {
     }
 }
 
-function on_success_user_modal_event_function(data) {
-    document.getElementById("id_name").value = data[0].fields.name;
-    document.getElementById("id_surnames").value = data[0].fields.surnames;
-    document.getElementById("id_dni").value = data[0].fields.dni;
-    document.getElementById("input_dni").value = data[0].fields.dni;
-    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
-    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
-    document.getElementById("id_email").value = data[0].fields.email;
-    
-    //document.getElementById("id_signature").value = data[0].fields.signature;
-    
 
-    if(!data[0].fields.is_active){
-        $("#editButton").prop( "disabled", true )
-        
-    }
-}
 
 function user_modal_event_function(event) {
-    var button = $(event.relatedTarget); // Button that triggered the modal
-    var recipient = button.data("whatever"); // Extract info from data-* attributes
+    var button = $(event.relatedTarget); 
+    var recipient = button.data("whatever"); 
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-
     var data = {
         dni: dni,
     };
-
+    
     if (recipient === "Crear Usuario") {
        // document.getElementsByClassName("only-edit-form").style.visibility = "hidden";
         editButton.style.visibility = "hidden";
@@ -176,7 +157,7 @@ function user_modal_event_function(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
-        inputSignature.disabled = false;
+        document.getElementById("user_signature").innerHTML = '<input style="width: 60%;" type="file" name="signature" accept="image/*" class="form-control" id="id_signature" required></input>'
 
         document.getElementById("id_name").value = "";
         document.getElementById("id_surnames").value = "";
@@ -200,14 +181,11 @@ function user_modal_event_function(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
-        inputSignature.disabled = true;
         
         ajax_to_get_data("get_user/", data, success_function = on_success_user_modal_event_function);
     }
-    
-    document.getElementById("type").value = recipient;
-    var modal = $(this);
-    modal.find(".modal-title").text(recipient);
+    document.getElementById("type").value = recipient
+    document.getElementById("createUserModalLabel").innerHTML = recipient
 }
 
 function on_success_user_interaction_modal_event_function(data) {
@@ -423,6 +401,11 @@ function get_employees_by_name(name) {
 function on_input_search_input(event) {
     var nameToSearch = $("#searchInput").val();
     get_employees_by_name(nameToSearch);
+    document.getElementsByClassName("select_all")[0].checked = false;
+    checkboxes = document.getElementsByClassName("select_user");
+    Array.from(checkboxes).forEach((checkbox) => {
+        checkbox.checked = false;
+    })
 }
 
 function check_if_employees_are_selected_to_send_notifications(event){
@@ -434,12 +417,9 @@ function check_if_employees_are_selected_to_send_notifications(event){
         }
     })
     if(isAnyCheckboxChecked){
-       
         $('#sendNotification').modal('show')
+        document.getElementById('ticket_description').value = ""
         send_notification_modal_event_function(event)
-
-
-      
     }else{
         Swal.fire({
             title: 'Aviso',
@@ -492,8 +472,7 @@ function check_if_employees_are_selected(event){
     }
 }
 
-
-function on_watch_hours_model(event){
+function on_watch_hours_model(){
 
     checkboxes = document.getElementsByClassName("select_user");
     users_div = document.getElementById("users_to_notify");
@@ -501,8 +480,8 @@ function on_watch_hours_model(event){
     if (month_date.value == ""){
         month_date.valueAsDate = new Date();
     }
-    console.log("asd", month_date.value)
 
+    var info = [];
     $("#user_hours_container").empty();
     Array.from(checkboxes).forEach((checkbox) => {
         if (checkbox.checked) {
@@ -514,29 +493,39 @@ function on_watch_hours_model(event){
                 "dni" : dni,
                 "month_to_search" : month_date.value
             }
-            console.log(data);
-            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
-                console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAA", data)
-                $("#user_hours_container").append(`
-                <tr>
-                    <td><h5>` + name + `</h5></td>
-                    <td><h5>` + data.hours + `</h5></td>
-                </tr>
-                `);
-            });
             
+            ajax_to_get_data("get_hours_from_range", data, success_function = function (data) {
+                info.push({"name": name, "hours" : data.hours});
+                fill_hours_sorted(info);
+            });
         }
     });
-   
-   
+};
+
+function fill_hours_sorted(hours){
+    $("#user_hours_container").empty();
+    
+    hours.sort(function(a, b){
+        return b.hours - a.hours;
+    });
+
+    jQuery.each(hours, function(i, val) {
+        $("#user_hours_container").append(`
+            <tr>
+                <td><h5>` + val.name + `</h5></td>
+                <td class="text-center"><h5>` + val.hours + `</h5></td>
+            </tr>
+        `);
+    });
+
 }
 
 
 function on_success_on_click_confirm_send_event_function() {
     desc = document.getElementById("ticket_description");
     show_feedback_to_user("success", "Enviado, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
-    desc.value = "";
     toggle_modal("#sendNotification");
+    desc.value = "";
 }
 
 function on_click_confirm_send_event_function(event) {
@@ -636,15 +625,37 @@ function on_click_send_response_notification(event) {
 }
 
 function on_success_on_click_set_as_viewed_notification() {
+    toggle_dropdown('notifications_dropdown')
     show_feedback_to_user("success", "Listo, ¡gracias!", false, 1500, "rgba(80,80,80,0.4)");
+    refresh_notifications()
 }
 
 function on_click_set_as_viewed_notification() {
     data = {
         id: document.getElementById("set_as_viewed").value,
     };
+    refresh_notifications()
     ajax_to_post_data("set_notification_as_viewed/", data, success_function = on_success_on_click_set_as_viewed_notification);
 }
+
+function on_success_user_modal_event_function(data) {
+    document.getElementById("id_name").value = data[0].fields.name;
+    document.getElementById("id_surnames").value = data[0].fields.surnames;
+    document.getElementById("id_dni").value = data[0].fields.dni;
+    document.getElementById("input_dni").value = data[0].fields.dni;
+    document.getElementById("id_ss_number").value = data[0].fields.ss_number;
+    document.getElementById("id_phone_number").value = data[0].fields.phone_number;
+    document.getElementById("id_email").value = data[0].fields.email;
+    url = window.location.protocol + "//" + window.location.hostname + ":"  + window.location.port + "/media/"
+    image_path = "<img style=\"max-width: 40%;\" src=\"" + url + data[0].fields.signature + "\">"
+    document.getElementById("user_signature").innerHTML = image_path;
+    last_sign = image_path
+    if(!data[0].fields.is_active){
+        $("#editButton").prop( "disabled", true )
+    }
+}
+
+
 
 function on_click_edit_button(event) {
     if (inputName.disabled == true){
@@ -654,7 +665,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = false;
         inputPhone.disabled = false;
         inputEmail.disabled = false;
-        inputSignature.disabled = false;
+        document.getElementById("user_signature").innerHTML = '<input style="width: 60%;" type="file" name="signature" accept="image/*" class="form-control" id="id_signature"></input>'
     } else {
         inputName.disabled = true;
         inputSurname.disabled = true;
@@ -662,7 +673,7 @@ function on_click_edit_button(event) {
         inputSS.disabled = true;
         inputPhone.disabled = true;
         inputEmail.disabled = true;
-        inputSignature.disabled = true;
+        document.getElementById("user_signature").innerHTML = last_sign
     }
 }
 
@@ -676,7 +687,7 @@ function check_select_option() {
     }
     Array.from(select.options).forEach(option => {
         if(option.text=="Tipo de Notificación") {
-            select.style.color = "grey";
+            option.style.color = "grey";
         } else {
             option.style.color = "black"
         }
@@ -690,7 +701,7 @@ function check_select_option() {
     }
     Array.from(select.options).forEach(option => {
         if(option.text=="Tipo de Notificación") {
-            select.style.color = "grey";
+            option.style.color = "grey";
         } else {
             option.style.color = "black"
         }
@@ -718,3 +729,5 @@ function first_load() {
 
 first_load()
 check_select_option()
+refresh_notifications();
+setInterval(refresh_notifications, 300000);

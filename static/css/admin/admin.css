@@ -188,3 +188,8 @@ border: 2px solid cornflowerblue;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+.dropdown-content {         
+    max-height: 700%;
+    overflow-y: auto;
+}

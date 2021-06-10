@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createUserModalLabel">Enviar notificaciones</h5>
+                <h5 class="modal-title">Enviar notificaciones</h5>
                 <div>
                     <button type="button"class="helpButton btn">
                         <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">Aquí pone la ayuda </span></i>
@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body pt-0">
                 <div class="text-center px-3">
-                    <select class="form-control text-center my-3" required="" id="ticket_type">
+                    <select class="form-control text-center my-3" required="" id="ticket_type" onchange="check_select_option()">
                             {% for option in notification_types %}
                             <option value="{{ option.pk }}">{{ option.name }}</option>   
                             {% endfor %}
