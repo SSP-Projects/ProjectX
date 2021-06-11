@@ -320,7 +320,6 @@ function confirm_desactivate_modal_event_function(event) {
     };
     ajax_to_get_data("get_user/", data, success_function = on_success_confirm_desactivate_modal_event_function);
     dniToEdit = data;
-    console.log("Data: " + JSON.stringify(data))
 }
 function confirm_activate_user_modal_event_function(event){
     var button = $(event.relatedTarget);
@@ -530,7 +529,6 @@ function fill_hours_sorted(hours){
             </tr>
         `);
     });
-
 }
 
 
@@ -628,7 +626,7 @@ function on_click_send_response_notification(event) {
     if(n.options[n.selectedIndex].value == "Tipo de Notificación") {
         show_feedback_to_user("error", "Selecciona un tipo de notificación", false, 1500, "rgba(0,0,123,0.4)");
         return
-    }
+    } 
     data = {
         dnis: [receiver.innerHTML.match(/\(([^)]+)\)/)[1]],
         notification_type: n.options[n.selectedIndex].value,
@@ -667,8 +665,6 @@ function on_success_user_modal_event_function(data) {
         $("#editButton").prop( "disabled", true )
     }
 }
-
-
 
 function on_click_edit_button(event) {
     if (inputName.disabled == true){

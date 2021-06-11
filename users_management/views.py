@@ -346,7 +346,6 @@ def admin(request):
     if request.method == 'POST':
         
         if form.is_valid():
-            print("IS VALID ADSSADAD")
             formType = form.cleaned_data.get("form_type")
             name = form.cleaned_data.get('name').capitalize()
             surname = form.cleaned_data.get('surnames').capitalize()

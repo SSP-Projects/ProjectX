@@ -93,6 +93,8 @@
         show_feedback_to_user("success", "{{form_type}}", false, 1500, "rgba(80,80,80,0.4)");
     {% elif form_success == 'fail' %}
         show_feedback_to_user("error","{{form_type}}", true, 15000, "rgba(70,70,70,0.4)")
+    {% elif form_success == 'El DNI introducido ya existe' %}
+        show_feedback_to_user("error","{{form_type}}", true, 15000, "rgba(70,70,70,0.4)")
     {% endif %}
 </script>
 {% endblock %}
