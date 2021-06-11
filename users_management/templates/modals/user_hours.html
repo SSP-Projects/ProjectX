@@ -6,7 +6,7 @@
                     <h5 class="modal-title text-center" id="userHoursLabel">Horas de los usuarios</h5>
                     <div>
                         <button type="button"class="helpButton btn">
-                            <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">dxb de el modal de las horas</span></i>
+                            <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">Se muestran las horas de los usuarios seleccionados, en el mes seleccionado.</span></i>
                         </button>
                         <button type="button"class="btn"  data-dismiss="modal">
                             <i class="far fa-times-circle fa-2x"></i>
@@ -21,32 +21,19 @@
                             <input class="col-6" type="month" name="startDate" id="monthDateHours" class="form-control">
                         </div>
                     </div>
-      
-                    <div class="table-wrapper">
+
+                    <div class="table-wrapper h-25">
                         <table class="fl-table font-white">
-                            <thead>
-                            <tr class="text-center">
-                                <th>Empleado</th>
-                                <th>Horas</th>
+                            <thead class="tableBlock">
+                            <tr class="text-center row mx-0 px-0" >
+                                <th class="col-10">Empleado</th>
+                                <th class="col-2">Horas</th>
                             </tr>
                             </thead>
-                            <tbody  id="user_hours_container" class="font-black">
-
-                            </table>
-                            </table>
+                            <tbody id="user_hours_container" class="font-black tableBlock tableBodyScroll">
+                            </tbody>
+                        </table>
                     </div>
-                    <!--
-
-                        <div class="container-fluid background-blue border">
-                            <div class="container-fluid row g-0">
-                                <h4 class="col-8 font-white">Empleado</h4>
-                                <h4 class="col-4 font-white">Horas</h4>
-                            </div>
-                            <div id="user_hours_container" class="table-content">
-                            </div>
-                        </div>
-                    </div>
-                    -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-cancel" data-dismiss="modal">Salir</button>
                     </div>

@@ -8,9 +8,9 @@
 
         </div>
         <div>
-            <button id="employee-hours-button" class="btn notification-button"><i class="fas fa-user-clock"></i></button>
-            <button id="employeeNotificationsButton"class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
-            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
+            <button title="Ver horas" id="employee-hours-button" class="btn notification-button"><i class="fas fa-user-clock"></i></button>
+            <button title="Enviar notificación" id="employeeNotificationsButton"class="btn notification-button"><i class="fas fa-paper-plane"></i></button>
+            <button title="Crear usuario"" class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Crear Usuario"><i class="fas fa-user-plus"></i></button>
             
             
             <!--<i class="fas fa-hourglass-start"></i>
@@ -92,6 +92,8 @@
     {% if form_success == 'success' %}
         show_feedback_to_user("success", "{{form_type}}", false, 1500, "rgba(80,80,80,0.4)");
     {% elif form_success == 'fail' %}
+        show_feedback_to_user("error","{{form_type}}", true, 15000, "rgba(70,70,70,0.4)")
+    {% elif form_success == 'El DNI introducido ya existe' %}
         show_feedback_to_user("error","{{form_type}}", true, 15000, "rgba(70,70,70,0.4)")
     {% endif %}
 </script>

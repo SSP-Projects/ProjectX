@@ -320,7 +320,6 @@ function confirm_desactivate_modal_event_function(event) {
     };
     ajax_to_get_data("get_user/", data, success_function = on_success_confirm_desactivate_modal_event_function);
     dniToEdit = data;
-    console.log("Data: " + JSON.stringify(data))
 }
 function confirm_activate_user_modal_event_function(event){
     var button = $(event.relatedTarget);
@@ -351,7 +350,7 @@ function on_success_get_employees_by_name(data) {
         if (i % 2 == 0) {
             rowColor = `<div class="table-row-1">`;
         }
-        buttons = `<button class="btn delete-button" data-toggle="modal" data-target="#confirmActivateUserModal"><i class="fas fa-unlock-alt"></i></button>`
+        buttons = `<button title="Activar usuario" class="btn delete-button" data-toggle="modal" data-target="#confirmActivateUserModal"><i class="fas fa-unlock-alt"></i></button>`
         checkbox =` <div id="table-data-checkbox" class="table-data">
         <div class="form-check col-2 justify-content-center align-items-center">
             <input disabled ="true" class="select_user form-check-input position-static m-0 p-0" style="background-color:#BF1414;" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
@@ -359,7 +358,7 @@ function on_success_get_employees_by_name(data) {
             </div>
     </div>`
         if(employee.fields.is_active == true){
-         buttons=`<button class="btn  delete-button" data-toggle="modal" data-target="#confirmDesactivateModal"><i class="fas fa-user-slash"></i></button>`
+         buttons=`<button title="Desactivar usuario" class="btn  delete-button" data-toggle="modal" data-target="#confirmDesactivateModal"><i class="fas fa-user-slash"></i></button>`
             checkbox =` <div id="table-data-checkbox" class="table-data">
             <div class="form-check col-2 justify-content-center align-items-center">
                 <input class="select_user form-check-input position-static m-0 p-0" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
@@ -394,9 +393,9 @@ function on_success_get_employees_by_name(data) {
                 `</h5>
         </div>
         <div class="table-data d-inline" name="prueba">
-            <button class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
+            <button title="Información/Editar usuario" class="btn" data-toggle="modal" data-target="#UserModal" data-whatever="Editar Usuario"><i
                 class="fas fa-user-edit"></i></button>
-            <button data-toggle="modal" data-target="#userInteractions" class="btn"><i
+            <button title="Ver interacciones" data-toggle="modal" data-target="#userInteractions" class="btn"><i
                 class="fas fa-clipboard-list"></i></button>
                 `+buttons+` 
 
@@ -524,13 +523,12 @@ function fill_hours_sorted(hours){
 
     jQuery.each(hours, function(i, val) {
         $("#user_hours_container").append(`
-            <tr>
-                <td><h5>` + val.name + `</h5></td>
-                <td class="text-center"><h5>` + val.hours + `</h5></td>
+            <tr class="row mx-0 px-0">
+                <td class="col-10"><h5>` + val.name + `</h5></td>
+                <td class="text-center col-2"><h5>` + val.hours + `</h5></td>
             </tr>
         `);
     });
-
 }
 
 
@@ -628,7 +626,7 @@ function on_click_send_response_notification(event) {
     if(n.options[n.selectedIndex].value == "Tipo de Notificación") {
         show_feedback_to_user("error", "Selecciona un tipo de notificación", false, 1500, "rgba(0,0,123,0.4)");
         return
-    }
+    } 
     data = {
         dnis: [receiver.innerHTML.match(/\(([^)]+)\)/)[1]],
         notification_type: n.options[n.selectedIndex].value,
@@ -667,8 +665,6 @@ function on_success_user_modal_event_function(data) {
         $("#editButton").prop( "disabled", true )
     }
 }
-
-
 
 function on_click_edit_button(event) {
     if (inputName.disabled == true){

@@ -4,8 +4,8 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="send_to_text_response_notification"></h5>
                 <div>
-                    <button type="button"class="helpButton btn">
-                        <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">response_notification </span></i>
+                    <button type="button" class="helpButton btn">
+                        <i class="far fa-question-circle fa-2x"><span id="helpText" style="display: none;">Responder a una notificación. Selecciona el tipo de respuesta y añade un comentario.</span></i>
                     </button>
                     <button type="button"class="btn"  data-dismiss="modal">
                         <i class="far fa-times-circle fa-2x"></i>
@@ -18,7 +18,7 @@
                             {% for option in notification_types %}
                             <option value="{{ option.pk }}">{{ option.name }}</option>   
                             {% endfor %}
-                          </select>
+                    </select>
                     <textarea cols="40" rows="5" class="form-control no-resize mb-3" required="" id="response_ticket_description" placeholder="Breve descripción para el usuario"></textarea>
                 </div>
             </div>
