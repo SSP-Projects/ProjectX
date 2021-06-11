@@ -524,8 +524,8 @@ function fill_hours_sorted(hours){
     jQuery.each(hours, function(i, val) {
         $("#user_hours_container").append(`
             <tr class="row mx-0 px-0">
-                <td class="col-10"><h5>` + val.name + `</h5></td>
-                <td class="text-center col-2"><h5>` + val.hours + `</h5></td>
+                <td class="col-10 tdHoras"><h5>` + val.name + `</h5></td>
+                <td class="text-center col-2 tdHoras"><h5>` + val.hours + `</h5></td>
             </tr>
         `);
     });
