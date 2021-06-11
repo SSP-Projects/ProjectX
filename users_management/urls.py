@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^ajax/get_notification_to_show/', views.get_notification_by_id, name='getNotificationFromId'),
     url(r'^ajax/get_notification_to_show_/', views.get_notification_by_id_user, name='getNotificationFromIdUser'),
     url(r'^ajax/set_notification_as_viewed/', views.set_notification_as_viewed, name='setNotificationAsViewed'),
-    url(r'^ajax/get_employee_job_interactions_dni/',views.get_employee_job_interactions_dni, name='get_employee_job_interactions_dni'),
+    url(r'^ajax/get_employee_job_interactions_dni/',views.get_hours_from_current_month_admin, name='get_employee_job_interactions_dni'),
     url(r'^ajax/modifyInteraction/',views.modifyInteraction, name='modifyInteraction'),
     url(r'^ajax/get_users_by_name/',views.get_users_by_name, name='get_users_by_name'),
     url(r'^ajax/get_employee_job_interactions_date_range/',views.get_employee_job_interactions_date_range, name='get_employee_job_interactions_date_range'),
@@ -32,4 +32,7 @@ urlpatterns = [
     url(r'^wuarrona',views.pdf_wuarron_testeo),
     url(r'^ajax/get_hours_from_current_month/',views.get_hours_from_current_month, name='get_hours_from_current_month'),
     url(r'^ajax/get_hours_from_desired_day/',views.get_interactions_from_day, name='get_interactions_from_day'),
+    url(r'^ajax/get_hours_from_desired_day_and_user/',views.get_hours_from_desired_day_and_user, name='get_interactions_from_day_and_user'),
+    url(r'^ajax/change_interaction_day/',views.change_interaction_day, name='change_interaction_day'),
+    url(r'^ajax/change_interaction_time/',views.change_interaction_time, name='change_interaction_time'),
 ]

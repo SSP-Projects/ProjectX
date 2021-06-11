@@ -30,6 +30,7 @@ def login_view(request):
         password = request.POST['password']
         
         user = authenticate(request, username=username.lower(), password=password)
+        print(user)
         if user is not None and user.is_active:
             login(request, user)
             return redirect("/admin/")
@@ -90,16 +91,12 @@ def get_employee_job_interactions_date_range(request):
 
 
 def get_employee_job_interactions_dni(request):
-
     if request.is_ajax:
         dni = request.GET['dni']
         user = Employee.objects.get(dni=dni)
-        
         today = datetime.now() + timedelta(days=10000)
         starting_date = datetime.now() - timedelta(days=35)
-
         employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(starting_date, today)).order_by('-date_time')
-
         interactions_json = serializers.serialize('json',employee_interactions)
         return HttpResponse(interactions_json, content_type="application/json")
     return None
@@ -167,6 +164,37 @@ def get_hours_from_current_month(request):
             daily_hours[key] = "{:.2f}".format(daily_hours[key])
         return HttpResponse(json.dumps(daily_hours), content_type="application/json")
 
+def get_hours_from_current_month_admin(request):
+    if request.is_ajax:
+        print(request.GET)
+        current_month = datetime.today().date().replace(day=1)
+        next_month = (current_month + timedelta(days=32)).replace(day=1)
+        user = Employee.objects.get(dni=request.GET['dni'])
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(current_month, next_month)).order_by('date_time')
+        daily_hours = {}
+        firstTime = None
+        secondTime = None
+        for interaction in employee_interactions:
+            if ((interaction.interaction_type == "work" and interaction.state == 0) or (interaction.interaction_type == "break" and interaction.state == 1)):
+                firstTime = interaction.date_time
+            elif ((interaction.interaction_type == "work" and interaction.state == 1) or (interaction.interaction_type == "break" and interaction.state == 0)):
+                secondTime = interaction.date_time  
+            if (firstTime is not None and secondTime is not None):
+                difference = secondTime - firstTime
+                days, seconds = difference.days, difference.seconds
+                hours = days * 24 + seconds // 3600
+                minutes = minutes = (seconds % 3600) // 60
+                hours += minutes / 60
+                try:
+                    daily_hours[interaction.date_time.strftime("%d-%m-%Y")] += hours
+                except:
+                    daily_hours[interaction.date_time.strftime("%d-%m-%Y")] = hours
+                firstTime = None
+                secondTime = None
+        for key in daily_hours.keys():
+            daily_hours[key] = "{:.2f}".format(daily_hours[key])
+        return HttpResponse(json.dumps(daily_hours), content_type="application/json")
+
 def get_interactions_from_day(request):
     if request.is_ajax:
         day = request.GET['day']
@@ -176,6 +204,35 @@ def get_interactions_from_day(request):
         employee_interactions = Interaction.objects.filter(employee = employee, date_time__range=(day_start, day_end)).order_by('date_time')
         return HttpResponse(serializers.serialize('json',employee_interactions), content_type="application/json")
 
+def get_hours_from_desired_day_and_user(request):
+    if request.is_ajax:
+        day = request.GET['day']
+        dni = request.GET['dni']
+        day_start = datetime.strptime(day, "%d-%m-%Y")
+        day_end = day_start.replace(hour=23).replace(minute=59).replace(second=59)
+        employee = Employee.objects.get(dni=dni)
+        employee_interactions = Interaction.objects.filter(employee = employee, date_time__range=(day_start, day_end)).order_by('date_time')
+        return HttpResponse(serializers.serialize('json',employee_interactions), content_type="application/json")
+
+def change_interaction_day(request):
+    if request.is_ajax:
+        date = request.POST['day'].split('-')
+        interaction = Interaction.objects.get(pk=request.POST['pk'])
+        print(request.POST['pk'])
+        interaction.date_time = interaction.date_time.replace(year=int(date[0])).replace(month=int(date[1])).replace(day=int(date[2]))
+        print(interaction.date_time)
+        interaction.save()
+    return HttpResponse(status=200)
+
+def change_interaction_time(request):
+    if request.is_ajax:
+        time = request.POST['hour'].split(':')
+        interaction = Interaction.objects.get(pk=request.POST['pk'])
+        print(request.POST['pk'])
+        interaction.date_time = interaction.date_time.replace(hour=int(time[0])).replace(minute=int(time[1]))
+        print(interaction.date_time)
+        interaction.save()
+    return HttpResponse(status=200)
 
 def send_email():
     gmail_user = 'help.ssp.projects@gmail.com'
