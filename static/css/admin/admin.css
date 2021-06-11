@@ -18,6 +18,7 @@ a {
 }
 /*Estilos scroll*/
 
+
 ::-webkit-scrollbar {
    
     width: 8px;
@@ -48,6 +49,23 @@ a {
     
 }
 
+.tableBlock{
+    display: block;
+}
+
+.tableBodyScroll{
+    height: 25em;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
+table {
+    width: 100%; /* Optional */
+}
+
+tbody td, thead th {
+    width: 20%;  /* Optional */
+}
 
 .table-row-1 {
     display:flex;
