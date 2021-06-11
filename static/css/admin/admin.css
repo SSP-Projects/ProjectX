@@ -203,6 +203,7 @@ border: 2px solid cornflowerblue;
     scrollbar-width: none;
     overflow-y: scroll;
 }
+
 table {
     box-shadow: 0px 20px 50px rgba( 0, 0, 0, 0.2 );
 }
