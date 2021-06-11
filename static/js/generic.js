@@ -38,21 +38,25 @@ function ajax_to_get_data(url, data, success_function = generic_success, error_f
 }
 
 function bind_event(trigger_id, event_to_bind, action_to_dispatch) {
-    $(trigger_id).on(event_to_bind, function(event) {
-        action_to_dispatch(event)
-    })
+
+        $(trigger_id).on(event_to_bind, function(event) {
+            action_to_dispatch(event)
+        })
+
 }
 
 function set_prop(element_id, prop, value) {
     $(element_id).prop(prop, value)
 }
-function on_click_show_help_alert(event){
 
+function on_click_show_help_alert(event){
+   
     //ESTA HARDCODEADO EL SWAL PORQUE NO FINCIONA LA VARIABLE TEXT EN EL METODO SHOE FEEDBACK TOL USER :)
     Swal.fire({
         icon: "info",
         title: "Ayuda",
-        text:  $("#helpText").text(),
+        text: event.target.parentNode.childNodes[1].childNodes[0].innerHTML,
+        //$("#helpText").text()
        
       })
     //show_feedback_to_user("info","Ayuda",text = $("#helpText").text())

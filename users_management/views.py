@@ -431,7 +431,7 @@ def get_pdf_from_month(request):
             starting_date =  first_day_of_month(date(int(year), int(month), 1))
             end_date =   first_day_of_month(date(int(year),  int(month)+1, 1))
 
-            employee_interactions = Interaction.objects.filter(employee = employee_to_download_register, date_time__range=(starting_date, end_date))
+            employee_interactions = Interaction.objects.filter(employee = employee_to_download_register,interaction_type = "work" , date_time__range=(starting_date, end_date))
             encoded_string =None 
             with open( "./"+employee_to_download_register.signature.url, "rb") as image_file:
                 encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
