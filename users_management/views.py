@@ -25,12 +25,10 @@ def login_view(request):
     correct_login = True
 
     if request.method == "POST":
-        print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         
         user = authenticate(request, username=username.lower(), password=password)
-        print(user)
         if user is not None and user.is_active:
             login(request, user)
             return redirect("/admin/")
@@ -74,20 +72,33 @@ def home(request):
 
 def get_employee_job_interactions_date_range(request):
     if request.is_ajax:
-        dni = request.GET['dni']
         start_date = request.GET['startDate']
         end_date = request.GET['endDate']
-        user = Employee.objects.get(dni=dni)
-
-        date_time_obj = datetime.strptime(end_date, '%Y-%m-%d')
-        end_date_obj = date_time_obj + timedelta(days=1)
-
-
-        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(start_date, end_date_obj)).order_by('-date_time')
-
-        interactions_json = serializers.serialize('json',employee_interactions)
-        return HttpResponse(interactions_json, content_type="application/json")
-    return None
+        user = Employee.objects.get(dni=request.GET['dni'])
+        employee_interactions = Interaction.objects.filter(employee = user, date_time__range=(start_date, end_date)).order_by('date_time')
+        daily_hours = {}
+        firstTime = None
+        secondTime = None
+        for interaction in employee_interactions:
+            if ((interaction.interaction_type == "work" and interaction.state == 0) or (interaction.interaction_type == "break" and interaction.state == 1)):
+                firstTime = interaction.date_time
+            elif ((interaction.interaction_type == "work" and interaction.state == 1) or (interaction.interaction_type == "break" and interaction.state == 0)):
+                secondTime = interaction.date_time  
+            if (firstTime is not None and secondTime is not None):
+                difference = secondTime - firstTime
+                days, seconds = difference.days, difference.seconds
+                hours = days * 24 + seconds // 3600
+                minutes = minutes = (seconds % 3600) // 60
+                hours += minutes / 60
+                try:
+                    daily_hours[interaction.date_time.strftime("%d-%m-%Y")] += hours
+                except:
+                    daily_hours[interaction.date_time.strftime("%d-%m-%Y")] = hours
+                firstTime = None
+                secondTime = None
+        for key in daily_hours.keys():
+            daily_hours[key] = "{:.2f}".format(daily_hours[key])
+        return HttpResponse(json.dumps(daily_hours), content_type="application/json")
 
 
 def get_employee_job_interactions_dni(request):
@@ -116,7 +127,6 @@ def get_hours_from_range(request):
         secondTime = None
         totalTime = 0
         for interaction in employee_interactions:
-            print(interaction.interaction_type, " ", interaction.state, "-> ", interaction.date_time)
             if ((interaction.interaction_type == "work" and interaction.state == 0) or (interaction.interaction_type == "break" and interaction.state == 1)):
                 firstTime = interaction.date_time
             elif ((interaction.interaction_type == "work" and interaction.state == 1) or (interaction.interaction_type == "break" and interaction.state == 0)):
@@ -166,7 +176,6 @@ def get_hours_from_current_month(request):
 
 def get_hours_from_current_month_admin(request):
     if request.is_ajax:
-        print(request.GET)
         current_month = datetime.today().date().replace(day=1)
         next_month = (current_month + timedelta(days=32)).replace(day=1)
         user = Employee.objects.get(dni=request.GET['dni'])
@@ -218,9 +227,7 @@ def change_interaction_day(request):
     if request.is_ajax:
         date = request.POST['day'].split('-')
         interaction = Interaction.objects.get(pk=request.POST['pk'])
-        print(request.POST['pk'])
         interaction.date_time = interaction.date_time.replace(year=int(date[0])).replace(month=int(date[1])).replace(day=int(date[2]))
-        print(interaction.date_time)
         interaction.save()
     return HttpResponse(status=200)
 
@@ -228,9 +235,7 @@ def change_interaction_time(request):
     if request.is_ajax:
         time = request.POST['hour'].split(':')
         interaction = Interaction.objects.get(pk=request.POST['pk'])
-        print(request.POST['pk'])
         interaction.date_time = interaction.date_time.replace(hour=int(time[0])).replace(minute=int(time[1]))
-        print(interaction.date_time)
         interaction.save()
     return HttpResponse(status=200)
 
@@ -256,7 +261,6 @@ def send_email():
         server.login(gmail_user, gmail_password)
         server.sendmail(sent_from, to, email_text)
         server.close()
-
         print('Email sent!')
     except:
         print('Something went wrong...')
@@ -305,12 +309,11 @@ def postInteraction(request):
             interaction_type=request.POST['interaction_type']
             state = int(request.POST['state'])
             if (employee_interactions_count < 2 and interaction_type == "work" and state == 0) or state == 1 or interaction_type =="break":
-               
                 interaction=Interaction.objects.create(
-                state=state,
-                date_time=datetime.now(),
-                interaction_type=interaction_type,
-                employee=actual_employee
+                    state=state,
+                    date_time=datetime.now(),
+                    interaction_type=interaction_type,
+                    employee=actual_employee
                 )
         
                 if interaction_type == "work" and state == 0:
@@ -321,11 +324,14 @@ def postInteraction(request):
                     actual_employee.work_status ="breaking"
                 if interaction_type == "break" and state == 1:
                     actual_employee.work_status ="isWorking"
-                print("INSERCION-> "+str(state)+str(interaction_type)+"/n"+"/n"+"/n"+"/n"+"/n")
+
+                print("------------------------------------------")
+                print("POST --> ",str(state),str(interaction_type))
+                print("------------------------------------------")
 
                 actual_employee.save()
                 interaction.save()
-                return HttpResponse(json.dumps({"a": "Penesito"}),  content_type="application/json")
+                return HttpResponse(json.dumps({"a": "Correcto"}),  content_type="application/json")
             else:
                 return HttpResponse(json.dumps({"error": "No se puede entrar al trabajo más de 2 veces al día"}),  content_type="application/json")
 
@@ -379,6 +385,7 @@ def admin(request):
                     form_type = 'Usuario creado con éxito'
                     form_success = 'success'
             else:
+                print(signature)
                 employee = Employee.objects.get(dni=last_user.dni)
                 user = User.objects.get(username=last_user.email)
 
@@ -389,7 +396,8 @@ def admin(request):
                 employee.ss_number = ss
                 employee.phone_number = phone
                 employee.email = email
-                employee.signature = signature
+                if signature is not False:
+                    employee.signature = signature
                 user.username = email
                 user.password = dni
 

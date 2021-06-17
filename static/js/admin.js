@@ -13,67 +13,27 @@ get_employees_by_name("");
 
 
 function on_success_search_date_button_action(data) {
-    
-    document.getElementById("register_container").innerHTML = "";
     $("#register_container").empty();
-    data.forEach((interaction) => {
-        //RESOLV FIELDS
-        date = new Date(interaction.fields.date_time);
-        year = date.getFullYear();
-        month = date.getMonth() + 1;
-        dt = date.getDate();
-
-        if (dt < 10) {
-            dt = "0" + dt;
-        }
-        if (month < 10) {
-            month = "0" + month;
-        }
-        dateResolved = year + "-" + month + "-" + dt;
-        timeResolved = date.toLocaleTimeString("es-ES");
-        if (timeResolved.length < 8) {
-            timeResolved = "0" + timeResolved;
-        }
-
-        interactionTypeResolved = "";
-        if (interaction.fields.interaction_type == "work") {
-            interactionTypeResolved = "Trabajo";
-        } else {
-            interactionTypeResolved = "Descanso";
-        }
-
-        stateResolved = "";
-        if (interaction.fields.state == 0) {
-            stateResolved = "Entrada";
-        } else {
-            stateResolved = "Salida";
-        }
-
+    interactions = Object.entries(data);
+    if(interactions.length == 0) {
         $("#register_container").append(
-            ` 
-        <div  class="container-fluid background-grey font-black row m-1 g-0 py-1">
-        <h5 class="col-3">` +
-                interactionTypeResolved +
-                `</h5> 
-        <h5 class="col-3">` +
-                stateResolved +
-                `</h5>
-        
-        <input type="time" class="col-3 text-center " onblur="updateInteraction(` +
-                interaction.pk +
-                `, this.value, 'time' )" value="` +
-                timeResolved +
-                `" />
-        <input type="date" class="col-3 text-center " onblur="updateInteraction(` +
-                interaction.pk +
-                `, this.value, 'date' )" value="` +
-                dateResolved +
-                `" />
-        </div>`
+            '<tr class"table-home-row"><td></td><td class="text-center">No hay registros</td><td></td></tr>'
         );
-    });
-    show_feedback_to_user("success", "¡Búsqueda realizada con éxito!", 750, "rgba(80,80,80,0.4)");
+        return
+    }
+    for (const [key, value] of Object.entries(data)) {
+        $("#register_container").append(
+            '<tr class"table-home-row"><td class="text-center p-0 m-0 align-middle">' +
+                key +
+                '</td><td class="text-center p-0 m-0 align-middle">' +
+                value +
+                '</td><td class="text-center p-0 m-0 align-middle"><button class="col-4 btn notification-button p-0 m-0" onclick="on_click_show_details(this)">' +
+                '<i class="details-button fas fa-info-circle"></i></button></td></tr>'
+        );
+    }
+    
 }
+
 function on_click_check_if_employee_have_interactions(event){
 
     var data = {
@@ -149,8 +109,17 @@ function search_date_button_action(event) {
         startDate: startDate,
         endDate: endDate,
     };
-    $("#register_container").append(`<h2>No hay resultados </h2>`);
-    ajax_to_get_data("get_employee_job_interactions_date_range/", data, success_function = on_success_search_date_button_action);
+    if(startDate=="" || endDate=="") {
+        Swal.fire({
+            title: 'Aviso',
+            text: "Selecciona una fecha de inicio y otra de fin antes de buscar",
+            icon: 'warning',
+            showCancelButton: false,
+        })
+    } else {
+        ajax_to_get_data("get_employee_job_interactions_date_range/", data, success_function = on_success_search_date_button_action);
+    }
+    
 }
 
 function changeAll() {
@@ -231,6 +200,8 @@ function user_modal_event_function(event) {
 
 function on_success_user_interaction_modal_event_function(data) {
     $("#register_container").empty();
+    document.getElementById("endDate").value = "";
+    document.getElementById("startDate").value = "";
     interactions = Object.entries(data);
     if(interactions.length == 0) {
         $("#register_container").append(
@@ -252,7 +223,6 @@ function on_success_user_interaction_modal_event_function(data) {
 function user_interaction_modal_event_function(event) {
     var button = $(event.relatedTarget); // Button that triggered the modal
     var dni = button.parents()[0].parentNode.childNodes[3].innerText;
-    console.log(dni)
     document.getElementById("hidden-dni").value = dni;
     console.log(document.getElementById("hidden-dni").value)
     var data = {
