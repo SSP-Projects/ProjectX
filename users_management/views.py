@@ -367,7 +367,7 @@ def admin(request):
                     form_success = 'fail'
                     form_type = 'El DNI introducido ya existe'
                 else:
-                    center = Center.objects.get(CIF='A3424F23424')
+                    center = Center.objects.get(CIF='A3424F234')
                     user = User.objects.create_user(username=email, password=dni)
                     employee = Employee()
                     employee.name = name
