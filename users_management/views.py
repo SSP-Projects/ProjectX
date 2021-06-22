@@ -466,7 +466,7 @@ def get_pdf_from_month(request):
         else:
              return HttpResponse({"error":"illegal user"}, content_type='application/json')
 
-def pdf_wuarron_testeo(request):
+def pdf_testeo(request):
     def first_day_of_month(date):
         first_day = datetime(date.year, date.month, 1)
         return first_day.strftime('%Y-%m-%d')
