@@ -5,7 +5,7 @@ Signet is an application to manage employees and their clockings, with users/per
 The application is pretty scalable and is designed thinking about it.
 
 ------------------------------------------------------------------------------------------------------------
-# Signet ENGLISH
+# Signet ESPAÑOL
 
 Signet es una aplicación para gestionar empleados y sus fichajes, con usuarios/permisos, sistema de notificaciones, etc.
 
