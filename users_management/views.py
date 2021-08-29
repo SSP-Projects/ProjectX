@@ -240,11 +240,11 @@ def change_interaction_time(request):
     return HttpResponse(status=200)
 
 def send_email():
-    gmail_user = 'help.ssp.projects@gmail.com'
-    gmail_password = 'Pelirrojo64'
+    gmail_user = '**************************************'
+    gmail_password = '**************************************'
 
     sent_from = gmail_user
-    to = ['garciamayosergio@gmail.com', 'sergio.munoz.lillo@gmail.com']
+    to = ['**************************************', '**************************************']
     subject = 'OMG Super Important Message'
     body = 'Hey, whats up?\n\n- You'
     email_text = """\
